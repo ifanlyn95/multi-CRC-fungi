@@ -1,0 +1,201 @@
+---
+title: "BatchEffect-Seurat"
+author: "ifanlyn@outlook.com"
+date: "7/5/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Loading packages and subroutines {.tabset}
+
+### Packages
+
+```{r packages, message=FALSE, warning=FALSE}
+require(Seurat)
+require(DT) # for datatable
+require(SeuratWrappers) # for fastMNN
+require(harmony) # for RunHarmony
+require(reshape2) # for dcast
+```
+
+### Import table
+```{r ImportTable }
+ImportTable <- function(file, header = T, row.names = 1, sep = ',', check.names = FALSE, ...){
+  data <- read.csv(file = file, header = header, row.names = row.names, sep = sep, check.names = check.names, ...)
+  return(data)
+}
+```
+
+### show_table
+```{r show_table}
+show_table <- function(df, rownames = T, filter="top", options = list(pageLength = 10, scrollX=T), ...){
+  if (ncol(df) > 20) {
+    df <- df[, 1:20]
+    message('Due to the column dim is > 20, it only shows the ')
+  }
+  datatable(df, rownames = rownames, 
+            filter=filter, options = options, ... )
+
+}
+```
+
+## Import data {.tabset}
+
+### Taxonomy name 
+```{r taxonomy name, warning = FALSE}
+tax_name <- ImportTable(file = '../00.ProcessData/2021-04-12-allTaxonomySplitLevel-v1.0.1.tsv', sep = '\t')
+tax_name$new_name <- gsub(pattern = 's__', replacement = '', x = tax_name$Specie) %>% 
+  gsub('_', ' ', .) # due to Feature names of CreateSeuratObject cannot have underscores, replace with blanket space.
+show_table(tax_name)
+```
+
+### Taxonomy matrix
+
+```{r taxonomy matrix}
+# tax_df <- ImportTable(file = '../00.ProcessData/2021-04-12-ReAbun-Fungi-filter1802-v1.0.0.tsv', sep = '\t')
+tax_df <- ImportTable(file = '../00.ProcessData/2021-04-12-RawData-Fungi-filter1802-v1.0.0.tsv', sep = '\t')
+rownames(tax_df) <- tax_name[rownames(tax_df), "new_name"] # use the short species names
+show_table(tax_df)
+```
+
+### Meta information 
+```{r meta information}
+meta_df <- ImportTable(file = '../00.ProcessData/metaInfo-subgroup-v4.1.csv')
+meta_df <- meta_df[colnames(tax_df),]
+show_table(meta_df)
+```
+
+## Remove the batch effect by Seurat 
+
+### Create seurat object
+CreateSeuratObject: Create a Seurat object [link](https://www.rdocumentation.org/packages/Seurat/versions/3.0.1/topics/CreateSeuratObject)
+```{r create seurat object}
+s_obj <- CreateSeuratObject(counts = tax_df, meta.data = meta_df)
+
+# split the object by cohorts
+s_list <- SplitObject(s_obj, split.by = 'Cohort')
+```
+
+### Remove batch effect {.tabset}
+
+#### RPCA {.tabset}
+Fast integration using reciprocal PCA (RPCA) [link](https://satijalab.org/seurat/articles/integration_rpca.html)
+
+##### Pre-process
+```{r RPCA, message=FALSE, warning=FALSE, fig.width = 20, fig.height = 7}
+
+for (i in 1:length(s_list)) {
+    s_list[[i]] <- NormalizeData(s_list[[i]], verbose = FALSE)
+    s_list[[i]] <- FindVariableFeatures(s_list[[i]], selection.method = "vst", nfeatures = 2000, verbose = FALSE)
+}
+
+s_anchors <- FindIntegrationAnchors(object.list = s_list, k.anchor = 20)
+
+s_integrated <- IntegrateData(anchorset = s_anchors, k.weight = 10) %>%
+  ScaleData(. , verbose = FALSE) %>% 
+  RunPCA(. , npcs = 30, verbose = FALSE) %>%
+  RunUMAP(. , reduction = "pca", dims = 1:30, verbose = FALSE)
+
+prca_obj <- FindNeighbors(s_integrated, dims = 1:30) %>%
+  FindClusters()
+
+prca_table <- dcast(as.data.frame(table(prca_obj@active.ident,prca_obj@meta.data[["Stage"]])), Var1 ~ Var2)
+rownames(prca_table) <- prca_table$Var1; prca_table <- prca_table[,-1]
+```
+##### Table 
+```{r, message=FALSE, warning=FALSE, fig.width = 20, fig.height = 7}
+show_table(prca_table)
+```
+
+##### Figure
+```{r, message=FALSE, warning=FALSE, fig.width = 20, fig.height = 7}
+DimPlot(prca_obj, group.by = c("Cohort", "Stage", 'ident'), ncol = 3)
+```
+
+#### fastMNN {.tabset}
+fastMNN: Batch effects in single-cell RNA-sequencing data are corrected by matching mutual nearest neighbors [link](https://htmlpreview.github.io/?https://github.com/satijalab/seurat.wrappers/blob/master/docs/fast_mnn.html) <br>
+Nature Biotechnology, 2018, DOI: [10.1038/nbt.4091](https://www.nature.com/articles/nbt.4091)
+
+##### Pre-process
+
+```{r fastMNN, message=FALSE, warning=FALSE, fig.width = 20, fig.height = 7}
+fMNN_obj <- NormalizeData(s_obj) %>% 
+  FindVariableFeatures() %>%
+  SplitObject(. ,  split.by = 'Cohort') %>%
+  RunFastMNN()
+
+fMNN_obj2 <- RunUMAP(fMNN_obj, reduction = 'mnn', dims = 1:30) %>%
+  FindNeighbors(. , reduction = 'mnn', dims = 1:30) %>%
+  FindClusters()
+
+fMNN_table <- dcast(as.data.frame(table(fMNN_obj2@active.ident,fMNN_obj2@meta.data[["Stage"]])), Var1 ~ Var2)
+rownames(fMNN_table) <- fMNN_table$Var1; fMNN_table <- fMNN_table[,-1]
+
+```
+
+##### Table
+```{r, message=FALSE, warning=FALSE, fig.width = 20, fig.height = 7}
+show_table(fMNN_table)
+```
+
+##### Figure
+```{r, message=FALSE, warning=FALSE, fig.width = 20, fig.height = 7}
+DimPlot(fMNN_obj2, group.by = c("Cohort", "Stage", 'ident'), ncol = 3)
+```
+
+#### Harmony {.tabset}
+Fast, sensitive, and flexible integration of single cell data with Harmony. [link](https://htmlpreview.github.io/?https://github.com/satijalab/seurat.wrappers/blob/master/docs/harmony.html) <br>
+
+Nature Methods, 2019, DOI: [10.1038/s41592-019-0619-0](https://www.nature.com/articles/s41592-019-0619-0)
+
+##### Pre-process
+```{r Harmony, message=FALSE, warning=FALSE, fig.width = 20, fig.height = 7}
+hmy_obj <- NormalizeData(s_obj) %>%
+  FindVariableFeatures() %>% 
+  ScaleData() %>% 
+  RunPCA(. , verbose = FALSE)
+
+hmy_obj2 <- RunHarmony(object = hmy_obj, group.by.vars = 'Cohort') %>%
+  RunUMAP(., reduction = "harmony", dims = 1:30) %>%
+  FindNeighbors(., reduction = "harmony", dims = 1:30) %>% 
+  FindClusters()
+
+hmy_table <- dcast(as.data.frame(table(hmy_obj2@active.ident,hmy_obj2@meta.data[["Stage"]])), Var1 ~ Var2)
+rownames(hmy_table) <- hmy_table$Var1; hmy_table <- hmy_table[,-1]
+
+
+```
+
+##### Table
+```{r, message=FALSE, warning=FALSE, fig.width = 20, fig.height = 7}
+show_table(hmy_table)
+```
+
+##### Figure
+```{r, message=FALSE, warning=FALSE, fig.width = 20, fig.height = 7}
+DimPlot(hmy_obj2, group.by = c("Cohort", "Stage", 'ident'), ncol = 3)
+```
+
+<!--#### test 
+```{r}
+library(Seurat)
+library(SeuratData)
+library(SeuratWrappers)
+data("panc8")
+panc8 <- NormalizeData(panc8)
+panc8 <- FindVariableFeatures(panc8)
+panc8 <- RunFastMNN(object.list = SplitObject(panc8, split.by = "replicate")[c("celseq", "celseq2", "fluidigmc1", "smartseq2")])
+panc8 <- RunUMAP(panc8, reduction = "mnn", dims = 1:30)
+panc8 <- FindNeighbors(panc8, reduction = "mnn", dims = 1:30)
+panc8 <- FindClusters(panc8)
+DimPlot(panc8, group.by = c("replicate", "ident", "celltype"), ncol = 3)
+
+```
+-->
+
+
+
+
