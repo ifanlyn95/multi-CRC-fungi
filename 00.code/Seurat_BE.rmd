@@ -55,8 +55,8 @@ show_table(tax_name)
 ### Taxonomy matrix
 
 ```{r taxonomy matrix}
-# tax_df <- ImportTable(file = '../00.ProcessData/2021-04-12-ReAbun-Fungi-filter1802-v1.0.0.tsv', sep = '\t')
-tax_df <- ImportTable(file = '../00.ProcessData/2021-04-12-RawData-Fungi-filter1802-v1.0.0.tsv', sep = '\t')
+tax_df <- ImportTable(file = '../00.ProcessData/2021-04-12-ReAbun-Fungi-filter1802-v1.0.0.tsv', sep = '\t')
+# tax_df <- ImportTable(file = '../00.ProcessData/2021-04-12-RawData-Fungi-filter1802-v1.0.0.tsv', sep = '\t')
 rownames(tax_df) <- tax_name[rownames(tax_df), "new_name"] # use the short species names
 show_table(tax_df)
 ```
