@@ -12,7 +12,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Loading packages and subroutines {.tabset}
 
 ### Packages
-
 ```{r packages, message=FALSE, warning=FALSE}
 # require(Seurat)
 require(DT) # for datatable
@@ -32,9 +31,9 @@ ImportTable <- function(file, header = T, row.names = 1, sep = ',', check.names 
 ### show_table
 ```{r show_table}
 show_table <- function(df, rownames = T, filter="top", options = list(pageLength = 10, scrollX=T), ...){
-  if (ncol(df) > 20) {
-    df <- df[, 1:20]
-    message('Due to the column dim is > 20, it only shows the ')
+  if (ncol(df) > 50) {
+    df <- df[, 1:50]
+    message('Due to the column dim is > 50, it only shows the ')
   }
   datatable(df, rownames = rownames, 
             filter=filter, options = options, ... )
@@ -45,7 +44,7 @@ show_table <- function(df, rownames = T, filter="top", options = list(pageLength
 ### MultMedFC 
 MultMedFC: Multiple Median Fold Change, compared each samples between 2 Stages (Control vs CRC)
 ```{r}
-MultMedFC <- function(data1, data2, FeatureAsRow = Tsf){
+MultMedFC <- function(data1, data2, FeatureAsRow = T){
   if (FeatureAsRow) {
     data1 <- t(data1)
     data2 <- t(data2)
@@ -61,8 +60,8 @@ MultMedFC <- function(data1, data2, FeatureAsRow = Tsf){
   for (sf in colnames(data1)) {
     sf_FC <- NULL
     if (sum(data1[[sf]] == 0) == nrow(data1) & sum(data2[[sf]] == 0) == nrow(data2)) {
-      sf_df <- rbind(sf_df, c(1,1,1))
-    }else{
+      sf_df <- rbind(sf_df, c(0, 0, 0, 1))
+    } else {
       min_value <- min(c(data1[[sf]][data1[[sf]] != 0], data2[[sf]][data2[[sf]] != 0]))/10
       data1[[sf]][data1[[sf]] == 0] <- min_value
       data2[[sf]][data2[[sf]] == 0] <- min_value
@@ -76,14 +75,13 @@ MultMedFC <- function(data1, data2, FeatureAsRow = Tsf){
       sf_df <- rbind(sf_df, c(as.numeric(sf_wil$estimate), as.numeric(sf_wil$conf.int), as.numeric(sf_wil$p.value)))
     }
   }
-  sf_df <- as.data.frame(sf_df); rownames(sf_df) <- colnames(data1); colnames(sf_df) <- c("Median", 'low-CI', 'high-CI', 'p-value')
+  sf_df <- as.data.frame(sf_df); rownames(sf_df) <- colnames(data1); colnames(sf_df) <- c('Median', 'low-CI', 'high-CI', 'p-value')
   return(sf_df)
 }
 ```
 
 
 ### FileCreate
-
 ```{r}
 FileCreate <- function(DirPath = "./",Prefix = "ExampleTest", Suffix = "pdf", version = "0.0.0"){
   date=as.character(Sys.Date())
@@ -125,7 +123,6 @@ show_table(tax_name)
 ```
 
 ### Taxonomy matrix
-
 ```{r taxonomy matrix}
 tax_df <- ImportTable(file = '../00.ProcessData/2021-04-12-ReAbun-Fungi-filter1802-v1.0.0.tsv', sep = '\t')
 # tax_df <- ImportTable(file = '../00.ProcessData/2021-04-12-RawData-Fungi-filter1802-v1.0.0.tsv', sep = '\t')
@@ -148,7 +145,7 @@ MultMedFC: Multiple Median Fold Change, compared each samples between 2 Stages (
 ### Calculate the trend in different cohorts
 ```{r, warning = FALSE}
 Trend_List <- list()
-calculateOrRead <- F
+calculateOrRead <- T
 if (calculateOrRead) {
   for (coh in unique(meta_df$Cohort)) {
     message(coh, ' begins at ', date())
@@ -173,12 +170,12 @@ if (calculateOrRead) {
   median_file <- FileCreate(DirPath = '../01.SSTF', Prefix = 'walsh-median-ALL', Suffix = 'csv')
   write.csv(x = Trend_Comb, file = median_file)
   Trend_Med_log2 <- Trend_Comb[,grep(pattern = 'Median|p-value', x = colnames(Trend_Comb))]
-  Trend_Med_log2$Average <- apply(Trend_Med_log2[, seq(1,15,2)], 1, mean)
+  # Trend_Med_log2$Average <- apply(Trend_Med_log2[, seq(1,15,2)], 1, mean)
   Trend_Med_log2$N.count <- rowSums(Trend_Med_log2[, seq(1,15,2)] < 0)
   Trend_Med_log2$P.count <- rowSums(Trend_Med_log2[, seq(1,15,2)] > 0)
   Trend_Med_log2$Missing <- rowSums(Trend_Med_log2[, seq(1,15,2)] == 0)
   Trend_Med_log2$pvalue <- rowSums(Trend_Med_log2[, seq(2,16,2)] < 0.05)
-  
+  Trend_Med_log2 <- Trend_Med_log2[, c(17:20,1:16)]
   median_file <- FileCreate(DirPath = '../01.SSTF', Prefix = 'Summary-walsh-median', Suffix = 'csv')
   write.csv(x = Trend_Med_log2, file = median_file)
   
@@ -190,5 +187,11 @@ if (calculateOrRead) {
   Trend_Med_log2 <- read.csv('../01.SSTF/2021-07-06-Summary-walsh-median-v1.0.0.csv', header = T, row.names = 1, check.names = F)
 }
 
-
+show_table(Trend_Med_log2) %>%
+  formatSignif(columns = colnames(Trend_Med_log2[, c(5:20)]),
+               digits = 3, interval = 1) %>%
+  formatRound(columns = colnames(Trend_Med_log2[, c(1:4)]),
+              digits = 0, interval = 1) %>%
+  formatStyle(columns = colnames(Trend_Med_log2[, c(1:4)]),
+              fontWeight = 'bold')
 ```
