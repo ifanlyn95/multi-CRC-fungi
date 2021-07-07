@@ -32,9 +32,9 @@ ImportTable <- function(file, header = T, row.names = 1, sep = ',', check.names 
 ### show_table
 ```{r show_table}
 show_table <- function(df, rownames = T, filter="top", options = list(pageLength = 10, scrollX=T), ...){
-  if (ncol(df) > 20) {
-    df <- df[, 1:20]
-    message('Due to the column dim is > 20, it only shows the ')
+  if (ncol(df) > 50) {
+    df <- df[, 1:50]
+    message('Due to the column dim is > 50, it only shows the ')
   }
   datatable(df, rownames = rownames, 
             filter=filter, options = options, ... )
@@ -42,8 +42,91 @@ show_table <- function(df, rownames = T, filter="top", options = list(pageLength
 }
 ```
 
+### MultMedFC 
+MultMedFC: Multiple Median Fold Change, compared each samples between 2 Stages (Control vs CRC)
+```{r}
+MultMedFC <- function(data1, data2, FeatureAsRow = Tsf){
+  if (FeatureAsRow) {
+    data1 <- t(data1)
+    data2 <- t(data2)
+  }
+  data1 <- as.data.frame(data1)
+  data2 <- as.data.frame(data2)
+  if (! all(colnames(data1) == colnames(data2))) {
+    message("rowname of data1 and data2 is not fullly same!! plz check it !!")
+    return()
+  }
+  
+  sf_df <- matrix(NA, ncol = 3); sf_df <- sf_df[-1, ]
+  for (sf in colnames(data1)) {
+    sf_FC <- NULL
+    if (sum(data1[[sf]] == 0) == nrow(data1) & sum(data2[[sf]] == 0) == nrow(data2)) {
+      sf_df <- rbind(sf_df, c(1,1,1))
+    }else{
+      min_value <- min(c(data1[[sf]][data1[[sf]] != 0], data2[[sf]][data2[[sf]] != 0]))/10
+      data1[[sf]][data1[[sf]] == 0] <- min_value
+      data2[[sf]][data2[[sf]] == 0] <- min_value
+      for (i1 in 1:nrow(data1)) {
+        for (i2 in 1:nrow(data2)) {
+          sf_FC <- c(sf_FC, data1[[sf]][i1]/data2[[sf]][i2])
+        } 
+      }
+      sf_wil <- wilcox.test(sf_FC, conf.int = TRUE)
+      sf_df <- rbind(sf_df, c(as.numeric(sf_wil$estimate), as.numeric(sf_wil$conf.int)))
+    }
+  }
+  sf_df <- as.data.frame(sf_df); rownames(sf_df) <- colnames(data1); colnames(sf_df) <- c("Median", 'low-CI', 'high-CI')
+  return(sf_df)
+}
+```
+
+### FileCreate
+
+```{r}
+FileCreate <- function(DirPath = "./",Prefix = "ExampleTest", Suffix = "pdf", version = "0.0.0"){
+  date=as.character(Sys.Date())
+  DirPath = gsub("/$","",DirPath)
+  Suffix = gsub('^[.]',"",Suffix)
+  if(! dir.exists(DirPath)){
+    dir.create(DirPath,recursive =TRUE)
+  }
+  if (version == "0.0.0") {
+    version=100
+    while(TRUE){
+      version_=paste(unlist(strsplit(as.character(version),"")),collapse=".")
+      DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version_,".",Suffix)
+      if(! file.exists(DirPathName)){
+        return(DirPathName)
+        break
+      }
+      version = version + 1
+    }
+  }else{
+    DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version_,".",Suffix)
+    if(! dir.exists(DirPathName)){
+      return(DirPathName)
+    }
+    return(DirPathName)
+  }
+}
+  
+```
+
 ## Import data {.tabset}
 
+
+### Selected matrix
++ leave the features with p-value less than 0.05 in all cohorts,
++ select the feature with same trend in all cohorts
+
+```{r selected matrix}
+summarized_df <- ImportTable(file = '../01.SSTF/2021-07-06-Summary-walsh-median-v1.0.0.csv')
+show_table(summarized_df)
+sel_df <- summarized_df[summarized_df$pvalue == 8 & (summarized_df$P.count == 8 | summarized_df$N.count == 8), ]
+sel2_df <- summarized_df[summarized_df$pvalue >= 7 & (summarized_df$P.count >= 7 | summarized_df$N.count >= 7), ]
+sel3_df <- summarized_df[summarized_df$pvalue >= 6 & (summarized_df$P.count >= 6 | summarized_df$N.count >= 6), ]
+
+```
 ### Taxonomy name 
 ```{r taxonomy name, warning = FALSE}
 tax_name <- ImportTable(file = '../00.ProcessData/2021-04-12-allTaxonomySplitLevel-v1.0.1.tsv', sep = '\t')
@@ -55,11 +138,16 @@ show_table(tax_name)
 ### Taxonomy matrix
 
 ```{r taxonomy matrix}
-tax_df <- ImportTable(file = '../00.ProcessData/2021-04-12-ReAbun-Fungi-filter1802-v1.0.0.tsv', sep = '\t')
+raw_tax_df <- ImportTable(file = '../00.ProcessData/2021-04-12-ReAbun-Fungi-filter1802-v1.0.0.tsv', sep = '\t')
 # tax_df <- ImportTable(file = '../00.ProcessData/2021-04-12-RawData-Fungi-filter1802-v1.0.0.tsv', sep = '\t')
-rownames(tax_df) <- tax_name[rownames(tax_df), "new_name"] # use the short species names
+rownames(raw_tax_df) <- tax_name[rownames(raw_tax_df), "new_name"] # use the short species names
+show_table(raw_tax_df)
+tax_df <- raw_tax_df[rownames(sel2_df),]
 show_table(tax_df)
+
 ```
+
+
 
 ### Meta information 
 ```{r meta information}
@@ -67,6 +155,7 @@ meta_df <- ImportTable(file = '../00.ProcessData/metaInfo-subgroup-v4.1.csv')
 meta_df <- meta_df[colnames(tax_df),]
 show_table(meta_df)
 ```
+
 
 ## Remove the batch effect by Seurat 
 

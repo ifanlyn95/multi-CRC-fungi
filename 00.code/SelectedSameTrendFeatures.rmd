@@ -1,0 +1,194 @@
+---
+title: "Selected Same Trend Features"
+author: "ifanlyn@outlook.com"
+date: "7/5/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Loading packages and subroutines {.tabset}
+
+### Packages
+
+```{r packages, message=FALSE, warning=FALSE}
+# require(Seurat)
+require(DT) # for datatable
+# require(SeuratWrappers) # for fastMNN
+# require(harmony) # for RunHarmony
+require(reshape2) # for dcast
+```
+
+### Import table
+```{r ImportTable }
+ImportTable <- function(file, header = T, row.names = 1, sep = ',', check.names = FALSE, ...){
+  data <- read.csv(file = file, header = header, row.names = row.names, sep = sep, check.names = check.names, ...)
+  return(data)
+}
+```
+
+### show_table
+```{r show_table}
+show_table <- function(df, rownames = T, filter="top", options = list(pageLength = 10, scrollX=T), ...){
+  if (ncol(df) > 20) {
+    df <- df[, 1:20]
+    message('Due to the column dim is > 20, it only shows the ')
+  }
+  datatable(df, rownames = rownames, 
+            filter=filter, options = options, ... )
+
+}
+```
+
+### MultMedFC 
+MultMedFC: Multiple Median Fold Change, compared each samples between 2 Stages (Control vs CRC)
+```{r}
+MultMedFC <- function(data1, data2, FeatureAsRow = Tsf){
+  if (FeatureAsRow) {
+    data1 <- t(data1)
+    data2 <- t(data2)
+  }
+  data1 <- as.data.frame(data1)
+  data2 <- as.data.frame(data2)
+  if (! all(colnames(data1) == colnames(data2))) {
+    message("rowname of data1 and data2 is not fullly same!! plz check it !!")
+    return()
+  }
+  
+  sf_df <- matrix(NA, ncol = 4); sf_df <- sf_df[-1, ]
+  for (sf in colnames(data1)) {
+    sf_FC <- NULL
+    if (sum(data1[[sf]] == 0) == nrow(data1) & sum(data2[[sf]] == 0) == nrow(data2)) {
+      sf_df <- rbind(sf_df, c(1,1,1))
+    }else{
+      min_value <- min(c(data1[[sf]][data1[[sf]] != 0], data2[[sf]][data2[[sf]] != 0]))/10
+      data1[[sf]][data1[[sf]] == 0] <- min_value
+      data2[[sf]][data2[[sf]] == 0] <- min_value
+      for (i1 in 1:nrow(data1)) {
+        for (i2 in 1:nrow(data2)) {
+          sf_FC <- c(sf_FC, data1[[sf]][i1]/data2[[sf]][i2])
+        } 
+      }
+      sf_FC <- log2(sf_FC)
+      sf_wil <- wilcox.test(sf_FC, conf.int = TRUE, mu = 0)
+      sf_df <- rbind(sf_df, c(as.numeric(sf_wil$estimate), as.numeric(sf_wil$conf.int), as.numeric(sf_wil$p.value)))
+    }
+  }
+  sf_df <- as.data.frame(sf_df); rownames(sf_df) <- colnames(data1); colnames(sf_df) <- c("Median", 'low-CI', 'high-CI', 'p-value')
+  return(sf_df)
+}
+```
+
+
+### FileCreate
+
+```{r}
+FileCreate <- function(DirPath = "./",Prefix = "ExampleTest", Suffix = "pdf", version = "0.0.0"){
+  date=as.character(Sys.Date())
+  DirPath = gsub("/$","",DirPath)
+  Suffix = gsub('^[.]',"",Suffix)
+  if(! dir.exists(DirPath)){
+    dir.create(DirPath,recursive =TRUE)
+  }
+  if (version == "0.0.0") {
+    version=100
+    while(TRUE){
+      version_=paste(unlist(strsplit(as.character(version),"")),collapse=".")
+      DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version_,".",Suffix)
+      if(! file.exists(DirPathName)){
+        return(DirPathName)
+        break
+      }
+      version = version + 1
+    }
+  }else{
+    DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version_,".",Suffix)
+    if(! dir.exists(DirPathName)){
+      return(DirPathName)
+    }
+    return(DirPathName)
+  }
+}
+  
+```
+
+## Import data {.tabset}
+
+### Taxonomy name 
+```{r taxonomy name, warning = FALSE}
+tax_name <- ImportTable(file = '../00.ProcessData/2021-04-12-allTaxonomySplitLevel-v1.0.1.tsv', sep = '\t')
+tax_name$new_name <- gsub(pattern = 's__', replacement = '', x = tax_name$Specie) %>% 
+  gsub('_', ' ', .) # due to Feature names of CreateSeuratObject cannot have underscores, replace with blanket space.
+show_table(tax_name)
+```
+
+### Taxonomy matrix
+
+```{r taxonomy matrix}
+tax_df <- ImportTable(file = '../00.ProcessData/2021-04-12-ReAbun-Fungi-filter1802-v1.0.0.tsv', sep = '\t')
+# tax_df <- ImportTable(file = '../00.ProcessData/2021-04-12-RawData-Fungi-filter1802-v1.0.0.tsv', sep = '\t')
+rownames(tax_df) <- tax_name[rownames(tax_df), "new_name"] # use the short species names
+show_table(tax_df)
+```
+
+### Meta information 
+```{r meta information}
+meta_df <- ImportTable(file = '../00.ProcessData/metaInfo-subgroup-v4.1.csv')
+meta_df <- meta_df[colnames(tax_df),]
+show_table(meta_df)
+```
+
+
+
+## Pre-process: selected same trend features
+SSTF: selected same trend features, require more than 3/4 cohorts (at less 6 cohorts) perform the same trend <br>
+MultMedFC: Multiple Median Fold Change, compared each samples between 2 Stages (Control vs CRC)
+### Calculate the trend in different cohorts
+```{r, warning = FALSE}
+Trend_List <- list()
+calculateOrRead <- F
+if (calculateOrRead) {
+  for (coh in unique(meta_df$Cohort)) {
+    message(coh, ' begins at ', date())
+    data1 <- tax_df[, rownames(meta_df)[meta_df$Cohort == coh & meta_df$Stage == 'CRC']]
+    data2 <- tax_df[, rownames(meta_df)[meta_df$Cohort == coh & meta_df$Stage == 'CTRL']]
+    sub_trend <- MultMedFC(data1 = data1, data2 = data2, FeatureAsRow = T)
+    Trend_List[[coh]] <- sub_trend
+    message(coh, ' has finished at ', date())
+    median_file <- FileCreate(DirPath = '../01.SSTF/Cohort', Prefix = paste0('walsh-median-', coh), Suffix = 'csv')
+    write.csv(x = Trend_List[[coh]], file = median_file)
+  }
+  # Combine the cohorts together
+  Trend_Comb <- Trend_List[[unique(meta_df$Cohort)[1]]]
+  colnames(Trend_Comb) <- paste0(unique(meta_df$Cohort)[1], '-', colnames(Trend_Comb))
+  for (coh in unique(meta_df$Cohort)[-1]) {
+    sub_trend <- Trend_List[[coh]]
+    colnames(sub_trend) <- paste0(coh, '-', colnames(sub_trend))
+    Trend_Comb <- cbind(Trend_Comb, sub_trend)
+  }
+
+  
+  median_file <- FileCreate(DirPath = '../01.SSTF', Prefix = 'walsh-median-ALL', Suffix = 'csv')
+  write.csv(x = Trend_Comb, file = median_file)
+  Trend_Med_log2 <- Trend_Comb[,grep(pattern = 'Median|p-value', x = colnames(Trend_Comb))]
+  Trend_Med_log2$Average <- apply(Trend_Med_log2[, seq(1,15,2)], 1, mean)
+  Trend_Med_log2$N.count <- rowSums(Trend_Med_log2[, seq(1,15,2)] < 0)
+  Trend_Med_log2$P.count <- rowSums(Trend_Med_log2[, seq(1,15,2)] > 0)
+  Trend_Med_log2$Missing <- rowSums(Trend_Med_log2[, seq(1,15,2)] == 0)
+  Trend_Med_log2$pvalue <- rowSums(Trend_Med_log2[, seq(2,16,2)] < 0.05)
+  
+  median_file <- FileCreate(DirPath = '../01.SSTF', Prefix = 'Summary-walsh-median', Suffix = 'csv')
+  write.csv(x = Trend_Med_log2, file = median_file)
+  
+}else{
+  for (coh in unique(meta_df$Cohort)) {
+    Trend_List[[coh]] <- read.csv(paste0('../01.SSTF/Cohort/2021-07-06-walsh-median-', coh, '-v1.0.0.csv'), header = T, row.names = 1, check.names = F)
+  }
+  Trend_Comb <- read.csv('../01.SSTF/2021-07-06-walsh-median-ALL-v1.0.0.csv', header = T, row.names = 1, check.names = F)
+  Trend_Med_log2 <- read.csv('../01.SSTF/2021-07-06-Summary-walsh-median-v1.0.0.csv', header = T, row.names = 1, check.names = F)
+}
+
+
+```
