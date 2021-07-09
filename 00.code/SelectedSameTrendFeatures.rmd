@@ -145,7 +145,7 @@ MultMedFC: Multiple Median Fold Change, compared each samples between 2 Stages (
 ### Calculate the trend in different cohorts
 ```{r, warning = FALSE}
 Trend_List <- list()
-calculateOrRead <- T
+calculateOrRead <- F
 if (calculateOrRead) {
   for (coh in unique(meta_df$Cohort)) {
     message(coh, ' begins at ', date())
@@ -181,10 +181,10 @@ if (calculateOrRead) {
   
 }else{
   for (coh in unique(meta_df$Cohort)) {
-    Trend_List[[coh]] <- read.csv(paste0('../01.SSTF/Cohort/2021-07-06-walsh-median-', coh, '-v1.0.0.csv'), header = T, row.names = 1, check.names = F)
+    Trend_List[[coh]] <- read.csv(paste0('../01.SSTF/Cohort/2021-07-07-walsh-median-', coh, '-v1.0.0.csv'), header = T, row.names = 1, check.names = F)
   }
-  Trend_Comb <- read.csv('../01.SSTF/2021-07-06-walsh-median-ALL-v1.0.0.csv', header = T, row.names = 1, check.names = F)
-  Trend_Med_log2 <- read.csv('../01.SSTF/2021-07-06-Summary-walsh-median-v1.0.0.csv', header = T, row.names = 1, check.names = F)
+  Trend_Comb <- read.csv('../01.SSTF/2021-07-07-walsh-median-ALL-v1.0.0.csv', header = T, row.names = 1, check.names = F)
+  Trend_Med_log2 <- read.csv('../01.SSTF/2021-07-07-Summary-walsh-median-v1.0.0.csv', header = T, row.names = 1, check.names = F)
 }
 
 show_table(Trend_Med_log2) %>%

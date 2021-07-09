@@ -125,10 +125,10 @@ sel_df <- summarized_df[summarized_df$pvalue == 8 & (summarized_df$P.count == 8 
 sel2_df <- summarized_df[summarized_df$pvalue >= 7 & (summarized_df$P.count >= 7 | summarized_df$N.count >= 7), ] # 66
 sel3_df <- summarized_df[summarized_df$pvalue >= 6 & (summarized_df$P.count >= 6 | summarized_df$N.count >= 6), ] # 260
 
-show_table(summarized_df[,c(17:21,1:16)])  %>%
-  formatSignif(columns = colnames(summarized_df[,c(1:17)]),
+show_table(summarized_df)  %>%
+  formatSignif(columns = colnames(summarized_df[,c(5:20)]),
                digits = 3, interval = 1) %>%
-  formatRound(columns = colnames(summarized_df[,c(18:21)]),
+  formatRound(columns = colnames(summarized_df[,c(1:4)]),
                digits = 0, interval = 1)
 
 ```
@@ -137,7 +137,7 @@ show_table(summarized_df[,c(17:21,1:16)])  %>%
 ```{r taxonomy name, warning = FALSE}
 tax_name <- ImportTable(file = '../00.ProcessData/2021-04-12-allTaxonomySplitLevel-v1.0.1.tsv', sep = '\t')
 tax_name$new_name <- gsub(pattern = 's__', replacement = '', x = tax_name$Specie) %>% 
-  gsub('_', ' ', .) # due to Feature names of CreateSeuratObject cannot have underscores, replace with blanket space.
+  gsub('_', ' ', . ) # due to Feature names of CreateSeuratObject cannot have underscores, replace with blanket space.
 show_table(tax_name)
 ```
 
@@ -150,7 +150,9 @@ raw_tax_df <- ImportTable(file = '../00.ProcessData/2021-04-12-ReAbun-Fungi-filt
 rownames(raw_tax_df) <- tax_name[rownames(raw_tax_df), "new_name"] # use the short species names
 # show_table(raw_tax_df)
 tax_df <- raw_tax_df[rownames(sel3_df),]
-show_table(tax_df)
+show_table(tax_df) %>%
+  formatSignif(columns = colnames(tax_df)[1:50],
+               digits = 3, interval = 1)
 
 ```
 
