@@ -1,0 +1,617 @@
+---
+title: "Comparison Features after Batch Effect"
+author: "ifanlyn@outlook.com"
+date: "7/9/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.width = 20, fig.height=7)
+```
+
+## Loading packages and subroutines {.tabset}
+
+### Packages
+
+```{r packages, message=FALSE, warning=FALSE}
+require(ggplot2)
+require(DT) # for datatable
+require(dplyr) # for mutate.
+require(ggpubr) # for stat_compare_means
+# require(ComplexHeatmap) # for Heatmap
+require(circlize)  # for colorRamp2
+require(ochRe)  # for ochre_palettes
+```
+
+### addZeroMatrix
+
+```{r}
+addZeroMatrix <-function(data, min.value = 0, shrink = 0.1, seedNum =123){
+  set.seed(seedNum)
+  if (min(data) <= min.value) {
+    new.min <- min(data[data > min.value])*shrink
+    min.len <- sum(data <= min.value)
+    data[data <= min.value]  <- rnorm(n = min.len, mean = new.min, sd = new.min*0.1)
+  }
+  return(data)
+}
+```
+
+### wilcoxFC
+
+```{r}
+wilcoxFC <- function(data, group, FCrank, seednum = 123){
+  set.seed(seednum)
+  data <- t(addZeroMatrix(data, min.value = 0))
+  df1 <- as.matrix(data[names(group)[group == FCrank[1]], ])
+  df2 <- as.matrix(data[names(group)[group == FCrank[2]], ])
+  logCI_df <- matrix(NA, nrow = ncol(data), ncol = 3)
+  
+  for (i in 1:ncol(data)) {
+    df1_ <- df1[, i, drop=FALSE]
+    df2_ <- as.matrix(t(1/df2[, i, drop=FALSE]))
+    fc_df <- df1_ %*% df2_
+    fc_num <- log2(as.numeric(fc_df))
+    wil_res <- wilcox.test(fc_num, conf.int = T)
+    logCI_df[i, ] <- as.numeric(c(wil_res$estimate, wil_res$conf.int))
+  }
+  logCI_df <- as.data.frame(logCI_df); dimnames(logCI_df) <- list(colnames(data), c('observed value', 'low CI', 'high CI'))
+  logCI_df <- logCI_df[order(sign(logCI_df[,1]), abs(logCI_df[,1]), decreasing = T),]
+  # logCI_df <- logCI_df[rev(rownames(logCI_df)), ]
+  return(logCI_df)
+}
+```
+
+### wilcoxBaplot
+
+```{r}
+wilcoxBarplot <- function(data_list, group_list, FCrank, seednum = 123){
+  ci_all <- matrix(NA, nrow = 1, ncol = 4); ci_all <- ci_all[-1, ]
+  for (i in names(data_list)) {
+    set.seed(seednum)
+    ci_df <- wilcoxFC(data =  data_list[[i]], group = group_list[[i]], FCrank = FCrank, seednum = seednum)
+    ci_df <- cbind(Cohort = rep(i, nrow(ci_df)), cbind(Fungi = rownames(ci_df), ci_df))
+    ci_all <- rbind(ci_all, ci_df)
+  }
+  return(ci_all)
+}
+```
+
+### show_table
+
+```{r show_table}
+show_table <- function(df, rownames = T, filter="top", options = list(pageLength = 10, scrollX=T), ...){
+  if (ncol(df) > 50) {
+    df <- df[, 1:50]
+    message('Due to the column dim is > 50, it only shows the ')
+  }
+  datatable(df, rownames = rownames, 
+            filter=filter, options = options, ... )
+
+}
+```
+
+### FileCreate
+
+```{r}
+FileCreate <- function(DirPath = "./",Prefix = "ExampleTest", Suffix = "pdf", version = "0.0.0"){
+  date=as.character(Sys.Date())
+  DirPath = gsub("/$","",DirPath)
+  Suffix = gsub('^[.]',"",Suffix)
+  if(! dir.exists(DirPath)){
+    dir.create(DirPath,recursive =TRUE)
+  }
+  if (version == "0.0.0") {
+    version=100
+    while(TRUE){
+      version_=paste(unlist(strsplit(as.character(version),"")),collapse=".")
+      DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version_,".",Suffix)
+      if(! file.exists(DirPathName)){
+        return(DirPathName)
+        break
+      }
+      version = version + 1
+    }
+  }else{
+    DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version_,".",Suffix)
+    if(! dir.exists(DirPathName)){
+      return(DirPathName)
+    }
+    return(DirPathName)
+  }
+}
+  
+```
+
+### Import table
+
+```{r ImportTable}
+ImportTable <- function(file, header = T, row.names = 1, sep = ',', check.names = FALSE, ...){
+  data <- read.csv(file = file, header = header, row.names = row.names, sep = sep, check.names = check.names, ...)
+  return(data)
+}
+```
+
+### matrix_wilcox
+
+matrix_wilcox: subroutine to comparison each row in matrix
+
+```{r subroutine: wilcoxon test from matrix}
+matrix_wilcox <- function(data, group, ad_pvalue = 'BH'){
+  data <- as.matrix(data)
+  group1 <- names(group)[group == unique(group)[1]]
+  group2 <- names(group)[group == unique(group)[2]]
+  p_values <- list()
+  for (i in 1:nrow(data)) {
+    if (sum(data[i, ]) == 0) {
+      p_values[[rownames(data)[i]]] = 1
+    }else{
+      p_values[[rownames(data)[i]]] = wilcox.test(data[i, group1], data[i, group2], 
+                                                  alternative = "two.sided", exact = FALSE)$p.value
+    }
+  }
+  p_values = data.frame(p_values = sapply(p_values, c))
+  p_values$adj_pvalue = p.adjust(p_values$p_values, method = ad_pvalue, n = nrow(p_values))
+  return(p_values)
+}
+```
+
+## Import data {.tabset}
+
+### Profile of the trend
+
+In previously analysis, we compared the trend of fungi in various cohorts.
+
+```{r trend}
+
+trend_df <- ImportTable(file = '../01.SSTF/2021-07-07-Summary-walsh-median-v1.0.0.csv')
+
+trend_df <- trend_df[, -grep(pattern = "pvalue|p-value", x = colnames(trend_df))]# ignore the pvalue columns
+
+trend_df <- trend_df[order(trend_df$P.count, decreasing = T), ]
+
+show_table(trend_df) %>% 
+  formatSignif(columns = colnames(trend_df)[3:11],
+               digits = 3, interval = 1)
+
+
+```
+
+### Taxonomy name
+
+```{r taxonomy name, warning = FALSE}
+tax_name <- ImportTable(file = '../00.ProcessData/2021-04-12-allTaxonomySplitLevel-v1.0.1.tsv', sep = '\t')
+tax_name$new_name <- gsub(pattern = 's__', replacement = '', x = tax_name$Specie) %>% 
+  gsub('_', ' ', .) # due to Feature names of CreateSeuratObject cannot have underscores, replace with blanket space.
+show_table(tax_name)
+```
+
+### Taxonomy data
+
+Import the raw taxonomy data
+
+```{r taxonomy data }
+tax_df <- ImportTable(file = '../00.ProcessData/2021-04-12-ReAbun-Fungi-filter1802-v1.0.0.tsv', sep = '\t')
+rownames(tax_df) <- tax_name[rownames(tax_df), "new_name"] # use the short species names
+
+show_table(tax_df) %>%
+  formatSignif(columns = colnames(tax_df)[1:50],
+               digits = 3, interval = 1)
+```
+
+### Meta information
+
+```{r meta information}
+meta_df <- ImportTable(file = '../00.ProcessData/metaInfo-subgroup-v4.1.csv')
+meta_df <- meta_df[colnames(tax_df), ]
+show_table(meta_df)
+```
+
+## Data filtering {.tabset}
+
+filter the features step by step:
+
+### Filtered the excursive trend features
+
+**Five features** plays enriched trend in the CRC group, and **80 characters** are depleted in CRC. (at less 7 cohort play the same trend would be included)
+
+```{r selected same trend featre}
+sel_tre <- trend_df[trend_df$N.count >= 7 | trend_df$P.count >= 7,]
+
+show_table(sel_tre) %>%
+  formatSignif(columns = colnames(sel_tre)[3:11],
+               digits = 3, interval = 1)
+```
+
+### Wilcoxon test (p value)
+
+Comparison the features in different stages from each cohorts. **Eighty-one** fungi play a significant difference ( p-value \< 0.05 ) in at least half cohorts ( above or equal to 4 ).
+
+-   Only one fungi ( ***Aspergillus rambellii*** ) plays a significant difference in 7 cohorts.
+
+-   Five fungi ( *Rhizophagus irregularis, Leucoagaricus sp. SymC.cos, Cyberlindnera fabianii, Paracoccidioides lutzii, Phialocephala subalpina* ) play a significant difference in 6 cohorts.
+
+-   Twenty-two and fifty-three fungi play a difference in 5 and 4 cohorts.
+
+```{r wilcoxon}
+calculate_or_not <- F
+wil_res <- NULL
+p_value_cutoff <- 0.05
+adj_p_cutoff <- 0.1
+counts_cutoff <- 4
+if(calculate_or_not){
+	for (i in unique(meta_df$Cohort)) {
+	  sub_meta <- meta_df[meta_df$Cohort == i & meta_df$Stage != 'adenoma', ]
+	  sub_data <- tax_df[, rownames(sub_meta)]
+	  sub_group <- sub_meta$Stage
+	  names(sub_group) <- rownames(sub_meta)
+	  sub_wil <- matrix_wilcox(data = sub_data, group = sub_group)
+	  colnames(sub_wil) <- paste0(i, '-', colnames(sub_wil))
+	  # message(i, ' has finished at ', date())
+	  if (is.null(wil_res)) {
+		  wil_res <- sub_wil
+	  }else{
+		  wil_res <- cbind(wil_res, sub_wil)
+	  }
+	}
+	summarized_wilcox_df <- data.frame(
+	  pvalue_counts = rowSums(wil_res[,grep('p_values', colnames(wil_res))] < p_value_cutoff),
+	  adj_p_counts = rowSums(wil_res[,grep('adj_pvalue', colnames(wil_res))] < adj_p_cutoff)
+	  )
+	summarized_wilcox_df <- as.data.frame(cbind(summarized_wilcox_df, wil_res))
+	summarized_wilcox_df <- summarized_wilcox_df[order(summarized_wilcox_df$pvalue_counts, decreasing = T), ]
+
+	summ_wilcox_csv <- FileCreate(DirPath = '../01.wilcox',
+								  Prefix = 'summarized_wilcoxon-test',Suffix = 'csv')
+	write.csv(x = summarized_wilcox_df, file = summ_wilcox_csv)
+
+	sel_wilcox_df <- summarized_wilcox_df[summarized_wilcox_df$pvalue_counts >= counts_cutoff, ]
+
+	sel_wilcox_csv <- FileCreate(DirPath = '../01.wilcox',
+								 Prefix = 'selected-summarized_wilcoxon-test',Suffix = 'csv')
+	write.csv(x = sel_wilcox_df, file = sel_wilcox_csv)
+}else{
+  summarized_wilcox_df <- ImportTable(file = '../01.wilcox/2021-07-13-summarized_wilcoxon-test-v1.0.0.csv')
+  sel_wilcox_df <- ImportTable(file = '../01.wilcox/2021-07-13-selected-summarized_wilcoxon-test-v1.0.0.csv')
+}
+	
+
+show_table(sel_wilcox_df) %>%
+  formatSignif(columns = colnames(summarized_wilcox_df)[3:18],
+               digits = 3, interval = 1)
+
+
+```
+
+## Overlap between SSTF & Wilcox filtering {.tabset .tabset-fade}
+
+The relative abundance has been transformed by [arcsin-3thSquareRoot](https://rpubs.com/ozjimbob/asqrt) in the beginning.
+
+### Code
+
+```{r}
+overlap_candidates <- intersect(rownames(sel_wilcox_df), rownames(sel_tre))
+plot_or_not <- F
+
+ol_df <- asin((t(tax_df[overlap_candidates,    
+                        rownames(meta_df)[meta_df$Stage != 'adenoma']])*.01)^(1/3))   # ol_df means: overlap between 2 filters
+
+ol_df <- cbind(meta_df[meta_df$Stage != 'adenoma',c("Cohort", "Stage")], ol_df)
+ol_df$Stage <- factor(x = ol_df$Stage, levels = c('CTRL', 'CRC'))
+
+if (plot_or_not) {
+  g_list <- list()
+  wil_box_pdf <- FileCreate(DirPath = '../02.DataFilter', Prefix = 'Boxplot-SSTF-Wilcox',
+                          Suffix = 'pdf')
+  pdf(file = wil_box_pdf, width = 20, height = 7)
+  for (i in overlap_candidates) {
+    agd1 = group_by(ol_df, Cohort, Stage) %>% 
+      summarise(mn = mean(.data[[i]]),sd = sd(.data[[i]]), 
+                 .groups = 'keep') %>%
+      mutate(up = mn+sd, lw = mn-sd)
+    agd1$Stage <- factor(x = agd1$Stage, levels = c('CTRL', 'CRC'))
+     
+    g <- ggplot() +
+      geom_boxplot(data = ol_df, mapping = aes(x = Cohort, y = .data[[i]], color = Stage),
+                   position = position_dodge(0.8), outlier.shape = NA, width = 0.5)+
+      geom_jitter(data = ol_df, mapping = aes(x = Cohort, y = .data[[i]], color = Stage),
+                   position = position_jitterdodge(0.2), alpha = 0.1) +
+      # geom_errorbar(aes(ymin = lw, ymax = up), width = 0.2, position = position_dodge(0.8))+
+      geom_point(data = agd1, mapping = aes(x = Cohort, y = mn, group = Stage),
+                  position = position_dodge(0.8), color = 'black', 
+                  shape = 10, size = 4) +
+      scale_color_manual(values = c("#00AFBB", "red"))  + theme_bw() +
+      theme(legend.position = "top",
+            text = element_text(size = 15),
+            plot.title = element_text(color=ifelse(sel_tre[i, ]$P.count > 4, "#993333", "#1D2D5F"),
+                                      size = 20, hjust = 0.5),
+            plot.subtitle = element_text(color=ifelse(sel_tre[i, ]$P.count > 4, "#993333", "#1D2D5F"),
+                                         size = 12, hjust = 1)) +
+      stat_compare_means(data = ol_df, 
+                         mapping = aes(x = Cohort, y = .data[[i]], group = Stage),
+                         method = 'wilcox.test')+
+      ylab(paste0('acsin 3th square root of ', i)) + 
+      ggtitle(label = i, subtitle = ifelse(sel_tre[i, ]$P.count > 4, 
+                                           paste0(sel_tre[i, ]$P.count, " cohorts has same trend in CRC entiched.\n", 
+                                                  sel_wilcox_df[i, ]$pvalue_counts, " cohorts play significant different."),
+                                           paste0(sel_tre[i, ]$N.count, " cohorts has same trend in CRC depleted.\n", 
+                                                  sel_wilcox_df[i, ]$pvalue_counts, " cohorts play significant different.")))
+    plot(g)
+    g_list[[i]] <- g
+  }
+dev.off()
+plot_rds <- FileCreate(DirPath = '../02.DataFilter/', Prefix = 'Boxplot-SSTF-Wilcox',
+                          Suffix = 'rds')
+saveRDS(g_list, plot_rds)
+}else{
+  g_list <- readRDS(file = '../02.DataFilter/2021-07-13-Boxplot-SSTF-Wilcox-v1.0.0.rds')
+}
+```
+
+### Aspergillus rambellii
+
+```{r}
+plot(g_list$`Aspergillus rambellii`)
+```
+
+### Leucoagaricus sp. SymC.cos
+
+```{r}
+plot(g_list$`Leucoagaricus sp. SymC.cos`)
+```
+
+### Rhizophagus irregularis
+
+```{r}
+plot(g_list$`Rhizophagus irregularis`)
+```
+
+### Piromyces sp. E2
+
+```{r}
+plot(g_list$`Piromyces sp. E2`)
+```
+
+### Hanseniaspora opuntiae
+
+```{r}
+plot(g_list$`Hanseniaspora opuntiae`)
+```
+
+### Torulaspora delbrueckii
+
+```{r}
+plot(g_list$`Torulaspora delbrueckii`)
+```
+
+### Coccidioides immitis
+
+```{r}
+plot(g_list$`Coccidioides immitis`)
+```
+
+### Aspergillus kawachii
+
+```{r}
+plot(g_list$`Aspergillus kawachii`)
+```
+
+### Trichoderma atroviride
+
+```{r}
+plot(g_list$`Trichoderma atroviride`)
+```
+
+### Batrachochytrium salamandrivorans
+
+```{r}
+plot(g_list$`Batrachochytrium salamandrivorans`)
+```
+
+### Mucor circinelloides
+
+```{r}
+plot(g_list$`Mucor circinelloides`)
+```
+
+### Edhazardia aedis
+
+```{r}
+plot(g_list$`Edhazardia aedis`)
+```
+
+### Encephalitozoon hellem
+
+```{r}
+plot(g_list$`Encephalitozoon hellem`)
+```
+
+### Tilletia controversa
+
+```{r}
+plot(g_list$`Tilletia controversa`)
+```
+
+### Kwoniella pini
+
+```{r}
+plot(g_list$`Kwoniella pini`)
+```
+
+### Komagataella pastoris
+
+```{r}
+plot(g_list$`Komagataella pastoris`)
+```
+
+### Brettanomyces bruxellensis
+
+```{r}
+plot(g_list$`Brettanomyces bruxellensis`)
+```
+
+### Debaryomyces hansenii
+
+```{r}
+plot(g_list$`Debaryomyces hansenii`)
+```
+
+### Hyphopichia burtonii
+
+```{r}
+plot(g_list$`Hyphopichia burtonii`)
+```
+
+### Eremothecium sinecaudum
+
+```{r}
+plot(g_list$`Eremothecium sinecaudum`)
+```
+
+### Torulaspora globosa
+
+```{r}
+plot(g_list$`Torulaspora globosa`)
+```
+
+### Tuber magnatum
+
+```{r}
+plot(g_list$`Tuber magnatum`)
+```
+
+### Pseudocercospora fijiensis
+
+```{r}
+plot(g_list$`Pseudocercospora fijiensis`)
+```
+
+### Emmonsia sp. CAC-2015a
+
+```{r}
+plot(g_list$`Emmonsia sp. CAC-2015a`)
+```
+
+### Rutstroemia sp. NJR-2017a BVV2
+
+```{r}
+plot(g_list$`Rutstroemia sp. NJR-2017a BVV2`)
+```
+
+### Rutstroemia sp. NJR-2017a WRK4
+
+```{r}
+plot(g_list$`Rutstroemia sp. NJR-2017a WRK4`)
+```
+
+### Thielaviopsis punctulata
+
+```{r}
+plot(g_list$`Thielaviopsis punctulata`)
+```
+
+### Colletotrichum fioriniae
+
+```{r}
+plot(g_list$`Colletotrichum fioriniae`)
+```
+
+##  {.unnumbered}
+
+## Error Bar plot of Fold Change {.tabset}
+
+-   Due to 0 couldn't be the denominator, the all the zero would instead by the value: `rnorm(n, min_value, min_sd)`,
+
+    -   `n` means the counts of zero in the OTU matrix.
+
+    -   `min_value` means the min value excluded the 0.
+
+    -   `min_sd` equal `min_value /10`
+
+-   In order to reduce the bias of Fold change, the Fold Change was calculate by:
+
+    $$
+    Fold\ Change_i = median(\displaystyle \sum^{n_{crc}}_{j\ =\ 1}\displaystyle \sum^{n_{ctrl}}_{k\ =\ 1}{\frac{ReAbund_{j\ i}}{ReAbund_{k\ i}}})
+    $$
+
+    -   `i` means the fungi names
+
+    -   `n_CRC / n_CTRL` means the counts of CRC/ control samples.
+
+-   Totally **28** fungi leave after twice filters, and **6** of them are also general Fold change difference in all samples (`|log2(FC)| > 0.5`).
+
+### code
+
+```{r}
+calculate_or_not <- F
+
+if (calculate_or_not) {
+  wilc_err_res <- wilcoxBarplot(data_list = hm_mt_list[['RelAbundance']], group_list = hm_mt_list[['group']], FCrank = c('CRC', 'CTRL'))
+  all_group <- meta_df$Stage[meta_df$Stage != 'adenoma']; names(all_group) <- rownames(meta_df)[meta_df$Stage != 'adenoma']
+  all_wilc_res <- wilcoxFC(data = tax_df[overlap_candidates, names(all_group)], group = all_group, FCrank = c('CRC', 'CTRL'))
+  wilc_err_res_csv <- FileCreate(DirPath = '../02.DataFilter/', Prefix = '28_sel_cand-wilcox-CI-cohort', Suffix = 'csv')
+  write.csv(x = wilc_err_res, file = wilc_err_res_csv)
+  
+  all_err_res_csv <- FileCreate(DirPath = '../02.DataFilter/', Prefix = '28_sel_cand-wilcox-CI-all', Suffix = 'csv')
+  write.csv(x = all_wilc_res, file = all_err_res_csv)
+}else{
+  wilc_err_res <- ImportTable(file = '../02.DataFilter/2021-07-14-28_sel_cand-wilcox-CI-cohort-v1.0.0.csv')
+  all_wilc_res <- ImportTable(file = '../02.DataFilter/2021-07-14-28_sel_cand-wilcox-CI-all-v1.0.0.csv')
+}
+
+
+errbar_mt <- all_wilc_res
+errbar_mt$Name <- factor(x = rownames(errbar_mt), levels = rev(rownames(errbar_mt)))
+errbar_mt$col <- ifelse(errbar_mt$`observed value` > 0, 'red', 'blue')
+
+
+cohort_col <-ochre_palettes$parliament; names(cohort_col) <- unique(meta_df$Cohort)
+
+all_plot <- ggplot(data = errbar_mt, mapping = aes(x = Name, y = `observed value`, color = col))+
+  geom_bar(stat="identity", fill = 'white', width = 0.7) +
+  scale_color_manual(values = c(red = 'red', blue = 'blue', cohort_col)) + theme_bw()+
+  scale_shape_manual(values = 0:7)+
+  geom_errorbar(aes(ymin=`low CI`, ymax=`high CI`), width=.2) +
+  geom_point(data = wilc_err_res, mapping = aes(x = Fungi, y = `observed value`, color = Cohort, shape = Cohort), alpha = 0.5) + ylab('Log2(FC)') +
+  coord_flip()
+
+sel_errbar_mt <- errbar_mt[abs(errbar_mt$`observed value`) > 0.5, ]
+sel_errbar_mt$Name <- factor(x = rownames(sel_errbar_mt), levels = rev(rownames(sel_errbar_mt)))
+
+sel_wilc_err_res <- wilc_err_res[wilc_err_res$Fungi %in% rownames(sel_errbar_mt), ]
+
+sel_plot <- ggplot(data = sel_errbar_mt, mapping = aes(x = Name, y = `observed value`, color = col))+
+  geom_bar(stat="identity", fill = 'white', width = 0.7) +
+  scale_color_manual(values = c(red = 'red', blue = 'blue', cohort_col)) + theme_bw()+
+  scale_shape_manual(values = 0:7)+
+  geom_errorbar(aes(ymin=`low CI`, ymax=`high CI`), width=.2) +
+  # geom_errorbar(data = sel_wilc_err_res, mapping = aes(x = Fungi, ymin=`low CI`, ymax=`high CI`, color = Cohort), width=.2) +
+  geom_point(data = sel_wilc_err_res, mapping = aes(x = Fungi, y = `observed value`, color = Cohort, shape = Cohort), alpha = 0.5)+ ylab('Log2(FC)') +
+  coord_flip()
+
+if (calculate_or_not) {
+  all_plot_pdf <- FileCreate(DirPath = '../02.DataFilter/', Prefix = 'ErrBar-FC-all_28-wilcox', Suffix = 'pdf')
+  pdf(file = all_plot_pdf, width = 8, height = 10)
+  plot(all_plot)
+  dev.off()
+  
+  sel_plot_pdf <- FileCreate(DirPath = '../02.DataFilter/', Prefix = 'ErrBar-FC-sel_6_FC_0.5-wilcox', Suffix = 'pdf')
+  pdf(file = sel_plot_pdf, width = 8, height = 2.5)
+  plot(sel_plot)
+  dev.off()
+}
+```
+
+### all 28 candidates
+
+```{r, fig.height= 10, fig.width=8}
+plot(all_plot)
+```
+
+### selected 6 candidates
+
+`|log2(FC)| > 0.5`
+
+```{r, fig.height= 2.5, fig.width=7}
+plot(sel_plot+ theme(legend.position = "none"))
+```

@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Loading packages and subroutines {.tabset}
 
 ### Packages
+
 ```{r packages, message=FALSE, warning=FALSE}
 # require(Seurat)
 require(DT) # for datatable
@@ -21,6 +22,7 @@ require(reshape2) # for dcast
 ```
 
 ### Import table
+
 ```{r ImportTable }
 ImportTable <- function(file, header = T, row.names = 1, sep = ',', check.names = FALSE, ...){
   data <- read.csv(file = file, header = header, row.names = row.names, sep = sep, check.names = check.names, ...)
@@ -29,6 +31,7 @@ ImportTable <- function(file, header = T, row.names = 1, sep = ',', check.names 
 ```
 
 ### show_table
+
 ```{r show_table}
 show_table <- function(df, rownames = T, filter="top", options = list(pageLength = 10, scrollX=T), ...){
   if (ncol(df) > 50) {
@@ -41,8 +44,10 @@ show_table <- function(df, rownames = T, filter="top", options = list(pageLength
 }
 ```
 
-### MultMedFC 
+### MultMedFC
+
 MultMedFC: Multiple Median Fold Change, compared each samples between 2 Stages (Control vs CRC)
+
 ```{r}
 MultMedFC <- function(data1, data2, FeatureAsRow = T){
   if (FeatureAsRow) {
@@ -80,8 +85,8 @@ MultMedFC <- function(data1, data2, FeatureAsRow = T){
 }
 ```
 
-
 ### FileCreate
+
 ```{r}
 FileCreate <- function(DirPath = "./",Prefix = "ExampleTest", Suffix = "pdf", version = "0.0.0"){
   date=as.character(Sys.Date())
@@ -114,7 +119,8 @@ FileCreate <- function(DirPath = "./",Prefix = "ExampleTest", Suffix = "pdf", ve
 
 ## Import data {.tabset}
 
-### Taxonomy name 
+### Taxonomy name
+
 ```{r taxonomy name, warning = FALSE}
 tax_name <- ImportTable(file = '../00.ProcessData/2021-04-12-allTaxonomySplitLevel-v1.0.1.tsv', sep = '\t')
 tax_name$new_name <- gsub(pattern = 's__', replacement = '', x = tax_name$Specie) %>% 
@@ -123,6 +129,7 @@ show_table(tax_name)
 ```
 
 ### Taxonomy matrix
+
 ```{r taxonomy matrix}
 tax_df <- ImportTable(file = '../00.ProcessData/2021-04-12-ReAbun-Fungi-filter1802-v1.0.0.tsv', sep = '\t')
 # tax_df <- ImportTable(file = '../00.ProcessData/2021-04-12-RawData-Fungi-filter1802-v1.0.0.tsv', sep = '\t')
@@ -130,19 +137,18 @@ rownames(tax_df) <- tax_name[rownames(tax_df), "new_name"] # use the short speci
 show_table(tax_df)
 ```
 
-### Meta information 
+### Meta information
+
 ```{r meta information}
 meta_df <- ImportTable(file = '../00.ProcessData/metaInfo-subgroup-v4.1.csv')
 meta_df <- meta_df[colnames(tax_df),]
 show_table(meta_df)
 ```
 
-
-
 ## Pre-process: selected same trend features
-SSTF: selected same trend features, require more than 3/4 cohorts (at less 6 cohorts) perform the same trend <br>
-MultMedFC: Multiple Median Fold Change, compared each samples between 2 Stages (Control vs CRC)
-### Calculate the trend in different cohorts
+
+SSTF: selected same trend features, require more than 3/4 cohorts (at less 6 cohorts) perform the same trend <br> MultMedFC: Multiple Median Fold Change, compared each samples between 2 Stages (Control vs CRC) \#\#\# Calculate the trend in different cohorts
+
 ```{r, warning = FALSE}
 Trend_List <- list()
 calculateOrRead <- F

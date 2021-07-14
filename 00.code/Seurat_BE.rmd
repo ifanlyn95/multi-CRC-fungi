@@ -120,10 +120,10 @@ FileCreate <- function(DirPath = "./",Prefix = "ExampleTest", Suffix = "pdf", ve
 + select the feature with same trend in all cohorts
 
 ```{r selected matrix}
-summarized_df <- ImportTable(file = '../01.SSTF/2021-07-06-Summary-walsh-median-v1.0.0.csv')
-sel_df <- summarized_df[summarized_df$pvalue == 8 & (summarized_df$P.count == 8 | summarized_df$N.count == 8), ] # 6
-sel2_df <- summarized_df[summarized_df$pvalue >= 7 & (summarized_df$P.count >= 7 | summarized_df$N.count >= 7), ] # 66
-sel3_df <- summarized_df[summarized_df$pvalue >= 6 & (summarized_df$P.count >= 6 | summarized_df$N.count >= 6), ] # 260
+summarized_df <- ImportTable(file = '../01.SSTF/2021-07-07-Summary-walsh-median-v1.0.0.csv')
+sel_df <- summarized_df[(summarized_df$P.count == 8 | summarized_df$N.count == 8), ] # 6
+sel2_df <- summarized_df[(summarized_df$P.count >= 7 | summarized_df$N.count >= 7), ] # 66
+sel3_df <- summarized_df[(summarized_df$P.count >= 6 | summarized_df$N.count >= 6), ] # 260
 
 show_table(summarized_df)  %>%
   formatSignif(columns = colnames(summarized_df[,c(5:20)]),
@@ -208,8 +208,8 @@ if (calculateORnot) {
   tab_file <- FileCreate(DirPath = '../02.BatchEffect/RPCA', Prefix = 'RPCA-summary', Suffix = 'csv')
   write.csv(x = prca_table, file = tab_file)
 }else{
-  prca_obj <- readRDS(file = '../02.BatchEffect/RPCA/2021-07-07-RPCA-model-v1.0.0.rds')
-  prca_table <- ImportTable(file = '../02.BatchEffect/RPCA/2021-07-07-RPCA-summary-v1.0.0.csv')
+  prca_obj <- readRDS(file = '../02.BatchEffect/RPCA/2021-07-09-RPCA-model-v1.0.0.rds')
+  prca_table <- ImportTable(file = '../02.BatchEffect/RPCA/2021-07-09-RPCA-summary-v1.0.0.csv')
 }
 
 ```
@@ -237,9 +237,18 @@ if (calculateORnot) {
     SplitObject(. ,  split.by = 'Cohort') %>%
     RunFastMNN()
   
+  class(fMNN_obj@tools)
+  
+  
   fMNN_obj2 <- RunUMAP(fMNN_obj, reduction = 'mnn', dims = 1:30) %>%
     FindNeighbors(. , reduction = 'mnn', dims = 1:30) %>%
     FindClusters()
+  
+  
+    
+  fMNN_obj3 <- RunTSNE(fMNN_obj2, reduction = 'mnn', dims = 1:30)
+  
+  DimPlot(fMNN_obj3, reduction = "tsne", group.by = "Stage")
   
   fMNN_table <- dcast(as.data.frame(table(fMNN_obj2@active.ident,fMNN_obj2@meta.data[["Stage"]])), Var1 ~ Var2)
   rownames(fMNN_table) <- fMNN_table$Var1; fMNN_table <- fMNN_table[,-1]
@@ -248,8 +257,8 @@ if (calculateORnot) {
   tab_file <- FileCreate(DirPath = '../02.BatchEffect/fastMNN', Prefix = 'fastMNN-summary', Suffix = 'csv')
   write.csv(x = fMNN_table, file = tab_file)
 }else{
-  fMNN_obj2 <- readRDS(file = '../02.BatchEffect/fastMNN/2021-07-07-fastMNN-model-v1.0.0.rds')
-  fMNN_table <- ImportTable(file = '../02.BatchEffect/fastMNN/2021-07-07-fastMNN-summary-v1.0.0.csv')
+  fMNN_obj2 <- readRDS(file = '../02.BatchEffect/fastMNN/2021-07-09-fastMNN-model-v1.0.0.rds')
+  fMNN_table <- ImportTable(file = '../02.BatchEffect/fastMNN/2021-07-09-fastMNN-summary-v1.0.0.csv')
 }
 
 
@@ -283,6 +292,8 @@ if (calculateORnot) {
     RunUMAP(., reduction = "harmony", dims = 1:30) %>%
     FindNeighbors(., reduction = "harmony", dims = 1:30) %>% 
     FindClusters()
+
+
   
   hmy_table <- dcast(as.data.frame(table(hmy_obj2@active.ident,hmy_obj2@meta.data[["Stage"]])), Var1 ~ Var2)
   rownames(hmy_table) <- hmy_table$Var1; hmy_table <- hmy_table[,-1]
@@ -291,8 +302,8 @@ if (calculateORnot) {
   tab_file <- FileCreate(DirPath = '../02.BatchEffect/Harmony', Prefix = 'Harmony-summary', Suffix = 'csv')
   write.csv(x = hmy_table, file = tab_file)
 }else{
-  hmy_obj2 <- readRDS(file = '../02.BatchEffect/Harmony/2021-07-07-Harmony-model-v1.0.0.rds')
-  hmy_table <- ImportTable(file = '../02.BatchEffect/Harmony/2021-07-07-Harmony-summary-v1.0.0.csv')
+  hmy_obj2 <- readRDS(file = '../02.BatchEffect/Harmony/2021-07-09-Harmony-model-v1.0.0.rds')
+  hmy_table <- ImportTable(file = '../02.BatchEffect/Harmony/2021-07-09-Harmony-summary-v1.0.0.csv')
 }
 
 ```
