@@ -1,0 +1,40 @@
+---
+title: "Example_correlation"
+author: "ifanlyn@outlook.com"
+date: "7/15/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## `corrr` package
+
+Kenall, Spearman, Pearson ( [link](https://www.datanovia.com/en/blog/easily-create-a-correlation-network-in-r-using-the-corrr-package/) )
+
+```{r}
+require(corrr) #  install.packages('corrr')
+cor.matrix <- correlate(x = mtcars, method = 'kendall')
+cor.matrix <- correlate(x = mtcars, method = 'pearson')
+cor.matrix <- correlate(x = mtcars, method = 'spearson')
+
+```
+
+## `qgraph` package
+
+Polychoric and polyserial correlations
+
+. [link](http://sachaepskamp.com/files/Cookbook.html#polychoric-and-polyserial-correlations)
+
+```{r}
+require("qgraph")
+corMat <- cor_auto(mtcars) # Correlate data
+Graph_pcor <- qgraph(corMat, graph = "pcor", layout = "spring")
+
+
+```
+
+\
+
+`{) # Correlate data}`
