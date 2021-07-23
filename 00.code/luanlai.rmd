@@ -1,0 +1,231 @@
+---
+title: "rarefaction-alpha"
+author: "ifanlyn@outlook.com"
+date: "2021/7/23"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Loading packages and subroutines {.tabset}
+
+### Packages
+
+```{r packages, message=FALSE, warning=FALSE}
+require(DT) # for datatable
+require(dplyr) # for %>%
+require(ggplot2)
+require(reshape2) # for melt
+```
+
+### FileCreate
+
+```{r}
+FileCreate <- function(DirPath = "./",Prefix = "ExampleTest", Suffix = "pdf", version = "0.0"){
+  date=as.character(Sys.Date())
+  DirPath = gsub("/$","",DirPath)
+  Suffix = gsub('^[.]',"",Suffix)
+  if(! dir.exists(DirPath)){
+    dir.create(DirPath,recursive =TRUE)
+  }
+  if (version == "0.0") {
+    version=10
+    while(TRUE){
+      version_=paste(unlist(strsplit(as.character(version),"")),collapse=".")
+      DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version_,".",Suffix)
+      if(! file.exists(DirPathName)){
+        return(DirPathName)
+        break
+      }
+      version = version + 1
+    }
+  }else{
+    DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version,".",Suffix)
+    if(! dir.exists(DirPathName)){
+      return(DirPathName)
+    }
+    return(DirPathName)
+  }
+}
+  
+```
+
+### ImportTable
+
+```{r ImportTable }
+ImportTable <- function(file, header = T, row.names = 1, sep = ',', check.names = FALSE, ...){
+  data <- read.csv(file = file, header = header, row.names = row.names, sep = sep, check.names = check.names, ...)
+  return(data)
+}
+```
+
+### Show_table
+
+```{r show_table}
+Show_table <- function(df, rownames = T, filter="top", options = list(pageLength = 10, scrollX=T), ...){
+  if (ncol(df) > 50) {
+    df <- df[, 1:50]
+    message('Due to the column dim is > 50, it only shows the ')
+  }
+  datatable(df, rownames = rownames, 
+            filter=filter, options = options, ... )
+
+}
+```
+
+## Import data
+
+```{r}
+import_chao1_df <- ImportTable(file = '../03.qiime2/alpha-rarefaction-20000-multiple-chao1.csv', sep = ',')
+
+chao1_df <- import_chao1_df[, 1:(ncol(import_chao1_df)-4)]
+
+meta_df <- import_chao1_df[, (ncol(import_chao1_df)-3): ncol(import_chao1_df)]
+
+Show_table(chao1_df)
+```
+
+## Rarefaction
+
+### Cohort
+
+```{r}
+iterations <- 10
+x_list <- unique(gsub("^depth-", "", colnames(chao1_df)) %>% gsub("_iter-.*$", "", .))
+names(x_list) <- paste0('depth-', x_list, '_iter')
+
+# tmp_chao1 <- as.data.frame(cbind(chao1_df, Cohort = meta_df$Cohort))
+tmp_chao1 <- as.data.frame(cbind(chao1_df, Cohort = meta_df$Cohort))
+
+melt_chao1 <- as.data.frame(melt(data = tmp_chao1[c(1:10, 201:210, 501:510), ], id.vars = "Cohort"))
+# melt_chao1 <- as.data.frame(melt(data = tmp_chao1, id.vars = "Cohort"))
+
+melt_chao1$variable <- as.numeric(unlist(lapply(melt_chao1$variable, function(x){x_list[gsub("_iter-.*", "_iter", x)]})))
+
+melt_chao1 <- na.omit(melt_chao1)
+
+
+
+BCI_2 <- BCI + matrix(sample(0:2, 11250, replace = T), ncol = 225)
+
+
+all_2 <- specaccum(BCI_2, method = "random")
+all <- specaccum(BCI, method = "random")
+
+
+plot(all, ci.type = "poly", col = "blue", lwd = 2, ci.lty = 0, 
+    ci.col = "lightblue", main = "Cecropia glaziouvi", xlab = "Number of trees", 
+    ylab = "Number of frugivore species")
+boxplot(all, col = "yellow", add = TRUE, pch = "+", alpha = 0.2)
+
+
+all_df <- data.frame(sites = )
+ggplot() +
+  geom_ribbon(aes(x = all$sites, y = all$richness,
+                  ymin = all$richness - all$sd ,
+                  ymax = all$richness + all$sd), fill = "lightblue") + 
+  geom_line(aes(x = all$sites, y = all$richness), color = "blue")
+boxplot(all, col = "yellow", add = TRUE, pch = "+", alpha = 0.2)
+
+# melt_chao1_random <- melt_chao1[sample(x = 1:nrow(melt_chao1), size = 100000), ]
+
+# chao1_plot <- ggplot(data = melt_chao1_random, mapping = aes(x = variable, y = value, color =Cohort)) +
+# chao1_plot <- ggplot() +
+#   # stat_smooth(data = melt_chao1, 
+#   #             mapping = aes(x = variable, y = value, 
+#   #                           color =Cohort, fill=Cohort),
+#   #             method="loess", span=0.75, se=TRUE, alpha=0.3) +
+#   geom_boxplot(data = melt_chao1,
+#                aes(x = factor(variable,
+#                               levels = unique(sort(melt_chao1$variable))),
+#                    y = value, fill=Cohort), outlier.alpha = 0, alpha = 0.5)+
+#   theme_bw()
+median_df$x <- factor(x = median_df$x , levels = unique(sort(melt_chao1$variable)))
+median_df$y <- as.numeric(median_df$y)
+
+chao1_plot <- ggplot(data = melt_chao1,
+              mapping = aes(x = factor(variable,
+                              levels = unique(sort(melt_chao1$variable))),
+                            y = value, color =Cohort, fill=Cohort)) +
+  # stat_smooth(method="loess", span=0.75, se=TRUE, alpha=0.3) +
+  geom_boxplot(outlier.alpha = 0, alpha = 0.5, size =0.2, color = 'snow1')+
+  geom_line(data = median_df, aes(x = x, y = y, group = Cohort), size=0.7,  alpha = 0.7) +
+  theme_bw()+
+  scale_color_brewer(palette = "Set1")+
+  scale_fill_brewer(palette = "Set1")+
+  ylim(0, 600)+ theme(axis.text.x = element_blank())
+
+  
+cohort_rare_pdf <- FileCreate(DirPath = '../04.RarefactionCurve/Cohort',
+                              Prefix = 'rarefaction-curve_cohort_loess_100000', Suffix = 'pdf')
+pdf(file = cohort_rare_pdf, width = 20, height = 7)
+plot(chao1_plot)
+dev.off()
+
+chao1_plot +stat_smooth(method="loess", span=0.75, se=TRUE, alpha=0.3, aes(group = Cohort)) 
+
+spline_int <- matrix(NA, ncol = 3); spline_int <- spline_int[-1, ]
+median_df <- spline_int
+for (c in unique(melt_chao1$Cohort)) {
+  # spline_value <- NULL
+  for (i in unique(melt_chao1$variable)) {
+     # spline_value <- c(spline_value, median(melt_chao1[melt_chao1$variable == i & 
+                                                         # melt_chao1$Cohort == c,]$value))
+     median_df <- rbind(median_df, c(i, median(melt_chao1[melt_chao1$variable == i & 
+                                                         melt_chao1$Cohort == c,]$value), c))
+  }
+  # spline_int <- as.data.frame(rbind(spline_int,
+                                    # cbind(as.data.frame(spline(unique(melt_chao1$variable), spline_value)),
+                                          # Cohort = rep(c, length(spline_value)))))
+}
+median_df <- as.data.frame(median_df); colnames(median_df) <- c('x', 'y', 'Cohort')
+
+# chao1_plot + geom_line(data = median_df, aes(x = as.character(x), y = y, group = Cohort)) 
+chao1_plot + stat_smooth(data = median_df, aes(x = as.character(x), y = y, group = Cohort)) 
+ggplot() + stat_smooth(data = median_df, aes(x = as.character(x), y = y, group = Cohort)) 
+
+median_df$x <- as.numeric(median_df$x)
+median_df$y <- as.numeric(median_df$y)
+ggplot(data = median_df, aes(x = x, y = y, color = Cohort))+
+  stat_smooth() +
+  theme_bw()
+  
+cohort_rare_pdf <- FileCreate(DirPath = '../04.RarefactionCurve/Cohort',
+                              Prefix = 'rarefaction-curve_cohort_loess_100000', Suffix = 'pdf')
+pdf(file = cohort_rare_pdf, width = 10, height = 7)
+plot(chao1_plot)
+dev.off()
+
+
+
+tt <- diamonds %>%
+  
+  # Add a new column called 'bin': cut the initial 'carat' in bins
+  mutate( bin=cut_width(carat, width=0.5, boundary=0) ) 
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

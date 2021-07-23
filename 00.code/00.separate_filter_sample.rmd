@@ -15,6 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r packages, message=FALSE, warning=FALSE}
 require(DT) # for datatable
+require(dplyr) # for %>%
 ```
 
 ### FileCreate
@@ -155,7 +156,8 @@ Show_table(spl_res$tax_df)
 
 ## Data Profile by histogram in Kingdom level
 ```{r histogarm plot}
-plot_or_not <- F
+plot_or_not <- T
+add_line <- F
 
 bac_abd <- log10(as.numeric(spl_res$tax_list$Kingdom['k__Bacteria', rownames(meta_df)]))
 euk_abd <- log10(as.numeric(spl_res$tax_list$Kingdom['k__Eukaryota', rownames(meta_df)]))
@@ -165,57 +167,135 @@ if (plot_or_not) {
   xlab_1 <- expression(log[10](Bacteria))
   main_1 <- expression(paste('Histogram for ', log[10], ' Bacteria'))
   EB_pdf <- FileCreate(DirPath = '../01.Histogram_data_profile', Prefix = 'Histogram_Bacteria', Suffix = 'pdf')
+  
+  hist_info <- hist(bac_abd, breaks = 80, plot = F)
+  hist_info$density <- hist_info$counts/sum(hist_info$counts) * 100
+  min_ratio <- min(bac_abd)
+  max_ratio <- max(bac_abd)
+  
+  nc_bac_abd <- bac_abd[meta_df$Stage == 'CTRL']
+  nc_line <-  density(x = nc_bac_abd, n = length(hist_info$density), from = min_ratio, to = max_ratio)
+  nc_line$y <- nc_line$y*(nc_line$x[2]-nc_line$x[1])*100
+  
+  ad_bac_abd <- bac_abd[meta_df$Stage == 'adenoma']
+  ad_line <-  density(x = ad_bac_abd, n = length(hist_info$density), from = min_ratio, to = max_ratio)
+  ad_line$y <- ad_line$y*(ad_line$x[2]-ad_line$x[1])*100
+  
+  crc_bac_abd <- bac_abd[meta_df$Stage == 'CRC']
+  crc_line <-  density(x = crc_bac_abd, n = length(hist_info$density), from = min_ratio, to = max_ratio)
+  crc_line$y <- crc_line$y*(crc_line$x[2]-crc_line$x[1])*100
+  
   pdf(EB_pdf, height = 7, width = 10)
-  hist(bac_abd,
-       breaks = 80,
-       main= main_1, 
-       xlab= xlab_1, 
-       border= "darkblue")  
+  plot(hist_info, 
+       freq = FALSE,
+       main = main_1, 
+       xlab = xlab_1,
+       ylab = 'Percentage',
+       col = 'lightgray',
+       border= "darkblue")
+  if (add_line) {
+    lines(x = nc_line, lwd = 2, col = "springgreen")
+    lines(x = ad_line, lwd = 2, col = "olivedrab1")
+    lines(x = crc_line, lwd = 2, col = "orangered")
+  }
   abline(v = median(bac_abd),
          col = "yellow",
-         lwd = 2,
+         lwd = 4,
          lty=2)
-  text(median(bac_abd)*0.9, 150 , paste('median = ', round( median(bac_abd), 2)))
-  
+  text(median(bac_abd)*0.9, 8 , paste('median = ', sprintf("%0.2f",  median(bac_abd))))
   dev.off()
   
   # Eukaryota samples distribution
   xlab_2 <- expression(log[10](Eukaryota))
   main_2 <- expression(paste('Histogram for ', log[10], ' Eukaryota'))
   EB_pdf <- FileCreate(DirPath = '../01.Histogram_data_profile', Prefix = 'Histogram_Eukaryota', Suffix = 'pdf')
-  pdf(EB_pdf, height = 7, width = 10)
-  hist(euk_abd, 
-       breaks = 80,
-       main= main_2, 
-       xlab= xlab_2, 
-       border= "darkred") 
-  abline(v = median(euk_abd), 
-         col = "yellow",
-         lwd = 2,
-         lty=2)
-  text( median(euk_abd)*0.75, 200 , paste('median = ', round( median(euk_abd), 2)))
   
+  hist_info <- hist(euk_abd,breaks = 80, plot = F)
+  hist_info$density <- hist_info$counts/sum(hist_info$counts) * 100
+  min_ratio <- min(euk_abd)
+  max_ratio <- max(euk_abd)
+  
+  nc_euk_abd <- euk_abd[meta_df$Stage == 'CTRL']
+  nc_line <-  density(x = nc_euk_abd, n = length(hist_info$density), from = min_ratio, to = max_ratio)
+  nc_line$y <- nc_line$y*(nc_line$x[2]-nc_line$x[1])*100
+  
+  ad_euk_abd <- euk_abd[meta_df$Stage == 'adenoma']
+  ad_line <-  density(x = ad_euk_abd, n = length(hist_info$density), from = min_ratio, to = max_ratio)
+  ad_line$y <- ad_line$y*(ad_line$x[2]-ad_line$x[1])*100
+  
+  crc_euk_abd <- euk_abd[meta_df$Stage == 'CRC']
+  crc_line <-  density(x = crc_euk_abd, n = length(hist_info$density), from = min_ratio, to = max_ratio)
+  crc_line$y <- crc_line$y*(crc_line$x[2]-crc_line$x[1])*100
+  
+  
+  pdf(EB_pdf, height = 7, width = 10)
+  plot(hist_info, 
+       freq = FALSE,
+       main = main_2, 
+       xlab = xlab_2,
+       ylab = 'Percentage',
+       col = 'lightgray',
+       border= "darkred")
+  abline(v = median(euk_abd),
+         col = "yellow",
+         lwd = 4,
+         lty=2)
+  if (add_line) {
+    lines(x = nc_line, lwd = 2, col = "springgreen")
+    lines(x = ad_line, lwd = 2, col = "olivedrab1")
+    lines(x = crc_line, lwd = 2, col = "orangered")
+  }
+  text(median(euk_abd)*0.8, 10, paste('median = ', sprintf("%0.2f",  median(euk_abd))))
   dev.off()
   
   # ratio Eukaryota and Bacteria distribution
   xlab_3 <- expression(paste(log[10], frac(' Eukaryota', 'Bacteria')))
   main_3 <- expression(paste('Histogram for ', log[10], frac(' Eukaryota', 'Bacteria')))
   EB_pdf <- FileCreate(DirPath = '../01.Histogram_data_profile', Prefix = 'Histogram_Euk.Bac', Suffix = 'pdf')
-  pdf(EB_pdf, height = 7, width = 10)
-  hist(E_B_ratio, 
-       breaks = 80,
-       main= main_3, 
-       xlab= xlab_3, 
-       border= "darkmagenta") 
+  
+  hist_info <- hist(E_B_ratio,breaks = 50, plot = F)
+  hist_info$density <- hist_info$counts/sum(hist_info$counts) * 100
+  min_ratio <- min(E_B_ratio)
+  max_ratio <- max(E_B_ratio)
+  
+  nc_E_B_ratio <- E_B_ratio[meta_df$Stage == 'CTRL']
+  nc_line <-  density(x = nc_E_B_ratio, n = length(hist_info$density), from = min_ratio, to = max_ratio)
+  nc_line$y <- nc_line$y*(nc_line$x[2]-nc_line$x[1])*100
+  
+  ad_E_B_ratio <- E_B_ratio[meta_df$Stage == 'adenoma']
+  ad_line <-  density(x = ad_E_B_ratio, n = length(hist_info$density), from = min_ratio, to = max_ratio)
+  ad_line$y <- ad_line$y*(ad_line$x[2]-ad_line$x[1])*100
+  
+  crc_E_B_ratio <- E_B_ratio[meta_df$Stage == 'CRC']
+  crc_line <-  density(x = crc_E_B_ratio, n = length(hist_info$density), from = min_ratio, to = max_ratio)
+  crc_line$y <- crc_line$y*(crc_line$x[2]-crc_line$x[1])*100
+  
+  
+  pdf(EB_pdf, height = 14, width = 20)
+  plot(hist_info, 
+       freq = FALSE,
+       main = main_3, 
+       xlab = xlab_3,
+       ylab = 'Percentage',
+       col = 'lightgray',
+       border= "purple")
+  # lines(x = density(x = E_B_ratio), col = "red")
+  if (add_line) {
+    lines(x = nc_line, lwd = 2, col = "springgreen")
+    lines(x = ad_line, lwd = 2, col = "olivedrab1")
+    lines(x = crc_line, lwd = 2, col = "orangered")
+  }
   abline(v = median(E_B_ratio),
          col = "yellow",
-         lwd = 2,
+         lwd = 4,
          lty=2)
-  text( median(E_B_ratio)*1.4, 100 , paste('median = ', round( median(E_B_ratio), 2)))
-  
+  text(median(E_B_ratio)*1.4, 5.5, paste('median = ', sprintf("%0.2f",  median(E_B_ratio))))
   dev.off()
+
 }
 ```
+
+
 
 
 ## Filtering the samples {.tabset}
@@ -316,8 +396,59 @@ if (save_or_not) {
 }
 ```
 
+### Separate the Bacteria and Eukaryota
 
+```{r}
+calculate_or_not <- F
+if (calculate_or_not) {
+  bac_raw_res <- sel_spl_res
+  euk_raw_res <- sel_spl_res
+  bac_RelAbun_res <- sel_spl_res
+  euk_RelAbun_res <- sel_spl_res
+  for (n in names(sel_spl_res$tax_list)) {
+    tax_name <- as.data.frame(sel_spl_res$tax_df)
+    tmp_otu <- sel_spl_res$tax_list[[n]]
+    rownames(tmp_otu) <- gsub(".+__", '', rownames(tmp_otu)) %>% gsub('_', ' ', .)
+    # for bacteria
+    bac_name <- tax_name[grep('Bacteria', tax_name$Kingdom), n]
+    bac_name <- unique(bac_name[!is.na(bac_name)])
+    bac_otu <- tmp_otu[rownames(tmp_otu) %in% bac_name, ]
+    bac_raw_res$tax_list[[n]] <- bac_otu
+    bac_RelAbun_res$tax_list[[n]] <- bac_otu
+    bac_RelAbun_res$tax_list[[n]][] <- apply(bac_RelAbun_res$tax_list[[n]], 2, function(x){as.numeric(x)/sum(as.numeric(x))*100})
+    write.csv(x = bac_raw_res$tax_list[[n]], file = FileCreate(DirPath = '../02.Filter_samples/Bacteria_RawData_1636',
+                                                               Prefix = paste0("Selected-Bac_RawData-", n), Suffix = 'csv'))
+    write.csv(x = bac_RelAbun_res$tax_list[[n]], file = FileCreate(DirPath = '../02.Filter_samples/Bacteria_RelAbun_1636',
+                                                                   Prefix = paste0("Selected-Bac_RelAbun-", n), Suffix = 'csv'))
+    
+    # for Eukaryota
+    euk_name <- tax_name[grep('Eukaryota', tax_name$Kingdom), n]
+    euk_name <- unique(euk_name[!is.na(euk_name)])
+    euk_otu <- tmp_otu[rownames(tmp_otu) %in% euk_name, ]
+    euk_raw_res$tax_list[[n]] <- euk_otu
+    euk_RelAbun_res$tax_list[[n]] <- euk_otu
+    euk_RelAbun_res$tax_list[[n]][] <- apply(euk_RelAbun_res$tax_list[[n]], 2, function(x){as.numeric(x)/sum(as.numeric(x))*100})
+    write.csv(x = euk_raw_res$tax_list[[n]], file = FileCreate(DirPath = '../02.Filter_samples/Eukaryota_RawData_1636',
+                                                               Prefix = paste0("Selected-Euk_RawData-", n), Suffix = 'csv'))
+    write.csv(x = euk_RelAbun_res$tax_list[[n]], file = FileCreate(DirPath = '../02.Filter_samples/Eukaryota_RelAbun_1636',
+                                                                   Prefix = paste0("Selected-Euk_RelAbun-", n), Suffix = 'csv'))
+  }
+  saveRDS(object = bac_raw_res, file = FileCreate(DirPath = '../02.Filter_samples/Bacteria_RawData_1636',
+                                                    Prefix = 'bac_raw_res', Suffix = 'rds'))
+  saveRDS(object = euk_raw_res, file = FileCreate(DirPath = '../02.Filter_samples/Eukaryota_RawData_1636',
+                                                  Prefix = 'euk_raw_res', Suffix = 'rds'))
+  saveRDS(object = bac_RelAbun_res, file = FileCreate(DirPath = '../02.Filter_samples/Bacteria_RelAbun_1636',
+                                                    Prefix = 'bac_RelAbun_res', Suffix = 'rds'))
+  saveRDS(object = euk_RelAbun_res, file = FileCreate(DirPath = '../02.Filter_samples/Eukaryota_RelAbun_1636',
+                                                  Prefix = 'euk_RelAbun_res', Suffix = 'rds'))
+}else{
+  bac_raw_res <- readRDS(file = '../02.Filter_samples/Bacteria_RawData_1636/2021-07-22-bac_raw_res-v1.0.rds')
+  euk_raw_res <- readRDS(file = '../02.Filter_samples/Eukaryota_RawData_1636/2021-07-22-euk_raw_res-v1.0.rds')
+  bac_RelAbun_res <- readRDS(file = '../02.Filter_samples/Bacteria_RelAbun_1636/2021-07-22-bac_RelAbun_res-v1.0.rds')
+  euk_RelAbun_res <- readRDS(file = '../02.Filter_samples/Eukaryota_RelAbun_1636/2021-07-22-euk_RelAbun_res-v1.0.rds')
+}
 
+```
 
 
 
