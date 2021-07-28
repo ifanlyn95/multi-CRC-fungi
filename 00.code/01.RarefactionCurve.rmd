@@ -1,0 +1,175 @@
+---
+title: "alpha diversity"
+author: "ifanlyn@outlook.com"
+date: "2021/7/26"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Loading packages and subroutines {.tabset}
+
+### Packages
+
+```{r packages, message=FALSE, warning=FALSE}
+require(DT) # for datatable
+require(dplyr) # for %>%
+require(ggplot2) # for plot pictures
+require(reshape2) # for melt
+require(dutchmasters) # scale_color_dutchmasters
+require(ggpubr) # stat_compare_means
+```
+
+### FileCreate
+
+```{r}
+FileCreate <- function(DirPath = "./",Prefix = "ExampleTest", Suffix = "pdf", version = "0.0"){
+  date=as.character(Sys.Date())
+  DirPath = gsub("/$","",DirPath)
+  Suffix = gsub('^[.]',"",Suffix)
+  if(! dir.exists(DirPath)){
+    dir.create(DirPath,recursive =TRUE)
+  }
+  if (version == "0.0") {
+    version=10
+    while(TRUE){
+      version_=paste(unlist(strsplit(as.character(version),"")),collapse=".")
+      DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version_,".",Suffix)
+      if(! file.exists(DirPathName)){
+        return(DirPathName)
+        break
+      }
+      version = version + 1
+    }
+  }else{
+    DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version,".",Suffix)
+    if(! dir.exists(DirPathName)){
+      return(DirPathName)
+    }
+    return(DirPathName)
+  }
+}
+  
+```
+
+### ImportTable
+
+```{r ImportTable }
+ImportTable <- function(file, header = T, row.names = 1, sep = ',', check.names = FALSE, ...){
+  data <- read.csv(file = file, header = header, row.names = row.names, sep = sep, check.names = check.names, ...)
+  return(data)
+}
+```
+
+### Show_table
+
+```{r show_table}
+Show_table <- function(df, rownames = T, filter="top", options = list(pageLength = 10, scrollX=T), ...){
+  if (ncol(df) > 50) {
+    df <- df[, 1:50]
+    message('Due to the column dim is > 50, it only shows the ')
+  }
+  datatable(df, rownames = rownames, 
+            filter=filter, options = options, ... )
+
+}
+```
+
+## Import the data {.tabset}
+
+<!-- We have 4 different methods, *chao1*, *observed_features*, *shannon*, *simpson*. -->
+
+We have 2 different methods, *chao1*, *observed_features*.
+
+### Code
+
+```{r}
+calculate_or_not <- F
+if (calculate_or_not) {
+  mean_list <- list()
+  import_list <- list()
+  # features_list <- c('chao1', 'observed_features', 'shannon', 'simpson')
+  features_list <- c('chao1', 'observed_features')
+  for (f in features_list) {
+    fn <- paste0('../03.qiime2/alpha-rarefaction-20000-multiple-', f, '.csv')
+    tmp_table <- ImportTable(file = fn, sep = ',')
+    meta_df <- tmp_table[, c(-3:0) + ncol(tmp_table)]
+    import_list[[f]] <- tmp_table[,c(1:(ncol(tmp_table)-4))]
+    colnames(import_list[[f]]) <- gsub('^depth-', '', colnames(import_list[[f]])) %>%
+      gsub('_iter', '', .)
+    depth_list <- unique(gsub("-.+", '', colnames(import_list[[f]])))
+    mean_df <- as.data.frame(matrix(NA, nrow = nrow(tmp_table), ncol = length(depth_list)))
+    dimnames(mean_df) <- list(rownames(tmp_table), depth_list)
+    for (d in depth_list) {
+      mean_df[[d]] <- unlist(apply(import_list[[f]][, grep(paste0("^", d, '-.*$'), colnames(import_list[[f]]))], 1, mean))
+    }
+    mean_list[[f]] <- mean_df
+    rm(list = c('tmp_table', 'depth_list', 'mean_df', 'd', 'fn'))
+  }
+  RDS_meta_df <- FileCreate(DirPath = '../04.RarefactionCurve/Cohort/', Prefix = 'meta_df', Suffix = 'rds')
+  saveRDS(object = meta_df, file = RDS_meta_df)
+  RDS_mean_list <- FileCreate(DirPath = '../04.RarefactionCurve/Cohort/', Prefix = 'mean_list', Suffix = 'rds')
+  saveRDS(object = mean_list, file = RDS_mean_list)
+}else{
+  meta_df <- readRDS(file = '../04.RarefactionCurve/Cohort/2021-07-26-meta_df-v1.0.rds')
+  mean_list <- readRDS(file = '../04.RarefactionCurve/Cohort/2021-07-26-mean_list-v1.0.rds')
+}
+
+
+```
+
+### metadata
+
+```{r}
+Show_table(meta_df)
+```
+
+### Chao1
+
+```{r}
+Show_table(mean_list$chao1)
+# Show_table(import_list$chao1)
+```
+
+### Observed_features
+
+```{r}
+Show_table(mean_list$observed_features)
+# Show_table(import_list$observed_features)
+```
+
+## Rarefaction curve
+
+```{r}
+save_or_not <- F
+for (f in features_list) {
+  tmp_df <- mean_list[[f]]
+  tmp_df <- as.data.frame(cbind(tmp_df, Cohort = meta_df$Cohort))
+  tmp_df[is.na(tmp_df)] <- 0
+  mean_cohort_df <- aggregate(. ~ Cohort, tmp_df, function(x, zeroRatio = 0.7){
+    if (sum(x == 0) > length(x)*zeroRatio ) {
+      return(NA)
+    }else{
+      return(mean(x[x != 0]))
+    }
+  })
+  
+  melt_df <- melt(data = mean_cohort_df, id.vars = 'Cohort') %>% na.omit()
+  colnames(melt_df) <- c('Cohort', 'Sequencing Depth in Fungi', f)
+  melt_df[,c(2,3)] <- as.data.frame(sapply(melt_df[,c(2,3)], function(x) as.numeric(as.character(x))))
+  g <- ggplot(data = melt_df, aes(x = .data[["Sequencing Depth in Fungi"]], y = .data[[f]] , color = Cohort)) +
+    geom_line(size = 1, alpha = 1)+
+    theme_bw() +
+    scale_color_dutchmasters(palette ='view_of_Delft')
+  plot(g)
+  if (save_or_not) {
+    pdf_file <- FileCreate(DirPath = '../04.RarefactionCurve/Cohort/', Prefix = paste0("RarefactionCurve-", f, '-Cohort'), Suffix = 'pdf')
+    pdf(file = pdf_file, width = 9, height = 5)
+    plot(g)
+    dev.off()
+  }
+  
+}
+```
