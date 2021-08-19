@@ -1,0 +1,12 @@
+DocsumUids: "329161"
+ReleaseType: RefSeq
+FileType: genomic.fna.gz
+Flat: true
+
+Search results count: 1
+Filtered out 1 entries that do not have the requested ReleaseType, or are suppressed.
+Entries to download: 0
+
+genomic.fna.gz files in archive: 0
+Total size (bytes): 44529
+Total time: 12.4 milliseconds

@@ -1,0 +1,7 @@
+2021-08-03-Selected-Bac_RelAbun-Genus-v1.0.csv filter=lfs diff=lfs merge=lfs -text
+2021-08-03-Selected-Bac_RelAbun-Kingdom-v1.0.csv filter=lfs diff=lfs merge=lfs -text
+2021-08-03-Selected-Bac_RelAbun-Order-v1.0.csv filter=lfs diff=lfs merge=lfs -text
+2021-08-03-Selected-Bac_RelAbun-Phylum-v1.0.csv filter=lfs diff=lfs merge=lfs -text
+2021-08-03-Selected-Bac_RelAbun-Species-v1.0.csv filter=lfs diff=lfs merge=lfs -text
+2021-08-03-Selected-Bac_RelAbun-Class-v1.0.csv filter=lfs diff=lfs merge=lfs -text
+2021-08-03-Selected-Bac_RelAbun-Family-v1.0.csv filter=lfs diff=lfs merge=lfs -text

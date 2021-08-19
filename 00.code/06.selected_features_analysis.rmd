@@ -1,0 +1,353 @@
+---
+title: "selected feature analysis"
+author: "ifanlyn@outlook.com"
+date: "2021/8/12"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Loading packages and subroutines {.tabset}
+
+### Package
+
+```{r packages, message = F, warning = F}
+require(DT) # for databale
+require(reshape2) # for dcast
+require(ggplot2)
+require(ggthemes)
+require(ggpubr) # for stat_compare_means
+```
+
+### Import table
+
+```{r ImportTable }
+ImportTable <- function(file, header = T, row.names = 1, sep = ',', check.names = FALSE, ...){
+  data <- read.csv(file = file, header = header, row.names = row.names, sep = sep, check.names = check.names, ...)
+  return(data)
+}
+```
+
+### Show_table
+
+```{r show_table}
+Show_table <- function(df, rownames = T, filter="top", options = list(pageLength = 10, scrollX=T), ...){
+  if (ncol(df) > 100) {
+    df <- df[, 1:100]
+    message('Due to the column dim is > 100, it only shows the top 100 columns')
+  }
+  datatable(df, rownames = rownames, 
+            filter=filter, options = options, ... )
+
+}
+```
+
+
+### FileCreate
+
+```{r}
+FileCreate <- function(DirPath = "./",Prefix = "ExampleTest", Suffix = "pdf", version = "0.0.0"){
+  date=as.character(Sys.Date())
+  DirPath = gsub("/$","",DirPath)
+  Suffix = gsub('^[.]',"",Suffix)
+  if(! dir.exists(DirPath)){
+    dir.create(DirPath,recursive =TRUE)
+  }
+  if (version == "0.0.0") {
+    version=100
+    while(TRUE){
+      version_=paste(unlist(strsplit(as.character(version),"")),collapse=".")
+      DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version_,".",Suffix)
+      if(! file.exists(DirPathName)){
+        return(DirPathName)
+        break
+      }
+      version = version + 1
+    }
+  }else{
+    DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version_,".",Suffix)
+    if(! dir.exists(DirPathName)){
+      return(DirPathName)
+    }
+    return(DirPathName)
+  }
+}
+  
+```
+
+
+## Import data {.tabset}
+
+### Custom feature
+
+```{r}
+# custom_feature <- c('Aspergillus rambellii', 'Moniliophthora perniciosa', 
+#                     'Trichophyton mentagrophytes', 'Aspergillus kawachii', 
+#                     'Aspergillus ochraceoroseus')
+custom_feature <- c('Aspergillus rambellii', 'Aspergillus kawachii')
+```
+
+### Import raw-relative abundance matrix
+```{r}
+otu_df <- ImportTable(file = '../05.Normalized/Rarefy_1329_fungi/2021-07-26-RelativeAbundance_matrix-v1.0.csv') %>%
+  t() %>% as.data.frame()
+
+Show_table(otu_df)%>%
+  formatSignif(columns = colnames(otu_df)[1:100],
+               digits = 3, interval = 1)
+
+```
+
+### Import modified-relative abundance matrix (remove zero)
+```{r}
+otu_mod_df <- ImportTable(file = '../07.FeatureSelection/01.SSTF/2021-07-29-modify_martix_norm-ALL-v1.0.0.csv')
+
+Show_table(otu_mod_df)%>%
+  formatSignif(columns = colnames(otu_mod_df)[1:100],
+               digits = 3, interval = 1)
+
+```
+
+### Import median-relative abundance matrix
+```{r}
+otu_med_df <- ImportTable(file = '../07.FeatureSelection/02.RelMedianAbundance/2021-07-30-normalized-0.1%-RelMedianAbundance-matrix-v1.0.0.csv')
+
+Show_table(otu_med_df)%>%
+  formatSignif(columns = colnames(otu_med_df)[1:100],
+               digits = 3, interval = 1)
+
+```
+
+
+
+### Import meta data 
+```{r}
+meta_df2 <- ImportTable(file = '../00.RawData/metaData/2021-07-26-metaInfo-subgroup_1329-v6.0.csv')
+# meta_df <- meta_df2
+# meta_df$Stage <- factor(meta_df$Stage, c('CTRL', 'adenoma', 'CRC'))
+meta_df <- meta_df2[meta_df2$Stage != 'adenoma', ]
+meta_df$Stage <- factor(meta_df$Stage, c('CTRL', 'CRC'))
+Show_table(meta_df)
+
+```
+
+### Import Bacteria median modified matrix
+
+```{r}
+bac_med_df <- ImportTable(file = '../09.Bacteria/02.RelMedianAbundance/2021-08-05-normalized-0.1%-RelMedianAbundance-matrix-v1.0.0.csv')
+
+comb_med_df <- cbind(otu_med_df, bac_med_df[rownames(otu_med_df),])
+
+```
+
+## Barplot in each cohort {.tabset}
+
+
+### raw relative abundance matrix
+```{r raw relative abundance, message = F, warning = F}
+# combine_df <- as.data.frame(cbind(meta_df, otu_mod_df[, custom_feature]))
+combine_df <- as.data.frame(cbind(meta_df, otu_df[rownames(meta_df), custom_feature] + 0.00001))
+g_list <- list()
+boxplot_pdf <- FileCreate(DirPath = '../10.SelFeatureAnalysi', 
+                          Prefix = 'Boxplot-relAbun_norm',
+                          Suffix = 'pdf')
+pdf(file = boxplot_pdf, width = 13, height = 5)
+for (cf in custom_feature) {
+  g_bar <- ggplot(data = combine_df, mapping = aes(x = Stage, y = .data[[cf]])) +
+    geom_violin(aes(fill = Stage), scale = 'width', trim = F)+
+    geom_boxplot(outlier.colour = NA, width = 0.2)+
+    facet_wrap(~Cohort, nrow = 1) + 
+    theme_calc()+
+    scale_fill_manual(values = c(CTRL = '#006f3c',
+                                  adenoma = '#f9a73e', 
+                                  CRC = '#bf212f'))+
+    scale_y_log10()+
+    stat_compare_means(comparisons = list(c('CTRL', 'CRC')
+                                        # , c('adenoma', 'CRC')
+                                          ))+
+     theme(axis.text.x=element_text(angle=90, hjust=1))
+  g_list[[cf]] <- g_bar
+  plot(g_bar)
+}
+dev.off()
+
+for (cf in custom_feature) {
+  plot(g_list[[cf]])
+}
+```
+
+
+### zero modified matrix
+```{r zero modified matrix, message = F, warning = F}
+# combine_df <- as.data.frame(cbind(meta_df, otu_mod_df[, custom_feature]))
+combine_df <- as.data.frame(cbind(meta_df, otu_mod_df[rownames(meta_df), custom_feature]))
+g_list <- list()
+boxplot_pdf <- FileCreate(DirPath = '../10.SelFeatureAnalysi', 
+                          Prefix = 'Boxplot-modified_zero_norm',
+                          Suffix = 'pdf')
+pdf(file = boxplot_pdf, width = 13, height = 5)
+for (cf in custom_feature) {
+  g_bar <- ggplot(data = combine_df, mapping = aes(x = Stage, y = .data[[cf]])) +
+    geom_violin(aes(fill = Stage), scale = 'width', trim = F)+
+    geom_boxplot(outlier.colour = NA, width = 0.2)+
+    # geom_boxplot(aes(col = Stage), outlier.colour = NA)+
+    facet_wrap(~Cohort, nrow = 1) + 
+    theme_calc()+
+    scale_fill_manual(values = c(CTRL = '#006f3c',
+    # scale_color_manual(values = c(CTRL = '#006f3c', 
+                                  adenoma = '#f9a73e', 
+                                  CRC = '#bf212f'))+
+    scale_y_log10()+
+    # scale_y_log10(limits = c(min(combine_df[[cf]])/10, max(combine_df[[cf]])*500))+
+    stat_compare_means(comparisons = list(c('CTRL', 'CRC')
+                                        # , c('adenoma', 'CRC')
+                                          ))+
+     theme(axis.text.x=element_text(angle=90, hjust=1))
+  plot(g_bar)
+  g_list[[cf]] <- g_bar
+}
+dev.off()
+
+for (cf in custom_feature) {
+  plot(g_list[[cf]])
+}
+```
+
+### median modified matrix
+```{r median modified matrix, message = F, warning = F}
+# combine_df <- as.data.frame(cbind(meta_df, otu_mod_df[, custom_feature]))
+combine_df <- as.data.frame(cbind(meta_df, otu_med_df[rownames(meta_df), custom_feature]))
+g_list <- list()
+boxplot_pdf <- FileCreate(DirPath = '../10.SelFeatureAnalysi', 
+                          Prefix = 'Boxplot-median_norm',
+                          Suffix = 'pdf')
+pdf(file = boxplot_pdf, width = 13, height = 5)
+for (cf in custom_feature) {
+  g_bar <- ggplot(data = combine_df, mapping = aes(x = Stage, y = .data[[cf]])) +
+    geom_violin(aes(fill = Stage), scale = 'width', trim = F)+
+    geom_boxplot(outlier.colour = NA, width = 0.2)+
+    # geom_boxplot(aes(col = Stage), outlier.colour = NA)+
+    facet_wrap(~Cohort, nrow = 1) + 
+    theme_calc()+
+    scale_fill_manual(values = c(CTRL = '#006f3c',
+    # scale_color_manual(values = c(CTRL = '#006f3c', 
+                                  adenoma = '#f9a73e', 
+                                  CRC = '#bf212f'))+
+    scale_y_log10()+
+    # scale_y_log10(limits = c(min(combine_df[[cf]])/10, max(combine_df[[cf]])*500))+
+    stat_compare_means(comparisons = list(c('CTRL', 'CRC')
+                                        # , c('adenoma', 'CRC')
+                                          ))+
+     theme(axis.text.x=element_text(angle=90, hjust=1))
+  plot(g_bar)
+  g_list[[cf]] <- g_bar
+}
+dev.off()
+
+for (cf in custom_feature) {
+  plot(g_list[[cf]])
+}
+```
+
+
+## Selected the median value as cutoff
+
+```{r}
+i = 1
+
+tmp_df <- as.data.frame(cbind(meta_df, otu_med_df[rownames(meta_df), custom_feature]))
+
+lower_limit <- min(tmp_df[[custom_feature[i]]])
+upper_limit <- max(tmp_df[[custom_feature[i]]])
+ctrl_density <- density(subset(tmp_df, Stage == 'CTRL')[[custom_feature[i]]],
+                        from = lower_limit, to = upper_limit, n = 2^15)
+crc_density <- density(subset(tmp_df, Stage == 'CRC')[[custom_feature[i]]],
+                        from = lower_limit, to = upper_limit, n = 2^15)
+
+density_difference <- crc_density$y - ctrl_density$y
+intersection_point <- crc_density$x[which(density_difference > 0) + 1][1]
+
+g <- ggplot(tmp_df, aes(x = .data[[custom_feature[i]]])) +
+  # geom_histogram(bins = 100)+
+  scale_x_log10() +
+  # xlim(0,10)+
+  geom_density(color = 'grey', linetype = 2)+
+  geom_density(aes(color = Stage))+
+  # geom_line(aes(x = crc_density$x, y = crc_density$y), color = '#bf212f')+
+  # geom_line(aes(x = ctrl_density$x, y = ctrl_density$y), color = '#006f3c')+
+  geom_vline(xintercept = intersection_point[1],
+             linetype = 4) +
+  theme_calc() +
+  scale_color_manual(values = c(CTRL = '#006f3c', CRC = '#bf212f'))+
+  geom_text(x = log10(intersection_point[1]*3), y = 0.62, 
+            label = paste0('x = ', signif(intersection_point,4)))
+
+plot(g)
+
+density_pdf <- FileCreate(DirPath = '../10.SelFeatureAnalysi/density',
+                          Prefix = paste0('Density-',
+                                          strsplit(custom_feature[i], " ") %>% 
+                                            unlist() %>% paste0(., collapse = "_")),
+                          Suffix = 'pdf')
+pdf(file = density_pdf, width = 7, height = 3)
+plot(g)
+dev.off()
+
+
+AR_high <- rownames(tmp_df)[tmp_df$`Aspergillus rambellii` >= intersection_point]
+AR_low <- rownames(tmp_df)[tmp_df$`Aspergillus rambellii` < intersection_point]
+
+AR_high_df <- comb_med_df[AR_high, ]
+
+AR_high_ctrl_df <- AR_high_df[meta_df[AR_high, ]$Stage == "CTRL", ]
+AR_high_crc_df <- AR_high_df[meta_df[AR_high, ]$Stage == "CRC", ]
+
+
+AR_low_df <- comb_med_df[AR_low, ]
+
+AR_low_ctrl_df <- AR_low_df[meta_df[AR_low, ]$Stage == "CTRL", ]
+AR_low_crc_df <- AR_low_df[meta_df[AR_low, ]$Stage == "CRC", ]
+
+
+
+cor.test(comb_med_df[rownames(tmp_df), ]$`Aspergillus rambellii`, 
+         comb_med_df[rownames(tmp_df), ]$`Fusobacterium nucleatum`, 
+         method = 'spearman', exact = FALSE)
+
+
+cor.test(AR_high_df$`Aspergillus rambellii`, AR_high_df$`Fusobacterium nucleatum`, 
+         method = 'spearman', exact = FALSE)
+cor.test(AR_low_df$`Aspergillus rambellii`, AR_low_df$`Fusobacterium nucleatum`,
+         method = 'spearman', exact = FALSE)
+
+cor.test(AR_high_ctrl_df$`Aspergillus rambellii`, AR_high_ctrl_df$`Fusobacterium nucleatum`, 
+         method = 'spearman', exact = FALSE)
+cor.test(AR_high_crc_df$`Aspergillus rambellii`, AR_high_crc_df$`Fusobacterium nucleatum`,
+         method = 'spearman', exact = FALSE)
+
+cor.test(AR_low_ctrl_df$`Aspergillus rambellii`, AR_low_ctrl_df$`Fusobacterium nucleatum`, 
+         method = 'spearman', exact = FALSE)
+cor.test(AR_low_crc_df$`Aspergillus rambellii`, AR_low_crc_df$`Fusobacterium nucleatum`,
+         method = 'spearman', exact = FALSE)
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

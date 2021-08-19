@@ -1,0 +1,7 @@
+2021-08-03-Selected-RelAbundance-Class-v1.0.csv filter=lfs diff=lfs merge=lfs -text
+2021-08-03-Selected-RelAbundance-Family-v1.0.csv filter=lfs diff=lfs merge=lfs -text
+2021-08-03-Selected-RelAbundance-Genus-v1.0.csv filter=lfs diff=lfs merge=lfs -text
+2021-08-03-Selected-RelAbundance-Kingdom-v1.0.csv filter=lfs diff=lfs merge=lfs -text
+2021-08-03-Selected-RelAbundance-Order-v1.0.csv filter=lfs diff=lfs merge=lfs -text
+2021-08-03-Selected-RelAbundance-Phylum-v1.0.csv filter=lfs diff=lfs merge=lfs -text
+2021-08-03-Selected-RelAbundance-Species-v1.0.csv filter=lfs diff=lfs merge=lfs -text

@@ -1,0 +1,11 @@
+Gene1,Gene2,CRC_cor,CRC_pVal,adenoma_cor,adenoma_pVal,zScoreDiff,pValDiff,empPVals,pValDiff_adj,Classes
+Hyaloscypha variabilis,Choanephora cucurbitarum,0.161487413,0.000552198,0.512613967,0,5.648582921,1.62E-08,0.017765766,0.368575335,+/+
+Aspergillus rambellii,Moniliophthora perniciosa,0.33843,1.25E-13,0.604268515,0,4.866737558,1.13E-06,0.022738739,0.368575335,+/+
+Naumovozyma dairenensis,Hyaloscypha variabilis,0.187743452,5.69E-05,0.486983036,0,4.790771793,1.66E-06,0.023207207,0.368575335,+/+
+[Candida] arabinofermentans,Hyaloscypha variabilis,0.172547728,0.000220641,0.437445133,0,4.128032057,3.66E-05,0.029945946,0.368575335,+/+
+Pichia kudriavzevii,Aspergillus ochraceoroseus,0.178335191,0.000133437,0.436451875,0,4.027218504,5.64E-05,0.030954955,0.368575335,+/+
+Rhizophagus clarus,[Candida] arabinofermentans,0.396576644,0,0.452025641,0,0.947552347,0.343357395,0.304144144,0.51825695,+/+
+[Candida] arabinofermentans,Baudoinia panamericana,0.503376438,0,0.453072202,0,-0.913885486,0.360777021,0.316324324,0.523210082,+/+
+Rhizophagus irregularis,Rhizophagus clarus,0.383445495,0,0.434214271,0,0.854042132,0.393081645,0.339711712,0.534397926,+/+
+Rhizophagus irregularis,Phytopythium vexans,-0.187384157,5.89E-05,-0.20507831,0.000111506,-0.257720368,0.796622725,0.718774775,0.627394713,-/-
+Rhizophagus clarus,Edhazardia aedis,0.590177135,0,0.600754948,0,0.229522336,0.818462962,0.74572973,0.633952211,+/+

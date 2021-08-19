@@ -1,0 +1,16 @@
+"type","Classes","value"
+"Bacteria","+/+",62
+"Eukaryota","+/+",11
+"Intersect","+/+",3
+"Bacteria","+/0",57
+"Eukaryota","+/0",13
+"Intersect","+/0",46
+"Bacteria","0/+",18
+"Eukaryota","0/+",13
+"Intersect","0/+",29
+"Bacteria","-/+",0
+"Eukaryota","-/+",5
+"Intersect","-/+",0
+"Bacteria","-/0",0
+"Eukaryota","-/0",1
+"Intersect","-/0",0

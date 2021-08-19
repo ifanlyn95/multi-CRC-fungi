@@ -1,0 +1,69 @@
+﻿Species,Kingdom,Family,Counts,labels,labels_2,labels_2.1
+Sphaerulina musiva,Eukaryota,Mycosphaerellaceae,12,Sphaerulina musiva,Eukaryota,Sphaerulina musiva
+Erysiphe pulchra,Eukaryota,Erysiphaceae,20,Erysiphe pulchra,Eukaryota,Erysiphe pulchra
+Colletotrichum fioriniae,Eukaryota,Glomerellaceae,1,,Eukaryota,
+Aspergillus kawachii,Eukaryota,Aspergillaceae,1,,Eukaryota,
+Aspergillus rambellii,Eukaryota,Aspergillaceae,9,Aspergillus rambellii,Eukaryota,Aspergillus rambellii
+Phytophthora capsici,Eukaryota,Peronosporaceae,4,,Eukaryota,
+Baudoinia panamericana,Eukaryota,Teratosphaeriaceae,5,,Eukaryota,
+[Candida] arabinofermentans,Eukaryota,Pichiaceae,4,,Eukaryota,
+Pseudocercospora musae,Eukaryota,Mycosphaerellaceae,3,,Eukaryota,
+Aspergillus ochraceoroseus,Eukaryota,Aspergillaceae,6,,Eukaryota,
+Phytopythium vexans,Eukaryota,Pythiaceae,4,,Eukaryota,
+Thielaviopsis punctulata,Eukaryota,Ceratocystidaceae,17,Thielaviopsis punctulata,Eukaryota,Thielaviopsis punctulata
+Naumovozyma dairenensis,Eukaryota,Saccharomycetaceae,6,,Eukaryota,
+Rhizophagus irregularis,Eukaryota,Glomeraceae,5,,Eukaryota,
+Pichia kudriavzevii,Eukaryota,Pichiaceae,16,Pichia kudriavzevii,Eukaryota,Pichia kudriavzevii
+Paracoccidioides brasiliensis,Eukaryota,o__Onygenales,2,,Eukaryota,
+Hyaloscypha variabilis,Eukaryota,Hyaloscyphaceae,2,,Eukaryota,
+Cordyceps sp. RAO-2017,Eukaryota,Cordycipitaceae,2,,Eukaryota,
+Rhizophagus clarus,Eukaryota,Glomeraceae,5,,Eukaryota,
+Leucoagaricus sp. SymC.cos,Eukaryota,Agaricaceae,3,,Eukaryota,
+Schizosaccharomyces pombe,Eukaryota,Schizosaccharomycetaceae,7,,Eukaryota,
+Albugo candida,Eukaryota,Albuginaceae,15,Albugo candida,Eukaryota,Albugo candida
+Trichoderma atroviride,Eukaryota,Hypocreaceae,1,,Eukaryota,
+Moniliophthora perniciosa,Eukaryota,Marasmiaceae,6,,Eukaryota,
+Edhazardia aedis,Eukaryota,Culicosporidae,12,Edhazardia aedis,Eukaryota,Edhazardia aedis
+Lipomyces starkeyi,Eukaryota,Lipomycetaceae,2,,Eukaryota,
+Coniochaeta ligniaria,Eukaryota,Coniochaetaceae,1,,Eukaryota,
+Choanephora cucurbitarum,Eukaryota,Choanephoraceae,5,,Eukaryota,
+Pneumocystis murina,Eukaryota,Pneumocystidaceae,2,,Eukaryota,
+Tuber magnatum,Eukaryota,Tuberaceae,2,,Eukaryota,
+Debaryomyces hansenii,Eukaryota,Debaryomycetaceae,1,,Eukaryota,
+Trichophyton mentagrophytes,Eukaryota,Arthrodermataceae,1,,Eukaryota,
+Fusobacterium periodonticum,Bacteria,Fusobacteriaceae,12,Fusobacterium periodonticum,PATHOGENS,Fusobacterium periodonticum
+Fusobacterium nucleatum,Bacteria,Fusobacteriaceae,11,Fusobacterium nucleatum,PATHOGENS,Fusobacterium nucleatum
+Romboutsia ilealis,Bacteria,Peptostreptococcaceae,7,,NONE REPORT,
+Lactobacillus ruminis,Bacteria,Lactobacillaceae,1,,NONE REPORT,
+[Eubacterium] eligens,Bacteria,Eubacteriaceae,11,[Eubacterium] eligens,POTENTIAL PROBIOTIC,[Eubacterium] eligens
+Streptococcus equinus,Bacteria,Streptococcaceae,9,Streptococcus equinus,NONE REPORT,
+Streptococcus sp. HSISS1,Bacteria,Streptococcaceae,15,Streptococcus sp. HSISS1,PATHOGENS,Streptococcus sp. HSISS1
+Parvimonas micra,Bacteria,Peptoniphilaceae,9,Parvimonas micra,PATHOGENS,Parvimonas micra
+Anaerostipes hadrus,Bacteria,Lachnospiraceae,9,Anaerostipes hadrus,PATHOGENS,Anaerostipes hadrus
+Streptococcus sp. I-P16,Bacteria,Streptococcaceae,9,Streptococcus sp. I-P16,PATHOGENS,Streptococcus sp. I-P16
+Pseudobutyrivibrio xylanivorans,Bacteria,Lachnospiraceae,10,Pseudobutyrivibrio xylanivorans,NONE REPORT,
+Adlercreutzia equolifaciens,Bacteria,Eggerthellaceae,4,,NONE REPORT,
+Streptococcus sp. JS71,Bacteria,Streptococcaceae,13,Streptococcus sp. JS71,PATHOGENS,Streptococcus sp. JS71
+Streptococcus sp. HSISS2,Bacteria,Streptococcaceae,10,Streptococcus sp. HSISS2,PATHOGENS,Streptococcus sp. HSISS2
+Butyrivibrio proteoclasticus,Bacteria,Lachnospiraceae,8,,NONE REPORT,
+Streptococcus sp. FDAARGOS 192,Bacteria,Streptococcaceae,12,Streptococcus sp. FDAARGOS 192,PATHOGENS,Streptococcus sp. FDAARGOS 192
+Streptococcus thermophilus,Bacteria,Streptococcaceae,10,Streptococcus thermophilus,PATHOGENS,Streptococcus thermophilus
+Blautia sp. SC05B48,Bacteria,Lachnospiraceae,6,,POTENTIAL PROBIOTIC,Blautia sp. SC05B48
+Streptococcus milleri,Bacteria,Streptococcaceae,11,Streptococcus milleri,PATHOGENS,Streptococcus milleri
+Dialister pneumosintes,Bacteria,Veillonellaceae,5,,PATHOGENS,Dialister pneumosintes
+Clostridium beijerinckii,Bacteria,Clostridiaceae,12,Clostridium beijerinckii,NONE REPORT,
+Streptococcus salivarius,Bacteria,Streptococcaceae,13,Streptococcus salivarius,PATHOGENS,Streptococcus salivarius
+Longibaculum sp. KGMB06250,Bacteria,Erysipelotrichaceae,1,,NONE REPORT,
+Streptococcus sp. HSISS3,Bacteria,Streptococcaceae,15,Streptococcus sp. HSISS3,PATHOGENS,Streptococcus sp. HSISS3
+Streptococcus sp. I-G2,Bacteria,Streptococcaceae,13,Streptococcus sp. I-G2,PATHOGENS,Streptococcus sp. I-G2
+Streptococcus sp. A12,Bacteria,Streptococcaceae,11,Streptococcus sp. A12,PATHOGENS,Streptococcus sp. A12
+Brachyspira pilosicoli,Bacteria,Brachyspiraceae,3,,NONE REPORT,
+Streptococcus anginosus,Bacteria,Streptococcaceae,12,Streptococcus anginosus,PATHOGENS,Streptococcus anginosus
+Gemella morbillorum,Bacteria,o__Bacillales,8,,PATHOGENS,Gemella morbillorum
+Roseburia intestinalis,Bacteria,Lachnospiraceae,1,,NONE REPORT,
+Bifidobacterium pseudocatenulatum,Bacteria,Bifidobacteriaceae,1,,NONE REPORT,
+Bifidobacterium angulatum,Bacteria,Bifidobacteriaceae,1,,NONE REPORT,
+Escherichia coli,Bacteria,Enterobacteriaceae,1,,NONE REPORT,
+Prevotella intermedia,Bacteria,Prevotellaceae,6,,PATHOGENS,Prevotella intermedia
+Lactococcus garvieae,Bacteria,Streptococcaceae,2,,NONE REPORT,
+Porphyromonas asaccharolytica,Bacteria,Porphyromonadaceae,2,,PATHOGENS,Porphyromonas asaccharolytica

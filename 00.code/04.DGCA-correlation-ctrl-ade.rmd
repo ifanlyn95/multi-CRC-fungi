@@ -1,0 +1,431 @@
+---
+title: "bacteria eukaryota correlation"
+author: "ifanlyn@outlook.com"
+date: "2021/8/6"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Loading packages and subroutines {.tabset}
+
+### Package
+
+```{r packages, message = F, warning = F}
+require(DT) # for databale
+require(reshape2) # for dcast
+require(ggplot2)
+require(ggthemes)
+require(corrplot)
+require(DGCA)
+require(ggthemes)  # for theme_calc()
+```
+
+### Import table
+
+```{r ImportTable }
+ImportTable <- function(file, header = T, row.names = 1, sep = ',', check.names = FALSE, ...){
+  data <- read.csv(file = file, header = header, row.names = row.names, sep = sep, check.names = check.names, ...)
+  return(data)
+}
+```
+
+### Show_table
+
+```{r show_table}
+Show_table <- function(df, rownames = T, filter="top", options = list(pageLength = 10, scrollX=T), ...){
+  if (ncol(df) > 100) {
+    df <- df[, 1:100]
+    message('Due to the column dim is > 100, it only shows the top 100 columns')
+  }
+  datatable(df, rownames = rownames, 
+            filter=filter, options = options, ... )
+
+}
+```
+
+### FileCreate
+
+```{r}
+FileCreate <- function(DirPath = "./",Prefix = "ExampleTest", Suffix = "pdf", version = "0.0.0"){
+  date=as.character(Sys.Date())
+  DirPath = gsub("/$","",DirPath)
+  Suffix = gsub('^[.]',"",Suffix)
+  if(! dir.exists(DirPath)){
+    dir.create(DirPath,recursive =TRUE)
+  }
+  if (version == "0.0.0") {
+    version=100
+    while(TRUE){
+      version_=paste(unlist(strsplit(as.character(version),"")),collapse=".")
+      DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version_,".",Suffix)
+      if(! file.exists(DirPathName)){
+        return(DirPathName)
+        break
+      }
+      version = version + 1
+    }
+  }else{
+    DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version_,".",Suffix)
+    if(! dir.exists(DirPathName)){
+      return(DirPathName)
+    }
+    return(DirPathName)
+  }
+}
+  
+```
+
+## Import data
+
+### metadata
+
+```{r}
+meta_df <- ImportTable(file = '../00.RawData/metaData/2021-07-26-metaInfo-subgroup_1329-v6.0.csv')
+
+```
+
+### Import Eukaryota matrix
+
+```{r}
+
+euk_otu <- ImportTable(file = '../07.FeatureSelection/02.RelMedianAbundance/2021-07-30-normalized-0.1%-RelMedianAbundance-matrix-v1.0.0.csv')
+euk_sel <- ImportTable(file = '../07.FeatureSelection/01.SSTF/2021-07-30-wilcoxon-all-v1.0.0.csv')
+euk_sel <- euk_sel[order(euk_sel$adj_pvalue),]
+euk_core <- euk_otu[, rownames(euk_sel)[euk_sel$adj_pvalue < 0.01]]
+euk_sel_list <- colnames(euk_core)
+
+```
+
+### Import Bacteria matrix
+
+```{r}
+
+bac_otu <- ImportTable(file = '../09.Bacteria/02.RelMedianAbundance/2021-08-05-normalized-0.1%-RelMedianAbundance-matrix-v1.0.0.csv')
+bac_sel <- ImportTable(file = '../09.Bacteria/2021-08-06-wilcoxon-all-v1.0.0.csv')
+bac_sel <- bac_sel[order(bac_sel$adj_pvalue),]
+bac_core <- bac_otu[, rownames(bac_sel)[bac_sel$adj_pvalue < 0.01 & bac_sel$AbsLog2FC > 0.5]]
+bac_sel_list <- colnames(bac_core)
+
+```
+
+## DGCA {.tabset}
+
+The goal of DGCA is to calculate differential correlations across conditions. [link](https://github.com/andymckenzie/DGCA)
+
+### pre-process DGCA import data formula
+
+```{r}
+# pre-process the DGCA import data formula
+## expression matrix
+comb_euk_bac <- cbind(bac_core, euk_core) %>% t()
+comb_euk_bac <- comb_euk_bac[, meta_df[colnames(comb_euk_bac), 'Stage'] != 'CTRL']
+dim(comb_euk_bac)
+
+## conditional matrix
+stage_design_mat <- lapply(meta_df[colnames(comb_euk_bac), 'Stage'], function(x){
+  if (x == 'CRC') {
+    return(c(1, 0))
+  }else{
+    return(c(0, 1))
+  }
+}) %>% as.data.frame() %>% t()
+colnames(stage_design_mat) <- c('CRC', 'adenoma')
+head(stage_design_mat)
+
+```
+
+### Comparing pairwise correlations across conditions
+
+Runs the full discovery of differential correlation (ddcor) section for comparing pairwise correlations across conditions in the Differential Gene Correlation Analysis (DGCA) package.
+
+```{r}
+# DGCA calculate 
+set.seed(123)
+ddcor_res_mcrc <- ddcorAll(inputMat = comb_euk_bac, 
+                           corrType = 'pearson', 
+                           design = stage_design_mat,
+                           compare = c( 'CRC', 'adenoma'))
+```
+
+### Split Bacteria and Eukaryota
+
+split the bacteria individual, eukaryota individual and bacteria & eukaryota
+
+```{r}
+group_ddcor_index <- apply(ddcor_res_mcrc[,c(1,2)], 1, function(x){
+  if (sum(x %in% colnames(euk_core)) == 1) {
+    return('Intersect')
+  }else if (sum(x %in% colnames(euk_core)) == 2){
+    return('Eukaryota')
+  }else{
+    return('Bacteria')
+  }
+})
+
+## bacteria individual
+bac_dgca_res <- ddcor_res_mcrc[group_ddcor_index == 'Bacteria',]
+bac_dgca_pdf <- FileCreate(DirPath = '../08.correlation/DGCA/table', 
+                           Prefix = 'melt-correlation-DGCA-Bacteria',
+                           Suffix = 'csv')
+write.csv(x = bac_dgca_res, file = bac_dgca_pdf, row.names = F)
+
+## eukaryota individual
+euk_dgca_res <- ddcor_res_mcrc[group_ddcor_index == 'Eukaryota',]
+euk_dgca_pdf <- FileCreate(DirPath = '../08.correlation/DGCA/table', 
+                           Prefix = 'melt-correlation-DGCA-Eukaryota',
+                           Suffix = 'csv')
+write.csv(x = euk_dgca_res, file = euk_dgca_pdf, row.names = F)
+
+## bacteria & eukaryota
+both_dgca_res <- ddcor_res_mcrc[group_ddcor_index == 'Intersect',]
+both_dgca_pdf <- FileCreate(DirPath = '../08.correlation/DGCA/table', 
+                           Prefix = 'melt-correlation-DGCA-Intersect',
+                           Suffix = 'csv')
+write.csv(x = both_dgca_res, file = both_dgca_pdf, row.names = F)
+
+# all combine together
+all_dgca_summary <- ddcor_res_mcrc
+all_dgca_summary$type <- group_ddcor_index
+all_dgca_summary$abs_zScoreDiff <- abs(all_dgca_summary$zScoreDiff)
+all_dgca_pdf <- FileCreate(DirPath = '../08.correlation/DGCA/table', 
+                           Prefix = 'melt-correlation-DGCA-ALL',
+                           Suffix = 'csv')
+write.csv(x = all_dgca_summary, file = all_dgca_pdf, row.names = F)
+
+```
+
+### z-score distribution density plot
+```{r}
+density_df <- all_dgca_summary
+
+den_fil_df <- density_df[density_df$empPVals < 0.05, ]
+
+p <- ggplot(data=den_fil_df, aes(x=zScoreDiff, group=type, fill=type)) +
+  geom_density(adjust=1.5, position="stack") +
+  theme_calc() + scale_fill_calc()
+p
+
+
+p_s <- ggplot(data=den_fil_df, aes(x=zScoreDiff, group=type, fill=type)) +
+  geom_density(adjust=1.5) +
+  theme_calc() + scale_fill_calc()+
+  facet_wrap(~type, ncol = 3, scale = 'free_y') +
+  theme(
+    legend.position="none",
+    panel.spacing = unit(0.1, "lines"),
+    axis.ticks.x=element_blank())
+
+p_s
+
+p_pdf <- FileCreate(DirPath = '../08.correlation/DGCA/', 
+                    Prefix = 'DensityPlot-z_score-distribution-all',
+                    Suffix = 'pdf')
+ps_pdf <- FileCreate(DirPath = '../08.correlation/DGCA/', 
+                    Prefix = 'DensityPlot-z_score-distribution-seperate',
+                    Suffix = 'pdf')
+pdf(file = p_pdf, width = 15, height = 5)
+plot(p)
+dev.off()
+
+pdf(file = ps_pdf, width = 15, height = 3)
+plot(p_s)
+dev.off()
+
+
+
+```
+### z-score bar-plot subgroup
+
+```{r}
+bar_df <- all_dgca_summary
+bar_df <- bar_df[density_df$empPVals < 0.05, ]
+
+bar_df2 <- data.frame(Classes = factor(bar_df$Classes), 
+                      type = factor(bar_df$type))
+bar_dcast = dcast(bar_df2, type ~ Classes, fun.aggregate = length)
+bar_melt = melt(bar_dcast, id.vars = "type", variable.name = 'Classes')
+
+g_bar <- ggplot(bar_melt, aes(x = Classes,y = value, fill = type)) + 
+  geom_bar(stat = "identity", colour = "black", position = position_dodge(width = .8), width = 0.7) +
+  geom_text(aes(label = value), position = position_dodge(width = .8), vjust = -0.5) +
+  theme_calc() + scale_fill_calc() + theme(legend.position="none", axis.title = element_blank())
+
+g_bar_pdf <- FileCreate(DirPath = '../08.correlation/DGCA/', 
+                    Prefix = 'BarPlot-Class-table',
+                    Suffix = 'pdf')
+pdf(file = g_bar_pdf, width = 15, height = 5)
+plot(g_bar)
+dev.off()
+
+
+
+```
+
+
+
+### Plot Eukaryotic triangle heat-map
+
+```{r}
+melt_euk_df <- euk_dgca_res
+melt_euk_df$Gene1 <- factor(melt_euk_df$Gene1, rev(euk_sel_list))
+melt_euk_df$Gene2 <- factor(melt_euk_df$Gene2, rev(euk_sel_list))
+# melt_euk_df$Gene2 <- factor(melt_euk_df$Gene2, euk_sel_list)
+melt_euk_df$adenoma_cor[melt_euk_df$adenoma_pVal >= 0.1] <- NA
+melt_euk_df$CRC_cor[melt_euk_df$CRC_pVal >= 0.1] <- NA
+# melt_euk_df$adenoma_cor[melt_euk_df$adenoma_pVal >= 0.05] <- NA
+# melt_euk_df$CRC_cor[melt_euk_df$CRC_pVal >= 0.05] <- NA
+
+melt_euk_df$adenoma_cor[melt_euk_df$adenoma_cor > 0.7] <- 0.7
+melt_euk_df$adenoma_cor[melt_euk_df$adenoma_cor < -0.2] <- -0.2
+melt_euk_df$CRC_cor[melt_euk_df$CRC_cor > 0.7] <- 0.7
+melt_euk_df$CRC_cor[melt_euk_df$CRC_cor < -0.2] <- -0.2
+
+melt_euk_sel <- melt_euk_df[melt_euk_df$empPVals < 0.05,]
+
+CRC_plot <- ggplot(melt_euk_df, aes(x = Gene2, y = Gene1, fill = CRC_cor)) +
+  geom_tile(color="white", size=0.1) +
+  scale_fill_distiller(palette = "Spectral", na.value="#7F7F7F", limits = c(-0.2, 0.7)) +
+  theme_minimal() +
+  theme(panel.grid = element_blank(), 
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), 
+        axis.title = element_blank())
+  # geom_point(data = melt_euk_sel, aes(x = Gene2, y = Gene1),
+             # shape = 23, size = 4, fill = 'deeppink')
+   # geom_text(label = ifelse(melt_euk_df$empPVals < 0.001, '***',
+   #                          ifelse(melt_euk_df$empPVals < 0.01, "**",
+   #                                 ifelse(melt_euk_df$empPVals < 0.05, "*", ""))),
+   #           size=5, color = 'purple', fontface = "bold")
+plot(CRC_plot)
+  
+CRC_pdf <- FileCreate(DirPath = '../08.correlation/DGCA', 
+                      Prefix = 'triangle-corr-heatmap-DGCA-CRC',
+                      Suffix = 'pdf')
+pdf(file = CRC_pdf, width = 10, height = 10)
+plot(CRC_plot)
+plot(CRC_plot + theme(legend.position = 'none', 
+                      axis.text= element_blank(),
+                      axis.text.x = element_blank()))
+dev.off()
+
+adenoma_plot <- ggplot(melt_euk_df, aes(x = Gene2, y = Gene1, fill = adenoma_cor)) +
+  geom_tile(color="white", size=0.1) +
+  scale_fill_distiller(palette = "Spectral", na.value="#7F7F7F", limits = c(-0.2, 0.7)) +
+  theme_minimal() +
+  theme(panel.grid = element_blank(), 
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), 
+        axis.title = element_blank())+
+  geom_point(data = melt_euk_sel, aes(x = Gene2, y = Gene1),
+             shape = 23, size = 4, fill = 'deeppink')
+   # geom_text(label = ifelse(melt_euk_df$empPVals < 0.001, '***',
+   #                          ifelse(melt_euk_df$empPVals < 0.01, "**",
+   #                                 ifelse(melt_euk_df$empPVals < 0.05, "*", ""))),
+   #           size=5, color = 'purple', fontface = "bold")
+plot(adenoma_plot)
+  
+adenoma_pdf <- FileCreate(DirPath = '../08.correlation/DGCA', 
+                      Prefix = 'triangle-corr-heatmap-DGCA-adenoma',
+                      Suffix = 'pdf')
+pdf(file = adenoma_pdf, width = 10, height = 10)
+plot(adenoma_plot)
+plot(adenoma_plot + theme(legend.position = 'none', 
+                      axis.text= element_blank(),
+                      axis.text.x = element_blank()))
+dev.off()
+
+```
+### Plot Eukaryotic & Bateria rectangle heat-map
+
+```{r}
+melt_both_df <- both_dgca_res
+melt_both_df$Gene1 <- factor(melt_both_df$Gene1, rev(bac_sel_list))
+melt_both_df$Gene2 <- factor(melt_both_df$Gene2, rev(euk_sel_list))
+melt_both_df$adenoma_cor[melt_both_df$adenoma_pVal >= 0.1] <- NA
+melt_both_df$CRC_cor[melt_both_df$CRC_pVal >= 0.1] <- NA
+# melt_both_df$adenoma_cor[melt_both_df$adenoma_pVal >= 0.05] <- NA
+# melt_both_df$CRC_cor[melt_both_df$CRC_pVal >= 0.05] <- NA
+
+melt_both_df$adenoma_cor[melt_both_df$adenoma_cor > 0.7] <- 0.7
+melt_both_df$adenoma_cor[melt_both_df$adenoma_cor < -0.2] <- -0.2
+melt_both_df$CRC_cor[melt_both_df$CRC_cor > 0.7] <- 0.7
+melt_both_df$CRC_cor[melt_both_df$CRC_cor < -0.2] <- -0.2
+
+melt_both_sel <- melt_both_df[melt_both_df$empPVals < 0.05,]
+# melt_both_sel$size <- ifelse(melt_both_sel$empPVals < 0.001, '3',
+#                              ifelse(melt_both_sel$empPVals < 0.01, "2",
+#                                     ifelse(melt_both_sel$empPVals < 0.05, "2", "0")))
+CRC_plot <- ggplot(melt_both_df, aes(x = Gene1, y = Gene2, fill = CRC_cor)) +
+  geom_tile(color="white", size=0.1) +
+  scale_fill_distiller(palette = "Spectral", na.value="#7F7F7F", limits = c(-0.2, 0.7)) +
+  theme_minimal() +
+  theme(panel.grid = element_blank(), 
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), 
+        axis.title = element_blank())
+  # geom_point(data = melt_both_sel, aes(x = Gene1, y = Gene2), 
+             # shape = 23, size = 4, fill = 'deeppink')
+  # geom_text(label = ifelse(melt_both_df$empPVals < 0.001, '***',
+  #                           ifelse(melt_both_df$empPVals < 0.01, "**",
+  #                                  ifelse(melt_both_df$empPVals < 0.05, "*", ""))), 
+  #            size=5, color = 'purple', fontface = "bold")
+plot(CRC_plot)
+  
+CRC_pdf <- FileCreate(DirPath = '../08.correlation/DGCA', 
+                      Prefix = 'rectangle-corr-heatmap-DGCA-CRC',
+                      Suffix = 'pdf')
+pdf(file = CRC_pdf, width = 14, height = 10)
+plot(CRC_plot)
+plot(CRC_plot + theme(legend.position = 'none', 
+                      axis.text= element_blank(),
+                      axis.text.x = element_blank()))
+dev.off()
+
+adenoma_plot <- ggplot(melt_both_df, aes(x = Gene1, y = Gene2, fill = adenoma_cor)) +
+  geom_tile(color="white", size=0.1) +
+  scale_fill_distiller(palette = "Spectral", na.value="#7F7F7F", limits = c(-0.2, 0.7)) +
+  theme_minimal() +
+  theme(panel.grid = element_blank(), 
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), 
+        axis.title = element_blank())+
+  geom_point(data = melt_both_sel, aes(x = Gene1, y = Gene2), 
+             shape = 23, size = 4, fill = 'deeppink')
+   # geom_text(label = ifelse(melt_both_df$empPVals < 0.001, '***',
+   #                          ifelse(melt_both_df$empPVals < 0.01, "**",
+   #                                 ifelse(melt_both_df$empPVals < 0.05, "*", ""))), 
+   #           size=5, color = 'purple', fontface = "bold")
+plot(adenoma_plot)
+  
+adenoma_pdf <- FileCreate(DirPath = '../08.correlation/DGCA', 
+                      Prefix = 'rectangle-corr-heatmap-DGCA-adenoma',
+                      Suffix = 'pdf')
+pdf(file = adenoma_pdf, width = 14, height = 10)
+plot(adenoma_plot)
+plot(adenoma_plot + theme(legend.position = 'none', 
+                      axis.text= element_blank(),
+                      axis.text.x = element_blank()))
+dev.off()
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

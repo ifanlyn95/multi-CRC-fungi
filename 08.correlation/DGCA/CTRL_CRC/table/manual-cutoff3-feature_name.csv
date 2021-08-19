@@ -1,0 +1,54 @@
+Species,EnrichDeplete,Counts,labels_1,labels_2,show_name,Kingdom,ED-Label
+Parvimonas micra,Enriched,7,rank2,Potential Pathogens,Parvimonas micra,Bacteria,Bac_En
+Bifidobacterium angulatum,Depleted,1,rank3,none,,Bacteria,Bac_De
+Erysiphe pulchra,Enriched,16,rank1,Eukaryota,Erysiphe pulchra,Eukaryota,Euk_En
+Gemella morbillorum,Enriched,8,rank2,Potential Pathogens,Gemella morbillorum,Bacteria,Bac_En
+Fusobacterium periodonticum,Enriched,7,rank2,Potential Pathogens,Fusobacterium periodonticum,Bacteria,Bac_En
+Aspergillus rambellii,Enriched,8,rank2,Eukaryota,Aspergillus rambellii,Eukaryota,Euk_En
+Streptococcus anginosus,Enriched,4,rank3,Potential Pathogens,Streptococcus anginosus,Bacteria,Bac_En
+Rhizophagus clarus,Depleted,5,rank2,Eukaryota,Rhizophagus clarus,Eukaryota,Euk_De
+Sphaerulina musiva,Enriched,8,rank2,Eukaryota,Sphaerulina musiva,Eukaryota,Euk_En
+Streptococcus thermophilus,Depleted,5,rank2,Potential Probiotic,Streptococcus thermophilus,Bacteria,Bac_De
+Fusobacterium nucleatum,Enriched,8,rank2,Potential Pathogens,Fusobacterium nucleatum,Bacteria,Bac_En
+Dialister pneumosintes,Enriched,5,rank2,Potential Pathogens,Dialister pneumosintes,Bacteria,Bac_En
+Brachyspira pilosicoli,Depleted,3,rank3,none,,Bacteria,Bac_De
+Baudoinia panamericana,Depleted,4,rank3,Eukaryota,,Eukaryota,Euk_De
+Romboutsia ilealis,Depleted,6,rank2,none,,Bacteria,Bac_De
+Clostridium beijerinckii,Depleted,11,rank1,none,Clostridium beijerinckii,Bacteria,Bac_De
+Bifidobacterium pseudocatenulatum,Depleted,1,rank3,none,,Bacteria,Bac_De
+Moniliophthora perniciosa,Enriched,6,rank2,Eukaryota,Moniliophthora perniciosa,Eukaryota,Euk_En
+Roseburia intestinalis,Depleted,1,rank3,Potential Probiotic,Roseburia intestinalis,Bacteria,Bac_De
+Streptococcus salivarius,Depleted,6,rank2,Potential Pathogens,Streptococcus salivarius,Bacteria,Bac_De
+Trichoderma atroviride,Depleted,1,rank3,Eukaryota,,Eukaryota,Euk_De
+Albugo candida,Depleted,6,rank2,Eukaryota,Albugo candida,Eukaryota,Euk_De
+Phytopythium vexans,Enriched,3,rank3,Eukaryota,,Eukaryota,Euk_En
+Pichia kudriavzevii,Depleted,11,rank1,Eukaryota,Pichia kudriavzevii,Eukaryota,Euk_De
+Butyrivibrio proteoclasticus,Depleted,3,rank3,none,,Bacteria,Bac_De
+Anaerostipes hadrus,Depleted,5,rank2,Potential Pathogens,Anaerostipes hadrus,Bacteria,Bac_De
+[Eubacterium] eligens,Depleted,6,rank2,Potential Probiotic,[Eubacterium] eligens,Bacteria,Bac_De
+Adlercreutzia equolifaciens,Depleted,3,rank3,none,,Bacteria,Bac_De
+Pseudobutyrivibrio xylanivorans,Depleted,5,rank2,none,,Bacteria,Bac_De
+Rhizophagus irregularis,Depleted,3,rank3,Eukaryota,,Eukaryota,Euk_De
+Schizosaccharomyces pombe,Depleted,4,rank3,Eukaryota,,Eukaryota,Euk_De
+Leucoagaricus sp. SymC.cos,Depleted,3,rank3,Eukaryota,,Eukaryota,Euk_De
+[Candida] arabinofermentans,Depleted,4,rank3,Eukaryota,,Eukaryota,Euk_De
+Streptococcus milleri,Enriched,4,rank3,none,,Bacteria,Bac_En
+Cordyceps sp. RAO-2017,Enriched,1,rank3,Eukaryota,,Eukaryota,Euk_En
+Hyaloscypha variabilis,Depleted,2,rank3,Eukaryota,,Eukaryota,Euk_De
+Paracoccidioides brasiliensis,Depleted,1,rank3,Eukaryota,,Eukaryota,Euk_De
+Naumovozyma dairenensis,Depleted,5,rank2,Eukaryota,Naumovozyma dairenensis,Eukaryota,Euk_De
+Thielaviopsis punctulata,Enriched,13,rank1,Eukaryota,Thielaviopsis punctulata,Eukaryota,Euk_En
+Aspergillus ochraceoroseus,Enriched,5,rank2,Eukaryota,Aspergillus ochraceoroseus,Eukaryota,Euk_En
+Pseudocercospora musae,Depleted,2,rank3,Eukaryota,,Eukaryota,Euk_De
+Phytophthora capsici,Enriched,3,rank3,Eukaryota,,Eukaryota,Euk_En
+Porphyromonas asaccharolytica,Enriched,2,rank3,Potential Pathogens,Porphyromonas asaccharolytica,Bacteria,Bac_En
+Trichophyton mentagrophytes,Depleted,1,rank3,Eukaryota,,Eukaryota,Euk_De
+Prevotella intermedia,Enriched,6,rank2,Potential Pathogens,Prevotella intermedia,Bacteria,Bac_En
+Streptococcus equinus,Depleted,1,rank3,none,,Bacteria,Bac_De
+Choanephora cucurbitarum,Depleted,5,rank2,Eukaryota,Choanephora cucurbitarum,Eukaryota,Euk_De
+Debaryomyces hansenii,Depleted,1,rank3,Eukaryota,,Eukaryota,Euk_De
+Edhazardia aedis,Depleted,10,rank1,Eukaryota,Edhazardia aedis,Eukaryota,Euk_De
+Tuber magnatum,Depleted,2,rank3,Eukaryota,,Eukaryota,Euk_De
+Pneumocystis murina,Depleted,2,rank3,Eukaryota,,Eukaryota,Euk_De
+Lactococcus garvieae,Depleted,2,rank3,none,,Bacteria,Bac_De
+Escherichia coli,Enriched,1,rank3,none,,Bacteria,Bac_En

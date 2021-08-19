@@ -1,0 +1,294 @@
+---
+title: "Correlation in Eukaryota"
+author: "ifanlyn@outlook.com"
+date: "2021/8/4"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Loading packages and subroutines {.tabset}
+
+### Package
+
+```{r packages, message = F, warning = F}
+require(DT) # for databale
+require(reshape2) # for dcast
+require(ggplot2)
+require(ggthemes)
+require(corrplot)
+```
+
+### Import table
+
+```{r ImportTable }
+ImportTable <- function(file, header = T, row.names = 1, sep = ',', check.names = FALSE, ...){
+  data <- read.csv(file = file, header = header, row.names = row.names, sep = sep, check.names = check.names, ...)
+  return(data)
+}
+```
+
+### Show_table
+
+```{r show_table}
+Show_table <- function(df, rownames = T, filter="top", options = list(pageLength = 10, scrollX=T), ...){
+  if (ncol(df) > 100) {
+    df <- df[, 1:100]
+    message('Due to the column dim is > 100, it only shows the top 100 columns')
+  }
+  datatable(df, rownames = rownames, 
+            filter=filter, options = options, ... )
+
+}
+```
+
+### Spearman_corr
+
+```{r}
+Spearman_corr <- function(mat,rho = c(-0.2, 0.4), pvalue = 0.05, SampleAsColumn = T){
+  translateNum <- function(data){
+    data1 <- apply(data,2,as.numeric)
+    rownames(data1) <- rownames(data)
+    data1 <- as.data.frame(data1)
+    return(data1)
+  }
+  if (!require(Hmisc)) {
+    install.packages("Hmisc")
+    library(Hmisc)
+  }
+  library(reshape2)
+  # calculate the spearman
+  if (SampleAsColumn) {
+    mat_t <- t(translateNum(mat))
+  }else{
+    mat_t <- as.matrix(translateNum(mat))
+  }
+  
+  mat_corr <- rcorr(mat_t, type = "spearman")
+  # get the pvalue matrix and melt the matrix
+  mat_p <- mat_corr[["P"]]
+  sub_mat_p <- lower.tri(mat_p, diag = TRUE)
+  mat_p[sub_mat_p] <- NA
+  melt_p <- melt(mat_p, na.rm = TRUE)
+  # get the rho matrix and melt the matrix
+  mat_r <- mat_corr[["r"]]
+  sub_mat_r <- lower.tri(mat_r, diag = TRUE)
+  mat_r[sub_mat_r] <- NA
+  melt_r <- melt(mat_r, na.rm = TRUE)
+  # merge the melt-rho and melt-pvalue together
+  melt_mat <- cbind(melt_r, melt_p[,3])
+  colnames(melt_mat) <- c("Feature1", "Feature2", "rho", "pvalue")
+  melt_mat_p <- melt_mat[which(melt_mat$pvalue < pvalue),]
+  melt_mat_rho <- melt_mat[which(melt_mat$rho < rho[1] | melt_mat$rho > rho[2]),]
+  melt_mat_p_rho <- melt_mat_rho[which(melt_mat_rho$pvalue < pvalue),]
+  message("There are totally ", nrow(melt_mat), "-pair correlations\n",
+          nrow(melt_mat_p), "-pair correlations are left after filtering the features whose pvalue is less than ", pvalue, "\n",
+          nrow(melt_mat_rho), "-pair correlations are left after filtering the features whose rho is less than ", rho[1], " or large than ", rho[2], "\n",
+          nrow(melt_mat_p_rho), "-pair correlations are left after above parameters.\n")
+  rList <- list(mat_p = mat_corr[["P"]], mat_corr = mat_corr[["r"]], melt_mat = melt_mat, melt_filter = melt_mat_p_rho)
+  return(rList)
+}
+
+```
+
+### FileCreate
+
+```{r}
+FileCreate <- function(DirPath = "./",Prefix = "ExampleTest", Suffix = "pdf", version = "0.0.0"){
+  date=as.character(Sys.Date())
+  DirPath = gsub("/$","",DirPath)
+  Suffix = gsub('^[.]',"",Suffix)
+  if(! dir.exists(DirPath)){
+    dir.create(DirPath,recursive =TRUE)
+  }
+  if (version == "0.0.0") {
+    version=100
+    while(TRUE){
+      version_=paste(unlist(strsplit(as.character(version),"")),collapse=".")
+      DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version_,".",Suffix)
+      if(! file.exists(DirPathName)){
+        return(DirPathName)
+        break
+      }
+      version = version + 1
+    }
+  }else{
+    DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version_,".",Suffix)
+    if(! dir.exists(DirPathName)){
+      return(DirPathName)
+    }
+    return(DirPathName)
+  }
+}
+  
+```
+
+## Import data
+
+### Import the modified data
+
+Modified by three steps,
+
+-   only leave the median abundance Eukaryota candidates( \>0.1%),
+
+-   replace the zero by `rnorm(min/10, min/100)`,
+
+-   and calculate the relative median abundance in each cohort
+
+```{r}
+mod_df <- ImportTable(file = '../07.FeatureSelection/02.RelMedianAbundance/2021-07-30-normalized-0.1%-RelMedianAbundance-matrix-v1.0.0.csv')
+Show_table(mod_df)%>%
+  formatSignif(columns = colnames(mod_df)[1:100],
+               digits = 3, interval = 1)
+```
+
+### Import the meta-information
+
+```{r}
+meta_df <- ImportTable('../00.RawData/metaData/2021-08-03-metaInfo-subgroup_1625-v5.1.csv')
+
+wil_res <- ImportTable('../07.FeatureSelection/01.SSTF/2021-07-30-wilcoxon-all-v1.0.0.csv')
+wil_res <- wil_res[order(wil_res$adj_pvalue), ]
+main_list <- rownames(wil_res)[wil_res$adj_pvalue < 0.05]   # 59
+core_list <- rownames(wil_res)[wil_res$adj_pvalue < 0.01]   # 33
+
+```
+
+### Spearman correlation in all samples
+
+```{r}
+
+crc_spm_res <- Spearman_corr(mat = mod_df[rownames(meta_df)[meta_df$Stage == 'CRC'], core_list],
+                             rho = c(-0.2, 0.4), pvalue = 0.05, SampleAsColumn = F)
+crc_spm_res_rds <- FileCreate(DirPath = '../08.correlation/table/CRC',
+                              Prefix = 'crc_spm_res',
+                              Suffix = 'rds')
+saveRDS(object = crc_spm_res, file = crc_spm_res_rds)
+
+crc_spm_mat_p_csv <- FileCreate(DirPath = '../08.correlation/table/CRC',
+                                Prefix = 'Matrix-pvalue-spearman-CRC',
+                                Suffix = 'csv')
+write.csv(x = crc_spm_res$mat_p, file = crc_spm_mat_p_csv)
+
+crc_spm_mat_rho_csv <- FileCreate(DirPath = '../08.correlation/table/CRC',
+                                Prefix = 'Matrix-rho-spearman-CRC',
+                                Suffix = 'csv')
+write.csv(x = crc_spm_res$mat_corr, file = crc_spm_mat_rho_csv)
+
+crc_spm_melt_csv <- FileCreate(DirPath = '../08.correlation/table/CRC',
+                                Prefix = 'Melt-all-spearman-CRC',
+                                Suffix = 'csv')
+write.csv(x = crc_spm_res$melt_mat, file = crc_spm_melt_csv)
+
+crc_spm_selmelt_csv <- FileCreate(DirPath = '../08.correlation/table/CRC',
+                                Prefix = 'Melt-filter-spearman-CRC',
+                                Suffix = 'csv')
+write.csv(x = crc_spm_res$melt_filter, file = crc_spm_selmelt_csv)
+
+
+crc_spm_pval <- crc_spm_res$mat_p
+crc_spm_corr <- crc_spm_res$mat_corr
+
+crc_spm_corr[lower.tri(crc_spm_corr, diag = T)] <- NA
+crc_spm_pval[lower.tri(crc_spm_pval, diag = T)] <- NA
+
+crc_corr_melt <- melt(crc_spm_corr, na.rm = T)
+crc_pval_melt <- melt(crc_spm_pval, na.rm = T)
+
+crc_melt <- cbind(crc_corr_melt, pvalue = crc_pval_melt$value) %>% as.data.frame()
+colnames(crc_melt) <- c('feature_1', 'feature_2', 'rho', 'pvalue')
+
+crc_melt$rho <- ifelse(crc_melt$pvalue > 0.05, NA, crc_melt$rho)
+crc_melt$feature_1 <- factor(crc_melt$feature_1, rev(core_list))
+crc_melt$feature_2 <- factor(crc_melt$feature_2, rev(core_list))
+
+crc_plot <- ggplot(crc_melt, aes(x = feature_2, y = feature_1, fill = rho)) +
+  geom_tile(color="black", size=0.1) +
+  scale_fill_distiller(palette = "Spectral", limits = c(-0.2, 0.5), na.value="grey80") +
+  theme_minimal() +
+  theme(panel.grid = element_blank(), 
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), 
+        axis.title = element_blank())
+
+plot(crc_plot)
+  
+crc_pdf <- FileCreate(DirPath = '../08.correlation/', 
+                      Prefix = 'triangle-corr-heatmap-CRC',
+                      Suffix = 'pdf')
+pdf(file = crc_pdf, width = 10, height = 10)
+plot(crc_plot)
+plot(crc_plot + theme(legend.position = 'none', 
+                      axis.text= element_blank(),
+                      axis.text.x = element_blank()))
+dev.off()
+
+
+ctrl_spm_res <- Spearman_corr(mat = mod_df[rownames(meta_df)[meta_df$Stage == 'CTRL'], core_list],
+                             rho = c(-0.2, 0.4), pvalue = 0.05, SampleAsColumn = F)
+ctrl_spm_res_rds <- FileCreate(DirPath = '../08.correlation/table/ctrl',
+                              Prefix = 'ctrl_spm_res',
+                              Suffix = 'rds')
+saveRDS(object = ctrl_spm_res, file = ctrl_spm_res_rds)
+
+ctrl_spm_mat_p_csv <- FileCreate(DirPath = '../08.correlation/table/ctrl',
+                                Prefix = 'Matrix-pvalue-spearman-ctrl',
+                                Suffix = 'csv')
+write.csv(x = ctrl_spm_res$mat_p, file = ctrl_spm_mat_p_csv)
+
+ctrl_spm_mat_rho_csv <- FileCreate(DirPath = '../08.correlation/table/ctrl',
+                                Prefix = 'Matrix-rho-spearman-ctrl',
+                                Suffix = 'csv')
+write.csv(x = ctrl_spm_res$mat_corr, file = ctrl_spm_mat_rho_csv)
+
+ctrl_spm_melt_csv <- FileCreate(DirPath = '../08.correlation/table/ctrl',
+                                Prefix = 'Melt-all-spearman-ctrl',
+                                Suffix = 'csv')
+write.csv(x = ctrl_spm_res$melt_mat, file = ctrl_spm_melt_csv)
+
+ctrl_spm_selmelt_csv <- FileCreate(DirPath = '../08.correlation/table/ctrl',
+                                Prefix = 'Melt-filter-spearman-ctrl',
+                                Suffix = 'csv')
+write.csv(x = ctrl_spm_res$melt_filter, file = ctrl_spm_selmelt_csv)
+
+
+
+ctrl_spm_pval <- ctrl_spm_res$mat_p
+ctrl_spm_corr <- ctrl_spm_res$mat_corr
+
+ctrl_spm_corr[lower.tri(ctrl_spm_corr, diag = T)] <- NA
+ctrl_spm_pval[lower.tri(ctrl_spm_pval, diag = T)] <- NA
+
+ctrl_corr_melt <- melt(ctrl_spm_corr, na.rm = T)
+ctrl_pval_melt <- melt(ctrl_spm_pval, na.rm = T)
+
+ctrl_melt <- cbind(ctrl_corr_melt, pvalue = ctrl_pval_melt$value) %>% as.data.frame()
+colnames(ctrl_melt) <- c('feature_1', 'feature_2', 'rho', 'pvalue')
+
+ctrl_melt$rho <- ifelse(ctrl_melt$pvalue > 0.05, NA, ctrl_melt$rho)
+ctrl_melt$feature_1 <- factor(ctrl_melt$feature_1, rev(core_list))
+ctrl_melt$feature_2 <- factor(ctrl_melt$feature_2, core_list)
+
+ctrl_plot <- ggplot(ctrl_melt, aes(x = feature_2, y = feature_1, fill = rho)) +
+  geom_tile(color="black", size=0.1) +
+  scale_fill_distiller(palette = "Spectral", limits = c(-0.2, 0.5), na.value="grey80") +
+  theme_minimal() +
+  theme(panel.grid = element_blank(), 
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), 
+        axis.title = element_blank())
+
+plot(ctrl_plot)
+  
+ctrl_pdf <- FileCreate(DirPath = '../08.correlation/', 
+                      Prefix = 'triangle-corr-heatmap-CTRL',
+                      Suffix = 'pdf')
+pdf(file = ctrl_pdf, width = 10, height = 10)
+plot(ctrl_plot)
+plot(ctrl_plot + theme(legend.position = 'none', 
+                       axis.text= element_blank(),
+                      axis.text.x = element_blank()))
+dev.off()
+
+
+```

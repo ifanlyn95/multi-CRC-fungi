@@ -1,0 +1,529 @@
+"","Feature1","Feature2","rho","pvalue"
+"34","Aspergillus rambellii","Rhizophagus irregularis",-0.110052779440415,0.0189970314354246
+"67","Aspergillus rambellii","Moniliophthora perniciosa",0.451915260895326,0
+"68","Rhizophagus irregularis","Moniliophthora perniciosa",-0.109513928043696,0.0195939019860498
+"100","Aspergillus rambellii","Erysiphe pulchra",0.43556897634559,0
+"101","Rhizophagus irregularis","Erysiphe pulchra",0.165202822384023,0.000408340027751697
+"102","Moniliophthora perniciosa","Erysiphe pulchra",0.20873447029115,7.29832292645227e-06
+"133","Aspergillus rambellii","Sphaerulina musiva",0.438359044462262,0
+"134","Rhizophagus irregularis","Sphaerulina musiva",-0.138351510496097,0.00313699198881379
+"135","Moniliophthora perniciosa","Sphaerulina musiva",0.332482785928692,3.52384788016025e-13
+"136","Erysiphe pulchra","Sphaerulina musiva",0.400998779497481,0
+"166","Aspergillus rambellii","Phytophthora capsici",0.0366925952653992,0.435434085472937
+"167","Rhizophagus irregularis","Phytophthora capsici",-0.0890273072611084,0.0580308052349559
+"168","Moniliophthora perniciosa","Phytophthora capsici",0.0577844323183563,0.219123709152197
+"169","Erysiphe pulchra","Phytophthora capsici",-0.0215229704216488,0.647394634573117
+"170","Sphaerulina musiva","Phytophthora capsici",0.201893045251566,1.45993744102846e-05
+"199","Aspergillus rambellii","Trichophyton mentagrophytes",0.0259891055643309,0.580726566958294
+"200","Rhizophagus irregularis","Trichophyton mentagrophytes",0.192275216104606,3.72170819518125e-05
+"201","Moniliophthora perniciosa","Trichophyton mentagrophytes",-0.057417351827479,0.222070048377887
+"202","Erysiphe pulchra","Trichophyton mentagrophytes",0.0919830585145519,0.0501526937132339
+"203","Sphaerulina musiva","Trichophyton mentagrophytes",-0.079526302678854,0.0905508768528382
+"204","Phytophthora capsici","Trichophyton mentagrophytes",-0.025963586257661,0.581098255891269
+"232","Aspergillus rambellii","Aspergillus kawachii",-0.0762258484287833,0.10479300772164
+"233","Rhizophagus irregularis","Aspergillus kawachii",0.239019661086937,2.55388936221124e-07
+"234","Moniliophthora perniciosa","Aspergillus kawachii",-0.0491617276173633,0.295908893939555
+"235","Erysiphe pulchra","Aspergillus kawachii",0.0363968790785607,0.439145631565037
+"236","Sphaerulina musiva","Aspergillus kawachii",-0.0701204504862935,0.135753255691436
+"237","Phytophthora capsici","Aspergillus kawachii",-0.14567375618226,0.00185843309136602
+"238","Trichophyton mentagrophytes","Aspergillus kawachii",0.117691387586653,0.0120903388178848
+"265","Aspergillus rambellii","Pneumocystis murina",-0.0535096901231627,0.255196538659218
+"266","Rhizophagus irregularis","Pneumocystis murina",0.300658917474858,6.13153972039981e-11
+"267","Moniliophthora perniciosa","Pneumocystis murina",-0.00871561293353128,0.853074104936146
+"268","Erysiphe pulchra","Pneumocystis murina",0.165517004802823,0.000397933490061897
+"269","Sphaerulina musiva","Pneumocystis murina",-0.0770078420572921,0.101267821069043
+"270","Phytophthora capsici","Pneumocystis murina",-0.0493626104327158,0.293937426296116
+"271","Trichophyton mentagrophytes","Pneumocystis murina",0.169111508149347,0.000295202410771189
+"272","Aspergillus kawachii","Pneumocystis murina",0.188205848473667,5.45523202721832e-05
+"298","Aspergillus rambellii","Debaryomyces hansenii",-0.0322758316456715,0.492717580187803
+"299","Rhizophagus irregularis","Debaryomyces hansenii",0.172353742473648,0.000224329851663985
+"300","Moniliophthora perniciosa","Debaryomyces hansenii",9.48959172923092e-06,0.999839114613857
+"301","Erysiphe pulchra","Debaryomyces hansenii",0.0103203795067144,0.826417300626958
+"302","Sphaerulina musiva","Debaryomyces hansenii",0.00603134065805828,0.898023680591108
+"303","Phytophthora capsici","Debaryomyces hansenii",0.0938814897504398,0.0455800527364572
+"304","Trichophyton mentagrophytes","Debaryomyces hansenii",0.0725063133033492,0.122907458999698
+"305","Aspergillus kawachii","Debaryomyces hansenii",0.133033107453273,0.00451999758096644
+"306","Pneumocystis murina","Debaryomyces hansenii",0.224857984737788,1.29825346673051e-06
+"331","Aspergillus rambellii","Trichoderma atroviride",-0.0346050133896211,0.462019098484731
+"332","Rhizophagus irregularis","Trichoderma atroviride",0.0734913072457198,0.11788856017495
+"333","Moniliophthora perniciosa","Trichoderma atroviride",0.198448394045294,2.05186322110862e-05
+"334","Erysiphe pulchra","Trichoderma atroviride",0.00785872819598058,0.867378667281248
+"335","Sphaerulina musiva","Trichoderma atroviride",0.0254993657041678,0.58787891597869
+"336","Phytophthora capsici","Trichoderma atroviride",0.132735339462883,0.00461167049802902
+"337","Trichophyton mentagrophytes","Trichoderma atroviride",-0.00721638544668565,0.878130456454294
+"338","Aspergillus kawachii","Trichoderma atroviride",0.0639265685156516,0.173913140301617
+"339","Pneumocystis murina","Trichoderma atroviride",0.0680355616026766,0.147803536480582
+"340","Debaryomyces hansenii","Trichoderma atroviride",0.173654970638371,0.000200646384193259
+"364","Aspergillus rambellii","Pseudocercospora musae",-0.165655758017983,0.000393416700602556
+"365","Rhizophagus irregularis","Pseudocercospora musae",0.18186962263165,9.73873417926541e-05
+"366","Moniliophthora perniciosa","Pseudocercospora musae",0.109729495661221,0.0193531923899819
+"367","Erysiphe pulchra","Pseudocercospora musae",0.0792827792448529,0.0915457123623691
+"368","Sphaerulina musiva","Pseudocercospora musae",-0.0233121431184272,0.620306332265543
+"369","Phytophthora capsici","Pseudocercospora musae",-0.00590669359231369,0.900120057638737
+"370","Trichophyton mentagrophytes","Pseudocercospora musae",0.0416629611308259,0.375799947938901
+"371","Aspergillus kawachii","Pseudocercospora musae",0.115853741030974,0.0135096101749168
+"372","Pneumocystis murina","Pseudocercospora musae",0.245366530659876,1.1912432240635e-07
+"373","Debaryomyces hansenii","Pseudocercospora musae",0.218332992969046,2.6526710632524e-06
+"374","Trichoderma atroviride","Pseudocercospora musae",0.347443757339606,2.50910403565285e-14
+"397","Aspergillus rambellii","Cordyceps sp. RAO-2017",0.00849106840296268,0.856818125091478
+"398","Rhizophagus irregularis","Cordyceps sp. RAO-2017",-0.214052161334596,4.18979836647182e-06
+"399","Moniliophthora perniciosa","Cordyceps sp. RAO-2017",0.104814848928425,0.0255280555209416
+"400","Erysiphe pulchra","Cordyceps sp. RAO-2017",0.00713803219856842,0.879443539840416
+"401","Sphaerulina musiva","Cordyceps sp. RAO-2017",0.159608451763541,0.000641689116020583
+"402","Phytophthora capsici","Cordyceps sp. RAO-2017",0.299502726173672,7.31161797773439e-11
+"403","Trichophyton mentagrophytes","Cordyceps sp. RAO-2017",-0.00589553691050321,0.900307730411208
+"404","Aspergillus kawachii","Cordyceps sp. RAO-2017",-0.0203903748613029,0.664789091445897
+"405","Pneumocystis murina","Cordyceps sp. RAO-2017",0.00139926590316064,0.976280498752333
+"406","Debaryomyces hansenii","Cordyceps sp. RAO-2017",0.0880512899592749,0.0608473078379235
+"407","Trichoderma atroviride","Cordyceps sp. RAO-2017",0.0552728305623833,0.239848559569717
+"408","Pseudocercospora musae","Cordyceps sp. RAO-2017",0.0485816427059826,0.301651276202276
+"430","Aspergillus rambellii","Rhizophagus clarus",-0.008205354758437,0.86158670503647
+"431","Rhizophagus irregularis","Rhizophagus clarus",0.43398972879966,0
+"432","Moniliophthora perniciosa","Rhizophagus clarus",0.0666213581407505,0.156429969810338
+"433","Erysiphe pulchra","Rhizophagus clarus",0.200245190524386,1.71933858155171e-05
+"434","Sphaerulina musiva","Rhizophagus clarus",-0.0381868212016708,0.416957976541244
+"435","Phytophthora capsici","Rhizophagus clarus",-0.0245241178286661,0.602241392652172
+"436","Trichophyton mentagrophytes","Rhizophagus clarus",0.122705354277546,0.00886527895003342
+"437","Aspergillus kawachii","Rhizophagus clarus",0.178554292805832,0.000130880104828535
+"438","Pneumocystis murina","Rhizophagus clarus",0.335979689709596,1.92512672470002e-13
+"439","Debaryomyces hansenii","Rhizophagus clarus",0.350625719934586,1.4210854715202e-14
+"440","Trichoderma atroviride","Rhizophagus clarus",0.256104772783595,3.12262635748795e-08
+"441","Pseudocercospora musae","Rhizophagus clarus",0.454083040978043,0
+"442","Cordyceps sp. RAO-2017","Rhizophagus clarus",-0.123474267658414,0.00844519501173346
+"463","Aspergillus rambellii","Pichia kudriavzevii",0.0283656070276836,0.546609190338784
+"464","Rhizophagus irregularis","Pichia kudriavzevii",0.311550916627207,1.12354570092066e-11
+"465","Moniliophthora perniciosa","Pichia kudriavzevii",0.0864429352217707,0.0657342283614557
+"466","Erysiphe pulchra","Pichia kudriavzevii",0.16468038190476,0.000426207284633939
+"467","Sphaerulina musiva","Pichia kudriavzevii",-0.0539812202268076,0.251026789342014
+"468","Phytophthora capsici","Pichia kudriavzevii",-0.0365134471678218,0.437680422865749
+"469","Trichophyton mentagrophytes","Pichia kudriavzevii",0.13386472908018,0.0042726185260511
+"470","Aspergillus kawachii","Pichia kudriavzevii",0.240321915153435,2.18773859472776e-07
+"471","Pneumocystis murina","Pichia kudriavzevii",0.285185882180952,6.06381167500558e-10
+"472","Debaryomyces hansenii","Pichia kudriavzevii",0.208792875881594,7.25452655991887e-06
+"473","Trichoderma atroviride","Pichia kudriavzevii",0.27688595210257,1.95928873125695e-09
+"474","Pseudocercospora musae","Pichia kudriavzevii",0.315193124406299,6.27053964308288e-12
+"475","Cordyceps sp. RAO-2017","Pichia kudriavzevii",-0.0335800092779992,0.475395798329444
+"476","Rhizophagus clarus","Pichia kudriavzevii",0.409341797450442,0
+"496","Aspergillus rambellii","Paracoccidioides brasiliensis",0.00532334019512011,0.909940186439001
+"497","Rhizophagus irregularis","Paracoccidioides brasiliensis",0.189536186601274,4.8184186879574e-05
+"498","Moniliophthora perniciosa","Paracoccidioides brasiliensis",0.0341434228040468,0.468016963439868
+"499","Erysiphe pulchra","Paracoccidioides brasiliensis",0.0831095211058452,0.0768910179559685
+"500","Sphaerulina musiva","Paracoccidioides brasiliensis",0.0729533500020999,0.12060940666387
+"501","Phytophthora capsici","Paracoccidioides brasiliensis",-0.0226082462625917,0.630904927309986
+"502","Trichophyton mentagrophytes","Paracoccidioides brasiliensis",0.0393292910666076,0.403147396850265
+"503","Aspergillus kawachii","Paracoccidioides brasiliensis",0.113384523694644,0.015646681407903
+"504","Pneumocystis murina","Paracoccidioides brasiliensis",0.171819119410799,0.00023479850614283
+"505","Debaryomyces hansenii","Paracoccidioides brasiliensis",0.190670192776561,4.33170300566665e-05
+"506","Trichoderma atroviride","Paracoccidioides brasiliensis",0.13083395875939,0.00523767686002197
+"507","Pseudocercospora musae","Paracoccidioides brasiliensis",0.271546774548788,4.08214839708876e-09
+"508","Cordyceps sp. RAO-2017","Paracoccidioides brasiliensis",-0.0174494991836066,0.710783117216954
+"509","Rhizophagus clarus","Paracoccidioides brasiliensis",0.299402828988265,7.42339523185365e-11
+"510","Pichia kudriavzevii","Paracoccidioides brasiliensis",0.140986795682364,0.00260547422845914
+"529","Aspergillus rambellii","Albugo candida",-0.0966943841816205,0.0394519138757685
+"530","Rhizophagus irregularis","Albugo candida",0.301546322510818,5.3538062871894e-11
+"531","Moniliophthora perniciosa","Albugo candida",0.0955417865996642,0.0418730295487886
+"532","Erysiphe pulchra","Albugo candida",0.111654853300855,0.0173150685312935
+"533","Sphaerulina musiva","Albugo candida",0.0395172875670002,0.400901289978714
+"534","Phytophthora capsici","Albugo candida",-0.0662602385798698,0.158692579143136
+"535","Trichophyton mentagrophytes","Albugo candida",0.126541201016797,0.00694071541842911
+"536","Aspergillus kawachii","Albugo candida",0.236306792078884,3.51537249976275e-07
+"537","Pneumocystis murina","Albugo candida",0.272713737818619,3.48177087161616e-09
+"538","Debaryomyces hansenii","Albugo candida",0.332546894130463,3.48610029732299e-13
+"539","Trichoderma atroviride","Albugo candida",0.232738705703084,5.32051969592828e-07
+"540","Pseudocercospora musae","Albugo candida",0.37763925254079,0
+"541","Cordyceps sp. RAO-2017","Albugo candida",0.0558728548634316,0.234776422554076
+"542","Rhizophagus clarus","Albugo candida",0.336431471204059,1.7785772854495e-13
+"543","Pichia kudriavzevii","Albugo candida",0.329322100136349,6.04849503815785e-13
+"544","Paracoccidioides brasiliensis","Albugo candida",0.185443864418104,7.03969475708277e-05
+"562","Aspergillus rambellii","Lipomyces starkeyi",-0.126856922288261,0.00680035440662552
+"563","Rhizophagus irregularis","Lipomyces starkeyi",0.0877517266407776,0.0617340671007742
+"564","Moniliophthora perniciosa","Lipomyces starkeyi",0.121568017818889,0.0095207728310962
+"565","Erysiphe pulchra","Lipomyces starkeyi",-0.0521952534730783,0.267072570856087
+"566","Sphaerulina musiva","Lipomyces starkeyi",-0.0953337819516307,0.0423230467841993
+"567","Phytophthora capsici","Lipomyces starkeyi",-0.0192661147528843,0.682235329000601
+"568","Trichophyton mentagrophytes","Lipomyces starkeyi",0.0026058546290772,0.955843146322437
+"569","Aspergillus kawachii","Lipomyces starkeyi",0.15787929432064,0.000735747677244492
+"570","Pneumocystis murina","Lipomyces starkeyi",0.0850518096426432,0.0702170158860342
+"571","Debaryomyces hansenii","Lipomyces starkeyi",0.116451713528471,0.0130324580360632
+"572","Trichoderma atroviride","Lipomyces starkeyi",0.214898786774972,3.83046421958966e-06
+"573","Pseudocercospora musae","Lipomyces starkeyi",0.363796759881598,1.33226762955019e-15
+"574","Cordyceps sp. RAO-2017","Lipomyces starkeyi",-0.0480353500104353,0.307126307253526
+"575","Rhizophagus clarus","Lipomyces starkeyi",0.235859242429246,3.70428481888396e-07
+"576","Pichia kudriavzevii","Lipomyces starkeyi",0.262494217280225,1.36696129970915e-08
+"577","Paracoccidioides brasiliensis","Lipomyces starkeyi",0.20915450625752,6.98887906391832e-06
+"578","Albugo candida","Lipomyces starkeyi",0.191945132208282,3.84010181968542e-05
+"595","Aspergillus rambellii","Naumovozyma dairenensis",-0.0529006891815772,0.260652624281126
+"596","Rhizophagus irregularis","Naumovozyma dairenensis",0.305992452568874,2.6946667119887e-11
+"597","Moniliophthora perniciosa","Naumovozyma dairenensis",-0.0904871042699989,0.0540204534845259
+"598","Erysiphe pulchra","Naumovozyma dairenensis",0.0916463062566864,0.0510025563308885
+"599","Sphaerulina musiva","Naumovozyma dairenensis",-0.119186511186978,0.0110345000045062
+"600","Phytophthora capsici","Naumovozyma dairenensis",-0.0599229868360772,0.202514188683949
+"601","Trichophyton mentagrophytes","Naumovozyma dairenensis",0.0811208105136979,0.0842494346765954
+"602","Aspergillus kawachii","Naumovozyma dairenensis",0.167346059431131,0.000342093629807305
+"603","Pneumocystis murina","Naumovozyma dairenensis",0.212351216190525,5.01139144137852e-06
+"604","Debaryomyces hansenii","Naumovozyma dairenensis",0.259286991854019,2.07511017258355e-08
+"605","Trichoderma atroviride","Naumovozyma dairenensis",0.189964372354897,4.62886407217589e-05
+"606","Pseudocercospora musae","Naumovozyma dairenensis",0.281951983308578,9.62082413735743e-10
+"607","Cordyceps sp. RAO-2017","Naumovozyma dairenensis",-0.0772150742159786,0.100349585120223
+"608","Rhizophagus clarus","Naumovozyma dairenensis",0.483564380305635,0
+"609","Pichia kudriavzevii","Naumovozyma dairenensis",0.34960110053613,1.68753899743024e-14
+"610","Paracoccidioides brasiliensis","Naumovozyma dairenensis",0.16030144841301,0.000607224312084709
+"611","Albugo candida","Naumovozyma dairenensis",0.306733923077244,2.40043540600254e-11
+"612","Lipomyces starkeyi","Naumovozyma dairenensis",0.196378438494143,2.51048703947543e-05
+"628","Aspergillus rambellii","Phytopythium vexans",0.0764691153873404,0.103686117715683
+"629","Rhizophagus irregularis","Phytopythium vexans",-0.204992679229048,1.06944094684369e-05
+"630","Moniliophthora perniciosa","Phytopythium vexans",0.123897776707278,0.00822147642033233
+"631","Erysiphe pulchra","Phytopythium vexans",-0.034883930434883,0.458415705488139
+"632","Sphaerulina musiva","Phytopythium vexans",0.131426417034843,0.00503486676379339
+"633","Phytophthora capsici","Phytopythium vexans",0.380357122819999,0
+"634","Trichophyton mentagrophytes","Phytopythium vexans",-0.0429865026591695,0.360810017067115
+"635","Aspergillus kawachii","Phytopythium vexans",0.00187438666302044,0.968230247390723
+"636","Pneumocystis murina","Phytopythium vexans",0.00829088931898396,0.860158591843568
+"637","Debaryomyces hansenii","Phytopythium vexans",0.103026891129701,0.0281625523122564
+"638","Trichoderma atroviride","Phytopythium vexans",0.269449061892975,5.42322542429474e-09
+"639","Pseudocercospora musae","Phytopythium vexans",0.0803159905706803,0.0873843698072072
+"640","Cordyceps sp. RAO-2017","Phytopythium vexans",0.504082928770037,0
+"641","Rhizophagus clarus","Phytopythium vexans",-0.0541302324597245,0.249718981121366
+"642","Pichia kudriavzevii","Phytopythium vexans",-0.0062653745006343,0.894089508732022
+"643","Paracoccidioides brasiliensis","Phytopythium vexans",0.0996468012542932,0.0337845239918311
+"644","Albugo candida","Phytopythium vexans",0.0753588331906154,0.108814230385779
+"645","Lipomyces starkeyi","Phytopythium vexans",0.058320015311584,0.214875252525934
+"646","Naumovozyma dairenensis","Phytopythium vexans",0.0303815040168863,0.51846617952243
+"661","Aspergillus rambellii","Aspergillus ochraceoroseus",0.341505837861995,7.28306304154103e-14
+"662","Rhizophagus irregularis","Aspergillus ochraceoroseus",-0.00134566253538159,0.977188898616674
+"663","Moniliophthora perniciosa","Aspergillus ochraceoroseus",0.267262745539579,7.27302174041711e-09
+"664","Erysiphe pulchra","Aspergillus ochraceoroseus",0.358621598374202,3.10862446895044e-15
+"665","Sphaerulina musiva","Aspergillus ochraceoroseus",0.368251866580192,4.44089209850063e-16
+"666","Phytophthora capsici","Aspergillus ochraceoroseus",0.0776024803740181,0.0986507589650081
+"667","Trichophyton mentagrophytes","Aspergillus ochraceoroseus",0.0273547090654772,0.56100033323909
+"668","Aspergillus kawachii","Aspergillus ochraceoroseus",-0.018207384120387,0.698821112769215
+"669","Pneumocystis murina","Aspergillus ochraceoroseus",0.0692839558259519,0.14049390310669
+"670","Debaryomyces hansenii","Aspergillus ochraceoroseus",0.0151376295321215,0.747702028254556
+"671","Trichoderma atroviride","Aspergillus ochraceoroseus",-0.0508378571861374,0.279728652816577
+"672","Pseudocercospora musae","Aspergillus ochraceoroseus",-0.103318375471714,0.027717755507803
+"673","Cordyceps sp. RAO-2017","Aspergillus ochraceoroseus",0.156432259866049,0.000824103624763595
+"674","Rhizophagus clarus","Aspergillus ochraceoroseus",-0.00408853917037247,0.93077020826216
+"675","Pichia kudriavzevii","Aspergillus ochraceoroseus",0.0422466992411853,0.36914209709261
+"676","Paracoccidioides brasiliensis","Aspergillus ochraceoroseus",0.0289729408788836,0.538051708628333
+"677","Albugo candida","Aspergillus ochraceoroseus",0.027693769602338,0.556153150492884
+"678","Lipomyces starkeyi","Aspergillus ochraceoroseus",-0.0634464464846354,0.177175125503553
+"679","Naumovozyma dairenensis","Aspergillus ochraceoroseus",-0.0925791074462195,0.0486774493226565
+"680","Phytopythium vexans","Aspergillus ochraceoroseus",0.14073980982987,0.00265155485665325
+"694","Aspergillus rambellii","Colletotrichum fioriniae",-0.0286310591121397,0.542860652871536
+"695","Rhizophagus irregularis","Colletotrichum fioriniae",0.0483909532134289,0.303554992308545
+"696","Moniliophthora perniciosa","Colletotrichum fioriniae",0.135353381014898,0.00386016125962829
+"697","Erysiphe pulchra","Colletotrichum fioriniae",-0.000193831316741723,0.996713816624627
+"698","Sphaerulina musiva","Colletotrichum fioriniae",0.085147218507781,0.0699017847522634
+"699","Phytophthora capsici","Colletotrichum fioriniae",0.159698474644357,0.000637111729490325
+"700","Trichophyton mentagrophytes","Colletotrichum fioriniae",-0.0947588922440864,0.043588076617018
+"701","Aspergillus kawachii","Colletotrichum fioriniae",-0.00619253547456132,0.895313678660882
+"702","Pneumocystis murina","Colletotrichum fioriniae",0.105483284693834,0.0245992094639629
+"703","Debaryomyces hansenii","Colletotrichum fioriniae",0.147852002127464,0.00158302061975357
+"704","Trichoderma atroviride","Colletotrichum fioriniae",0.310988081265527,1.22866161689217e-11
+"705","Pseudocercospora musae","Colletotrichum fioriniae",0.351311278796181,1.24344978758018e-14
+"706","Cordyceps sp. RAO-2017","Colletotrichum fioriniae",0.22150867191565,1.87855543209992e-06
+"707","Rhizophagus clarus","Colletotrichum fioriniae",0.137269568835925,0.00338240433708403
+"708","Pichia kudriavzevii","Colletotrichum fioriniae",0.165738471348647,0.000390746921476115
+"709","Paracoccidioides brasiliensis","Colletotrichum fioriniae",0.141703772785839,0.00247580977397854
+"710","Albugo candida","Colletotrichum fioriniae",0.231131630571488,6.39856982953546e-07
+"711","Lipomyces starkeyi","Colletotrichum fioriniae",0.162297083842143,0.000517330533452043
+"712","Naumovozyma dairenensis","Colletotrichum fioriniae",0.141221086000384,0.00256243786631138
+"713","Phytopythium vexans","Colletotrichum fioriniae",0.220273229702293,2.14975027557074e-06
+"714","Aspergillus ochraceoroseus","Colletotrichum fioriniae",-0.0242975217739637,0.605600901552133
+"727","Aspergillus rambellii","Coniochaeta ligniaria",0.0496603784231056,0.291031312610168
+"728","Rhizophagus irregularis","Coniochaeta ligniaria",-0.0568351507290154,0.22680084025632
+"729","Moniliophthora perniciosa","Coniochaeta ligniaria",0.126324226841124,0.00703867418842874
+"730","Erysiphe pulchra","Coniochaeta ligniaria",0.0426192298234776,0.364931646697684
+"731","Sphaerulina musiva","Coniochaeta ligniaria",0.158610121098087,0.000694535941714314
+"732","Phytophthora capsici","Coniochaeta ligniaria",0.303235982735356,4.13000744714509e-11
+"733","Trichophyton mentagrophytes","Coniochaeta ligniaria",-0.112522381489911,0.0164597829816731
+"734","Aspergillus kawachii","Coniochaeta ligniaria",-0.0590450713915428,0.209218559703432
+"735","Pneumocystis murina","Coniochaeta ligniaria",0.0376538652292073,0.423494504617105
+"736","Debaryomyces hansenii","Coniochaeta ligniaria",0.0774188439561722,0.0994531534853011
+"737","Trichoderma atroviride","Coniochaeta ligniaria",0.126935916724988,0.00676563568265354
+"738","Pseudocercospora musae","Coniochaeta ligniaria",0.131250603118036,0.00509430013369894
+"739","Cordyceps sp. RAO-2017","Coniochaeta ligniaria",0.323102185908149,1.71906933132959e-12
+"740","Rhizophagus clarus","Coniochaeta ligniaria",0.130231626179346,0.00545137918775263
+"741","Pichia kudriavzevii","Coniochaeta ligniaria",0.0276849211995228,0.556279387352284
+"742","Paracoccidioides brasiliensis","Coniochaeta ligniaria",0.104973411511323,0.0253050263410022
+"743","Albugo candida","Coniochaeta ligniaria",0.0311074577608988,0.508517436761915
+"744","Lipomyces starkeyi","Coniochaeta ligniaria",-0.00260534167818936,0.955851829555263
+"745","Naumovozyma dairenensis","Coniochaeta ligniaria",-0.0402701712326242,0.391981484713236
+"746","Phytopythium vexans","Coniochaeta ligniaria",0.330995089457032,4.54747350886464e-13
+"747","Aspergillus ochraceoroseus","Coniochaeta ligniaria",0.0846292663487867,0.0716271048637616
+"748","Colletotrichum fioriniae","Coniochaeta ligniaria",0.194107861389129,3.1247424167935e-05
+"760","Aspergillus rambellii","Leucoagaricus sp. SymC.cos",-0.0231537695318073,0.622684229593959
+"761","Rhizophagus irregularis","Leucoagaricus sp. SymC.cos",0.211318902528752,5.58274322237651e-06
+"762","Moniliophthora perniciosa","Leucoagaricus sp. SymC.cos",0.109088242912004,0.0200769000344927
+"763","Erysiphe pulchra","Leucoagaricus sp. SymC.cos",0.0847911023538996,0.0710843259626488
+"764","Sphaerulina musiva","Leucoagaricus sp. SymC.cos",0.0213734452378441,0.649680343620476
+"765","Phytophthora capsici","Leucoagaricus sp. SymC.cos",0.0245100116792505,0.602450285692288
+"766","Trichophyton mentagrophytes","Leucoagaricus sp. SymC.cos",-0.0119342512375742,0.799808925524243
+"767","Aspergillus kawachii","Leucoagaricus sp. SymC.cos",0.184604035576991,7.60170273244043e-05
+"768","Pneumocystis murina","Leucoagaricus sp. SymC.cos",0.242479001874515,1.68975095471424e-07
+"769","Debaryomyces hansenii","Leucoagaricus sp. SymC.cos",0.22439414889746,1.36687841933991e-06
+"770","Trichoderma atroviride","Leucoagaricus sp. SymC.cos",0.316745185555175,4.87876405941279e-12
+"771","Pseudocercospora musae","Leucoagaricus sp. SymC.cos",0.420842156355766,0
+"772","Cordyceps sp. RAO-2017","Leucoagaricus sp. SymC.cos",-0.111258342264556,0.0177187512482191
+"773","Rhizophagus clarus","Leucoagaricus sp. SymC.cos",0.441055114328738,0
+"774","Pichia kudriavzevii","Leucoagaricus sp. SymC.cos",0.321942916901636,2.08300043880172e-12
+"775","Paracoccidioides brasiliensis","Leucoagaricus sp. SymC.cos",0.228721915538148,8.41679847152221e-07
+"776","Albugo candida","Leucoagaricus sp. SymC.cos",0.359849089848798,2.66453525910038e-15
+"777","Lipomyces starkeyi","Leucoagaricus sp. SymC.cos",0.245370121316091,1.19072222748429e-07
+"778","Naumovozyma dairenensis","Leucoagaricus sp. SymC.cos",0.30208184323772,4.93196594675283e-11
+"779","Phytopythium vexans","Leucoagaricus sp. SymC.cos",0.0528629872913212,0.26099302226144
+"780","Aspergillus ochraceoroseus","Leucoagaricus sp. SymC.cos",-0.0223253538479492,0.635186018139922
+"781","Colletotrichum fioriniae","Leucoagaricus sp. SymC.cos",0.276195904920706,2.1561950003246e-09
+"782","Coniochaeta ligniaria","Leucoagaricus sp. SymC.cos",0.00663649446798497,0.887856240883186
+"793","Aspergillus rambellii","Colletotrichum salicis",-0.028266479268609,0.548012275890569
+"794","Rhizophagus irregularis","Colletotrichum salicis",-0.0855466790116847,0.0685945133167136
+"795","Moniliophthora perniciosa","Colletotrichum salicis",0.114604901649839,0.0145559989752346
+"796","Erysiphe pulchra","Colletotrichum salicis",-0.0386561712640424,0.411250962820051
+"797","Sphaerulina musiva","Colletotrichum salicis",0.066803838283256,0.155295948563168
+"798","Phytophthora capsici","Colletotrichum salicis",0.229367207755048,7.82330701110112e-07
+"799","Trichophyton mentagrophytes","Colletotrichum salicis",-0.021047977899511,0.654666936550466
+"800","Aspergillus kawachii","Colletotrichum salicis",0.0612038252030083,0.193014767314346
+"801","Pneumocystis murina","Colletotrichum salicis",0.111002892722413,0.0179831537700028
+"802","Debaryomyces hansenii","Colletotrichum salicis",0.157390323886808,0.000764572727353086
+"803","Trichoderma atroviride","Colletotrichum salicis",0.189757524909376,4.71953645670986e-05
+"804","Pseudocercospora musae","Colletotrichum salicis",0.155499971627404,0.000886121216095326
+"805","Cordyceps sp. RAO-2017","Colletotrichum salicis",0.305337414285105,2.98365776529863e-11
+"806","Rhizophagus clarus","Colletotrichum salicis",-0.00215214956878463,0.963525388282421
+"807","Pichia kudriavzevii","Colletotrichum salicis",0.100728742914465,0.0318890601117183
+"808","Paracoccidioides brasiliensis","Colletotrichum salicis",0.093089878292784,0.0474423296785511
+"809","Albugo candida","Colletotrichum salicis",0.156353906617932,0.000829157103901856
+"810","Lipomyces starkeyi","Colletotrichum salicis",0.0792000659141891,0.0918855957637605
+"811","Naumovozyma dairenensis","Colletotrichum salicis",0.0144101369354455,0.759444597702119
+"812","Phytopythium vexans","Colletotrichum salicis",0.376325457079315,0
+"813","Aspergillus ochraceoroseus","Colletotrichum salicis",0.0998505709944867,0.0334203713324099
+"814","Colletotrichum fioriniae","Colletotrichum salicis",0.262945101110635,1.28847386093867e-08
+"815","Coniochaeta ligniaria","Colletotrichum salicis",0.174855019240467,0.00018089902313756
+"816","Leucoagaricus sp. SymC.cos","Colletotrichum salicis",0.0975334435964013,0.0377648387077985
+"826","Aspergillus rambellii","[Candida] arabinofermentans",-0.0536545987489769,0.25391003222816
+"827","Rhizophagus irregularis","[Candida] arabinofermentans",0.401315270195277,0
+"828","Moniliophthora perniciosa","[Candida] arabinofermentans",0.0176873166060257,0.707021733274768
+"829","Erysiphe pulchra","[Candida] arabinofermentans",0.22831758200081,8.81044560419042e-07
+"830","Sphaerulina musiva","[Candida] arabinofermentans",-0.0571570274111337,0.224176587304609
+"831","Phytophthora capsici","[Candida] arabinofermentans",-0.0896806784544918,0.0562063757772342
+"832","Trichophyton mentagrophytes","[Candida] arabinofermentans",0.056886958768687,0.226376982442486
+"833","Aspergillus kawachii","[Candida] arabinofermentans",0.119044167315603,0.0111313802760651
+"834","Pneumocystis murina","[Candida] arabinofermentans",0.340397222755656,8.88178419700125e-14
+"835","Debaryomyces hansenii","[Candida] arabinofermentans",0.236131362875244,3.58829029156738e-07
+"836","Trichoderma atroviride","[Candida] arabinofermentans",0.0954856154144307,0.0419941560300636
+"837","Pseudocercospora musae","[Candida] arabinofermentans",0.368091056476855,4.44089209850063e-16
+"838","Cordyceps sp. RAO-2017","[Candida] arabinofermentans",-0.0267442975089502,0.56977775577212
+"839","Rhizophagus clarus","[Candida] arabinofermentans",0.566931466876036,0
+"840","Pichia kudriavzevii","[Candida] arabinofermentans",0.390852482698327,0
+"841","Paracoccidioides brasiliensis","[Candida] arabinofermentans",0.264627580022743,1.03233976922468e-08
+"842","Albugo candida","[Candida] arabinofermentans",0.306204814236439,2.60698129750381e-11
+"843","Lipomyces starkeyi","[Candida] arabinofermentans",0.119698051459874,0.0106924764491936
+"844","Naumovozyma dairenensis","[Candida] arabinofermentans",0.414327423604782,0
+"845","Phytopythium vexans","[Candida] arabinofermentans",-0.0292018452125813,0.534843870805074
+"846","Aspergillus ochraceoroseus","[Candida] arabinofermentans",0.0334293299546968,0.477379920370294
+"847","Colletotrichum fioriniae","[Candida] arabinofermentans",0.100961237904378,0.0314938295867098
+"848","Coniochaeta ligniaria","[Candida] arabinofermentans",0.0711764881266296,0.129945389113388
+"849","Leucoagaricus sp. SymC.cos","[Candida] arabinofermentans",0.363984371668825,1.11022302462516e-15
+"850","Colletotrichum salicis","[Candida] arabinofermentans",0.0380953877059137,0.418075145214107
+"859","Aspergillus rambellii","Baudoinia panamericana",-0.0323112252569323,0.492243081275716
+"860","Rhizophagus irregularis","Baudoinia panamericana",0.149570002888555,0.00139279365098099
+"861","Moniliophthora perniciosa","Baudoinia panamericana",0.0620081983019466,0.187218315740663
+"862","Erysiphe pulchra","Baudoinia panamericana",0.0823580480551627,0.0796076858696777
+"863","Sphaerulina musiva","Baudoinia panamericana",0.0366018029582519,0.436571700387637
+"864","Phytophthora capsici","Baudoinia panamericana",0.0435229210501259,0.354842730226177
+"865","Trichophyton mentagrophytes","Baudoinia panamericana",0.00918739923320254,0.845218450251342
+"866","Aspergillus kawachii","Baudoinia panamericana",0.127360383584674,0.00658178354512318
+"867","Pneumocystis murina","Baudoinia panamericana",0.082553354105707,0.0788942591130031
+"868","Debaryomyces hansenii","Baudoinia panamericana",0.1118227164789,0.0171466059975673
+"869","Trichoderma atroviride","Baudoinia panamericana",0.312354582430727,9.88542581126239e-12
+"870","Pseudocercospora musae","Baudoinia panamericana",0.372928824537775,2.22044604925031e-16
+"871","Cordyceps sp. RAO-2017","Baudoinia panamericana",0.0441193546949593,0.348281177131126
+"872","Rhizophagus clarus","Baudoinia panamericana",0.345946581935729,3.28626015289046e-14
+"873","Pichia kudriavzevii","Baudoinia panamericana",0.275242329220215,2.46020004368575e-09
+"874","Paracoccidioides brasiliensis","Baudoinia panamericana",0.187725598204928,5.70404773503341e-05
+"875","Albugo candida","Baudoinia panamericana",0.251348563913841,5.69337466060915e-08
+"876","Lipomyces starkeyi","Baudoinia panamericana",0.21870103523107,2.54934861132483e-06
+"877","Naumovozyma dairenensis","Baudoinia panamericana",0.284854387669687,6.3593574850529e-10
+"878","Phytopythium vexans","Baudoinia panamericana",0.165523031975755,0.000397736290374873
+"879","Aspergillus ochraceoroseus","Baudoinia panamericana",-0.0473450463531276,0.314137868884957
+"880","Colletotrichum fioriniae","Baudoinia panamericana",0.25024507831638,6.53337379752372e-08
+"881","Coniochaeta ligniaria","Baudoinia panamericana",0.0911354071723999,0.0523148416295367
+"882","Leucoagaricus sp. SymC.cos","Baudoinia panamericana",0.413119552501645,0
+"883","Colletotrichum salicis","Baudoinia panamericana",0.0354668991189107,0.450935166000363
+"884","[Candida] arabinofermentans","Baudoinia panamericana",0.352973752623664,9.10382880192628e-15
+"892","Aspergillus rambellii","Hyaloscypha variabilis",-0.0322292813526002,0.493342021241399
+"893","Rhizophagus irregularis","Hyaloscypha variabilis",0.14596690761466,0.00181897264456765
+"894","Moniliophthora perniciosa","Hyaloscypha variabilis",0.0633938069321404,0.177535507406672
+"895","Erysiphe pulchra","Hyaloscypha variabilis",0.0658384647123452,0.161366378149384
+"896","Sphaerulina musiva","Hyaloscypha variabilis",0.0457107848244762,0.331152399311508
+"897","Phytophthora capsici","Hyaloscypha variabilis",0.0805436125271583,0.0864883683558806
+"898","Trichophyton mentagrophytes","Hyaloscypha variabilis",-0.000881698457332264,0.985052662792399
+"899","Aspergillus kawachii","Hyaloscypha variabilis",0.097198999617531,0.0384298187806047
+"900","Pneumocystis murina","Hyaloscypha variabilis",0.11773178246907,0.0120606789278579
+"901","Debaryomyces hansenii","Hyaloscypha variabilis",0.223715771348295,1.47353873725109e-06
+"902","Trichoderma atroviride","Hyaloscypha variabilis",0.248080297331982,8.54218580315091e-08
+"903","Pseudocercospora musae","Hyaloscypha variabilis",0.370395360102744,4.44089209850063e-16
+"904","Cordyceps sp. RAO-2017","Hyaloscypha variabilis",0.0745072064790827,0.112881552987786
+"905","Rhizophagus clarus","Hyaloscypha variabilis",0.312539885938958,9.59765600327955e-12
+"906","Pichia kudriavzevii","Hyaloscypha variabilis",0.146627203645029,0.00173288718277775
+"907","Paracoccidioides brasiliensis","Hyaloscypha variabilis",0.18048285990638,0.000110274504362184
+"908","Albugo candida","Hyaloscypha variabilis",0.270079222058684,4.98090502176751e-09
+"909","Lipomyces starkeyi","Hyaloscypha variabilis",0.198889333090109,1.9650260163484e-05
+"910","Naumovozyma dairenensis","Hyaloscypha variabilis",0.260612841661358,1.74740368841242e-08
+"911","Phytopythium vexans","Hyaloscypha variabilis",0.14962206740367,0.00138737138054013
+"912","Aspergillus ochraceoroseus","Hyaloscypha variabilis",-0.0760882493531208,0.105423225690529
+"913","Colletotrichum fioriniae","Hyaloscypha variabilis",0.182198039437588,9.45501522022774e-05
+"914","Coniochaeta ligniaria","Hyaloscypha variabilis",0.0467984971821364,0.319763135450095
+"915","Leucoagaricus sp. SymC.cos","Hyaloscypha variabilis",0.282371320659386,9.06490216223688e-10
+"916","Colletotrichum salicis","Hyaloscypha variabilis",0.0336256619070168,0.474795542829507
+"917","[Candida] arabinofermentans","Hyaloscypha variabilis",0.245903846714886,1.11567596938755e-07
+"918","Baudoinia panamericana","Hyaloscypha variabilis",0.363963853633311,1.11022302462516e-15
+"925","Aspergillus rambellii","Schizosaccharomyces pombe",-0.0429712423702563,0.360980690158636
+"926","Rhizophagus irregularis","Schizosaccharomyces pombe",0.247363320228507,9.33023622806672e-08
+"927","Moniliophthora perniciosa","Schizosaccharomyces pombe",0.101458226448525,0.0306629973991845
+"928","Erysiphe pulchra","Schizosaccharomyces pombe",0.0368959802924269,0.43289189492056
+"929","Sphaerulina musiva","Schizosaccharomyces pombe",0.0124878534832732,0.79073295560619
+"930","Phytophthora capsici","Schizosaccharomyces pombe",-0.0189365438074485,0.687382373389189
+"931","Trichophyton mentagrophytes","Schizosaccharomyces pombe",-0.043589091714657,0.354110953705123
+"932","Aspergillus kawachii","Schizosaccharomyces pombe",0.172572516027311,0.000220173214774411
+"933","Pneumocystis murina","Schizosaccharomyces pombe",0.205166056629137,1.0508356814265e-05
+"934","Debaryomyces hansenii","Schizosaccharomyces pombe",0.199897025109267,1.77948428297103e-05
+"935","Trichoderma atroviride","Schizosaccharomyces pombe",0.241733812472208,1.84796622004768e-07
+"936","Pseudocercospora musae","Schizosaccharomyces pombe",0.351909636006844,1.11022302462516e-14
+"937","Cordyceps sp. RAO-2017","Schizosaccharomyces pombe",-0.0327907060993387,0.485839134789217
+"938","Rhizophagus clarus","Schizosaccharomyces pombe",0.410589294009663,0
+"939","Pichia kudriavzevii","Schizosaccharomyces pombe",0.307666852504499,2.07445172151210e-11
+"940","Paracoccidioides brasiliensis","Schizosaccharomyces pombe",0.162519832765187,0.000508103240340452
+"941","Albugo candida","Schizosaccharomyces pombe",0.252432044426676,4.97062060400566e-08
+"942","Lipomyces starkeyi","Schizosaccharomyces pombe",0.2244019713985,1.36569276909526e-06
+"943","Naumovozyma dairenensis","Schizosaccharomyces pombe",0.231757045941484,5.95619040755224e-07
+"944","Phytopythium vexans","Schizosaccharomyces pombe",0.0292917398556749,0.533586732546762
+"945","Aspergillus ochraceoroseus","Schizosaccharomyces pombe",-0.0437310508728661,0.352544246660033
+"946","Colletotrichum fioriniae","Schizosaccharomyces pombe",0.165771428443191,0.000389687857735854
+"947","Coniochaeta ligniaria","Schizosaccharomyces pombe",0.0720567118501594,0.125252933202036
+"948","Leucoagaricus sp. SymC.cos","Schizosaccharomyces pombe",0.342206785250225,6.43929354282591e-14
+"949","Colletotrichum salicis","Schizosaccharomyces pombe",0.0399872788179816,0.395318893828707
+"950","[Candida] arabinofermentans","Schizosaccharomyces pombe",0.302449500786578,4.66129357334921e-11
+"951","Baudoinia panamericana","Schizosaccharomyces pombe",0.281469040047679,1.03021768893541e-09
+"952","Hyaloscypha variabilis","Schizosaccharomyces pombe",0.269210796205574,5.60020030349051e-09
+"958","Aspergillus rambellii","Tuber magnatum",-0.0571754313572466,0.22402719695761
+"959","Rhizophagus irregularis","Tuber magnatum",0.337293303627919,1.53210777398272e-13
+"960","Moniliophthora perniciosa","Tuber magnatum",0.0891385592003711,0.0577167326823438
+"961","Erysiphe pulchra","Tuber magnatum",0.194834270211444,2.91421940457059e-05
+"962","Sphaerulina musiva","Tuber magnatum",0.11761784702387,0.0121445013436838
+"963","Phytophthora capsici","Tuber magnatum",0.107594401641007,0.0218547302792211
+"964","Trichophyton mentagrophytes","Tuber magnatum",0.0471360844963507,0.316280867328192
+"965","Aspergillus kawachii","Tuber magnatum",0.123056857818569,0.00867098517291787
+"966","Pneumocystis murina","Tuber magnatum",0.262022887933468,1.45395135930926e-08
+"967","Debaryomyces hansenii","Tuber magnatum",0.199110421306134,1.92280981059501e-05
+"968","Trichoderma atroviride","Tuber magnatum",0.232393368968246,5.53632383049063e-07
+"969","Pseudocercospora musae","Tuber magnatum",0.407690557493958,0
+"970","Cordyceps sp. RAO-2017","Tuber magnatum",-0.0179875852416202,0.702282777794674
+"971","Rhizophagus clarus","Tuber magnatum",0.49783129166584,0
+"972","Pichia kudriavzevii","Tuber magnatum",0.320408178117329,2.68274291670423e-12
+"973","Paracoccidioides brasiliensis","Tuber magnatum",0.321429655724345,2.26729746088949e-12
+"974","Albugo candida","Tuber magnatum",0.303370642069303,4.04516420360324e-11
+"975","Lipomyces starkeyi","Tuber magnatum",0.21551234706489,3.588658006759e-06
+"976","Naumovozyma dairenensis","Tuber magnatum",0.259100157799728,2.12582247360871e-08
+"977","Phytopythium vexans","Tuber magnatum",0.0659535601822374,0.160633398868385
+"978","Aspergillus ochraceoroseus","Tuber magnatum",-0.0321435554659744,0.494493081018184
+"979","Colletotrichum fioriniae","Tuber magnatum",0.196845037756232,2.39932380541319e-05
+"980","Coniochaeta ligniaria","Tuber magnatum",0.218846720299317,2.50952284464034e-06
+"981","Leucoagaricus sp. SymC.cos","Tuber magnatum",0.326782298410535,9.29034627006331e-13
+"982","Colletotrichum salicis","Tuber magnatum",0.0736657770281286,0.117016520983815
+"983","[Candida] arabinofermentans","Tuber magnatum",0.377983775298779,0
+"984","Baudoinia panamericana","Tuber magnatum",0.335092744248546,2.24487095579207e-13
+"985","Hyaloscypha variabilis","Tuber magnatum",0.309006561892384,1.68070002359855e-11
+"986","Schizosaccharomyces pombe","Tuber magnatum",0.321901698794011,2.09721129351692e-12
+"991","Aspergillus rambellii","Thielaviopsis punctulata",0.318568725961438,3.62621044303069e-12
+"992","Rhizophagus irregularis","Thielaviopsis punctulata",0.116850661081486,0.012722439214206
+"993","Moniliophthora perniciosa","Thielaviopsis punctulata",0.182205290710276,9.44883952627151e-05
+"994","Erysiphe pulchra","Thielaviopsis punctulata",0.347021214045749,2.70894418008538e-14
+"995","Sphaerulina musiva","Thielaviopsis punctulata",0.329919816158402,5.46229728115577e-13
+"996","Phytophthora capsici","Thielaviopsis punctulata",0.158114867015879,0.000722222661579286
+"997","Trichophyton mentagrophytes","Thielaviopsis punctulata",0.0750079747833344,0.110475691033006
+"998","Aspergillus kawachii","Thielaviopsis punctulata",0.0758109993982445,0.106702160635455
+"999","Pneumocystis murina","Thielaviopsis punctulata",-0.0413789145766857,0.379066212686798
+"1000","Debaryomyces hansenii","Thielaviopsis punctulata",-0.0906243798503915,0.0536554874640225
+"1001","Trichoderma atroviride","Thielaviopsis punctulata",-0.0488296544602522,0.299187169293924
+"1002","Pseudocercospora musae","Thielaviopsis punctulata",-0.105901339667422,0.0240332432760115
+"1003","Cordyceps sp. RAO-2017","Thielaviopsis punctulata",0.116188056772122,0.0132409806528959
+"1004","Rhizophagus clarus","Thielaviopsis punctulata",-0.0763821702118519,0.104080659019192
+"1005","Pichia kudriavzevii","Thielaviopsis punctulata",0.0297834032816674,0.52673746325796
+"1006","Paracoccidioides brasiliensis","Thielaviopsis punctulata",0.0341006544291546,0.468574859337052
+"1007","Albugo candida","Thielaviopsis punctulata",-0.0083239746512495,0.859606310214395
+"1008","Lipomyces starkeyi","Thielaviopsis punctulata",-0.128215857427865,0.00622479419985478
+"1009","Naumovozyma dairenensis","Thielaviopsis punctulata",-0.077451031624384,0.0993121364293126
+"1010","Phytopythium vexans","Thielaviopsis punctulata",0.0830123169125999,0.0772381239522772
+"1011","Aspergillus ochraceoroseus","Thielaviopsis punctulata",0.382820312983396,0
+"1012","Colletotrichum fioriniae","Thielaviopsis punctulata",-0.000132277210201183,0.997757391164486
+"1013","Coniochaeta ligniaria","Thielaviopsis punctulata",0.105815548631431,0.024148461261051
+"1014","Leucoagaricus sp. SymC.cos","Thielaviopsis punctulata",-0.140379974782052,0.00272001952907441
+"1015","Colletotrichum salicis","Thielaviopsis punctulata",0.0506004891627904,0.281982885848702
+"1016","[Candida] arabinofermentans","Thielaviopsis punctulata",0.0174058983581404,0.711473484850803
+"1017","Baudoinia panamericana","Thielaviopsis punctulata",-0.0282668639817749,0.548006827111977
+"1018","Hyaloscypha variabilis","Thielaviopsis punctulata",-0.0493245238292938,0.294310532842931
+"1019","Schizosaccharomyces pombe","Thielaviopsis punctulata",-0.0779324360326198,0.0972219777105006
+"1020","Tuber magnatum","Thielaviopsis punctulata",0.0463743524034908,0.324173551812754
+"1024","Aspergillus rambellii","Edhazardia aedis",-0.0348532816193347,0.458810894746708
+"1025","Rhizophagus irregularis","Edhazardia aedis",0.423831249416919,0
+"1026","Moniliophthora perniciosa","Edhazardia aedis",0.0687745977992034,0.143442122392567
+"1027","Erysiphe pulchra","Edhazardia aedis",0.20858448958341,7.41194578424142e-06
+"1028","Sphaerulina musiva","Edhazardia aedis",-0.115980824613435,0.0134069356486282
+"1029","Phytophthora capsici","Edhazardia aedis",-0.100480731160196,0.0323153324930563
+"1030","Trichophyton mentagrophytes","Edhazardia aedis",0.102843895900464,0.0284449192822276
+"1031","Aspergillus kawachii","Edhazardia aedis",0.224335159545359,1.37585121584571e-06
+"1032","Pneumocystis murina","Edhazardia aedis",0.387505221679741,0
+"1033","Debaryomyces hansenii","Edhazardia aedis",0.25961489570907,1.98892351477298e-08
+"1034","Trichoderma atroviride","Edhazardia aedis",0.179553649373062,0.000119789085711197
+"1035","Pseudocercospora musae","Edhazardia aedis",0.415129935268804,0
+"1036","Cordyceps sp. RAO-2017","Edhazardia aedis",-0.0869680659218833,0.0641043655715956
+"1037","Rhizophagus clarus","Edhazardia aedis",0.705483861763583,0
+"1038","Pichia kudriavzevii","Edhazardia aedis",0.410526329288181,0
+"1039","Paracoccidioides brasiliensis","Edhazardia aedis",0.344481722437786,4.2854608750531e-14
+"1040","Albugo candida","Edhazardia aedis",0.330085627532895,5.31130694980675e-13
+"1041","Lipomyces starkeyi","Edhazardia aedis",0.300594285662991,6.1922911243073e-11
+"1042","Naumovozyma dairenensis","Edhazardia aedis",0.424765461221394,0
+"1043","Phytopythium vexans","Edhazardia aedis",-0.040542676391788,0.38878278134731
+"1044","Aspergillus ochraceoroseus","Edhazardia aedis",0.0137404795513732,0.770302789271497
+"1045","Colletotrichum fioriniae","Edhazardia aedis",0.179320641432261,0.000122293138410168
+"1046","Coniochaeta ligniaria","Edhazardia aedis",0.0356459189787661,0.44865191619101
+"1047","Leucoagaricus sp. SymC.cos","Edhazardia aedis",0.414187516250124,0
+"1048","Colletotrichum salicis","Edhazardia aedis",0.0637878153004914,0.174851212019245
+"1049","[Candida] arabinofermentans","Edhazardia aedis",0.524194963655827,0
+"1050","Baudoinia panamericana","Edhazardia aedis",0.279406721003127,1.37779787579007e-09
+"1051","Hyaloscypha variabilis","Edhazardia aedis",0.298882696787998,8.03286326345187e-11
+"1052","Schizosaccharomyces pombe","Edhazardia aedis",0.385310304830683,0
+"1053","Tuber magnatum","Edhazardia aedis",0.381052888796829,0
+"1054","Thielaviopsis punctulata","Edhazardia aedis",-0.10841762024771,0.0208588247563002
+"1057","Aspergillus rambellii","Choanephora cucurbitarum",-0.0363216035357705,0.440093301573715
+"1058","Rhizophagus irregularis","Choanephora cucurbitarum",0.265786977266978,8.85326256749863e-09
+"1059","Moniliophthora perniciosa","Choanephora cucurbitarum",0.0679770232619068,0.14815327030025
+"1060","Erysiphe pulchra","Choanephora cucurbitarum",0.0601049561635377,0.201144285945795
+"1061","Sphaerulina musiva","Choanephora cucurbitarum",-0.0982415722970614,0.0363890029310441
+"1062","Phytophthora capsici","Choanephora cucurbitarum",-0.0163026692361232,0.72901892394796
+"1063","Trichophyton mentagrophytes","Choanephora cucurbitarum",0.0546993514697806,0.244767798263324
+"1064","Aspergillus kawachii","Choanephora cucurbitarum",0.140555403985693,0.00268644257025863
+"1065","Pneumocystis murina","Choanephora cucurbitarum",0.202393044129485,1.38889093033168e-05
+"1066","Debaryomyces hansenii","Choanephora cucurbitarum",0.231826935499952,5.90862087257449e-07
+"1067","Trichoderma atroviride","Choanephora cucurbitarum",0.220472895835384,2.10351675211662e-06
+"1068","Pseudocercospora musae","Choanephora cucurbitarum",0.365470775104057,8.88178419700125e-16
+"1069","Cordyceps sp. RAO-2017","Choanephora cucurbitarum",-0.0508520915732749,0.279593860989518
+"1070","Rhizophagus clarus","Choanephora cucurbitarum",0.384870192968918,0
+"1071","Pichia kudriavzevii","Choanephora cucurbitarum",0.300568638118599,6.21656059962561e-11
+"1072","Paracoccidioides brasiliensis","Choanephora cucurbitarum",0.231402981591154,6.20288897135168e-07
+"1073","Albugo candida","Choanephora cucurbitarum",0.226079961990339,1.13291146774941e-06
+"1074","Lipomyces starkeyi","Choanephora cucurbitarum",0.393356837170473,0
+"1075","Naumovozyma dairenensis","Choanephora cucurbitarum",0.286724350131299,4.85816276096784e-10
+"1076","Phytopythium vexans","Choanephora cucurbitarum",0.00576358029460693,0.90252786488208
+"1077","Aspergillus ochraceoroseus","Choanephora cucurbitarum",-0.086010771327456,0.0671009484102525
+"1078","Colletotrichum fioriniae","Choanephora cucurbitarum",0.200242754007669,1.71975270133462e-05
+"1079","Coniochaeta ligniaria","Choanephora cucurbitarum",0.0497693804867712,0.289972321402798
+"1080","Leucoagaricus sp. SymC.cos","Choanephora cucurbitarum",0.395555857626634,0
+"1081","Colletotrichum salicis","Choanephora cucurbitarum",0.121228183958295,0.00972482010618281
+"1082","[Candida] arabinofermentans","Choanephora cucurbitarum",0.237960802216717,2.89443351064733e-07
+"1083","Baudoinia panamericana","Choanephora cucurbitarum",0.20532725144564,1.033814423268e-05
+"1084","Hyaloscypha variabilis","Choanephora cucurbitarum",0.284715249741361,6.48753939458402e-10
+"1085","Schizosaccharomyces pombe","Choanephora cucurbitarum",0.251172493521591,5.82002892546285e-08
+"1086","Tuber magnatum","Choanephora cucurbitarum",0.254349462999713,3.90303362962641e-08
+"1087","Thielaviopsis punctulata","Choanephora cucurbitarum",-0.108269249203403,0.0210353517273041
+"1088","Edhazardia aedis","Choanephora cucurbitarum",0.453652033994538,0

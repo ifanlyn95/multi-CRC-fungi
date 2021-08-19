@@ -122,7 +122,7 @@ pred_bar <- function(data, sel_features, span = 0.25){
 ### Taxonomy matrix
 
 ```{r taxonomy matrix, warning = FALSE}
-tax_df <- ImportTable(file = '../02.Filter_samples/Eukaryota_RawData_1636/2021-07-22-Selected-Euk_RawData-Species-v1.0.csv', sep = ',')
+tax_df <- ImportTable(file = '../02.Filter_samples/Eukaryota_RawData_1625/2021-08-03-Selected-Euk_RawData-Species-v1.0.csv', sep = ',')
 rownames(tax_df) <- gsub(pattern = 's__', replacement = '', x = rownames(tax_df)) %>% 
   gsub('_', ' ', .) # due to Feature names of CreateSeuratObject cannot have underscores, replace with blanket space.
 Show_table(tax_df)
@@ -131,7 +131,7 @@ Show_table(tax_df)
 ### Meta information
 
 ```{r meta information}
-meta_df <- ImportTable(file = '../00.RawData/metaData/2021-07-20-metaInfo-subgroup_1636-v5.0.csv')
+meta_df <- ImportTable(file = '../00.RawData/metaData/2021-08-03-metaInfo-subgroup_1625-v5.1.csv')
 Show_table(meta_df)
 ```
 
@@ -325,9 +325,9 @@ sel_phy_df <- cbind(sel_phy_df, meta_df[rownames(sel_phy_df), c('Cohort', 'Stage
 
 if (calculate_or_not) {
   # clustering 
-  Clust_method <- c("ward.D", "ward.D2", "single", "complete", "average","mcquitty","median","centroid")
+  # Clust_method <- c("ward.D", "ward.D2", "single", "complete", "average","mcquitty","median","centroid")
   # Clust_method <- c("centroid")
-  dist_method <- c("euclidean", "maximum", "manhattan", "canberra", "binary", "minkowski")
+  # dist_method <- c("euclidean", "maximum", "manhattan", "canberra", "binary", "minkowski")
   # separate stage
   phy_df_list <- list()
   pre_phy_list <- list()
@@ -463,8 +463,9 @@ To correct for bias arising from uneven geographic sampling, we measured the rel
 
 ```{r}
 p2_sel_phy_df <- sel_phy_df
+p2_sel_phy_df$Ratio_BA <- p2_sel_phy_df$Basidiomycota/p2_sel_phy_df$Ascomycota
 p2_sel_phy_df$SampleName <- rownames(p2_sel_phy_df)
-sel_feature <- names(sel_phy_list)
+sel_feature <- c(names(sel_phy_list), "Ratio_BA")
 
 p2_median_df <- p2_sel_phy_df
 median_df <- matrix(NA, ncol = ncol(p2_median_df)); median_df <- median_df[-1, ] 
@@ -505,5 +506,21 @@ boxplot_pdf <- FileCreate(DirPath = '../06.AlphaDiversity/Normaled_Median',
 pdf(file = boxplot_pdf, width = 8, height = 15)
 plot(box_plot)
 dev.off()
+
+
+sel_df <- melt_median_df[melt_median_df$Phylum == "Ratio_BA", ]
+box_plot2 <- ggplot(sel_df, aes(x = Stage, y = `Relative Median Abudance`))+
+  geom_violin(aes(fill = Stage),  scale = "width",trim = F,
+              position=position_dodge()) +
+  geom_boxplot(aes(color = Stage), outlier.color = NA,
+               width=0.2, fill="white", position = position_dodge(width =0.9))+
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.5, vjust = 0.5), 
+        legend.position = 'none') +
+  scale_color_manual(values = c('black', 'black')) +
+  stat_compare_means(aes(group = Stage,
+                         label=ifelse(..p.. > 0.05,"", 
+                                      format(..p.., scientific = TRUE, digits = 4))))+
+   scale_fill_manual(values = c("CTRL" = '#57868c', adenoma = '#f3c200', "CRC" = '#e82546'))
 
 ```

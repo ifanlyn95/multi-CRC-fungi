@@ -1,0 +1,41 @@
+{"assemblies": [
+{
+  "files": [
+    {
+      "filePath": "data_summary.tsv",
+      "fileType": "DATA_TABLE"
+    },
+    {
+      "filePath": "assembly_data_report.jsonl",
+      "fileType": "DATA_REPORT"
+    }
+  ]
+},{
+  "accession": "GCA_000986645.1",
+  "files": [
+    {
+      "filePath": "GCA_000986645.1/GCA_000986645.1_ASM98664v1_genomic.fna",
+      "fileType": "GENOMIC_NUCLEOTIDE_FASTA"
+    },
+    {
+      "filePath": "GCA_000986645.1/genomic.gbff",
+      "fileType": "GENBANK_FLAT_FILE"
+    },
+    {
+      "filePath": "GCA_000986645.1/genomic.gff",
+      "fileType": "GFF3"
+    },
+    {
+      "filePath": "GCA_000986645.1/genomic.gtf",
+      "fileType": "GTF"
+    },
+    {
+      "filePath": "GCA_000986645.1/protein.faa",
+      "fileType": "PROTEIN_FASTA"
+    },
+    {
+      "filePath": "GCA_000986645.1/sequence_report.jsonl",
+      "fileType": "SEQUENCE_REPORT"
+    }
+  ]
+}]}

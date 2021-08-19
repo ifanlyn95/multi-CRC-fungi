@@ -1,0 +1,29 @@
+"","Feature1","Feature2","rho","pvalue"
+"67","Aspergillus rambellii","Moniliophthora perniciosa",0.451915260895326,0
+"100","Aspergillus rambellii","Erysiphe pulchra",0.43556897634559,0
+"133","Aspergillus rambellii","Sphaerulina musiva",0.438359044462262,0
+"136","Erysiphe pulchra","Sphaerulina musiva",0.400998779497481,0
+"398","Rhizophagus irregularis","Cordyceps sp. RAO-2017",-0.214052161334596,4.18979836647182e-06
+"431","Rhizophagus irregularis","Rhizophagus clarus",0.43398972879966,0
+"441","Pseudocercospora musae","Rhizophagus clarus",0.454083040978043,0
+"476","Rhizophagus clarus","Pichia kudriavzevii",0.409341797450442,0
+"608","Rhizophagus clarus","Naumovozyma dairenensis",0.483564380305635,0
+"629","Rhizophagus irregularis","Phytopythium vexans",-0.204992679229048,1.06944094684369e-05
+"640","Cordyceps sp. RAO-2017","Phytopythium vexans",0.504082928770037,0
+"771","Pseudocercospora musae","Leucoagaricus sp. SymC.cos",0.420842156355766,0
+"773","Rhizophagus clarus","Leucoagaricus sp. SymC.cos",0.441055114328738,0
+"827","Rhizophagus irregularis","[Candida] arabinofermentans",0.401315270195277,0
+"839","Rhizophagus clarus","[Candida] arabinofermentans",0.566931466876036,0
+"844","Naumovozyma dairenensis","[Candida] arabinofermentans",0.414327423604782,0
+"882","Leucoagaricus sp. SymC.cos","Baudoinia panamericana",0.413119552501645,0
+"938","Rhizophagus clarus","Schizosaccharomyces pombe",0.410589294009663,0
+"969","Pseudocercospora musae","Tuber magnatum",0.407690557493958,0
+"971","Rhizophagus clarus","Tuber magnatum",0.49783129166584,0
+"1025","Rhizophagus irregularis","Edhazardia aedis",0.423831249416919,0
+"1035","Pseudocercospora musae","Edhazardia aedis",0.415129935268804,0
+"1037","Rhizophagus clarus","Edhazardia aedis",0.705483861763583,0
+"1038","Pichia kudriavzevii","Edhazardia aedis",0.410526329288181,0
+"1042","Naumovozyma dairenensis","Edhazardia aedis",0.424765461221394,0
+"1047","Leucoagaricus sp. SymC.cos","Edhazardia aedis",0.414187516250124,0
+"1049","[Candida] arabinofermentans","Edhazardia aedis",0.524194963655827,0
+"1088","Edhazardia aedis","Choanephora cucurbitarum",0.453652033994538,0

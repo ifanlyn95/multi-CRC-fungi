@@ -156,7 +156,7 @@ Show_table(spl_res$tax_df)
 
 ## Data Profile by histogram in Kingdom level
 ```{r histogarm plot}
-plot_or_not <- T
+plot_or_not <- F
 add_line <- F
 
 bac_abd <- log10(as.numeric(spl_res$tax_list$Kingdom['k__Bacteria', rownames(meta_df)]))
@@ -299,6 +299,22 @@ if (plot_or_not) {
 
 
 ## Filtering the samples {.tabset}
+
+### Filter non-PCR-free cohort
+Due to the HanniganGD_2018 cohort performed the 12 cycle PCR before the Sequencing library building, we intend to exclude it.   
+In addition, this cohort's total sequence reads depth is almost 10 fold lower than other cohorts.
+
+```{r}
+exclude_sample <- colnames(spl_res$tax_list$Kingdom)
+exclude_sample <- exclude_sample[exclude_sample %in% rownames(meta_df)[meta_df$Cohort != "2018_HanniganGD"]]
+for (taxCand in names(spl_res$tax_list)) {
+  spl_res$tax_list[[taxCand]] <- spl_res$tax_list[[taxCand]][, exclude_sample]
+}
+meta_df <- meta_df[exclude_sample, ]
+
+nrow(meta_df)
+table(meta_df$Stage)
+```
 ### In Kingdom level
 + filter the low-alignment-reads samples. ( < 1,000,000 reads)
 + filter the low-Eukaryota and high-Eukaryota ratio sample. (< 0.01% or > 1% ), [reference](https://www.hindawi.com/journals/mi/2020/9560684/)
@@ -306,15 +322,21 @@ if (plot_or_not) {
 all_reads <- log10(as.numeric(spl_res$tax_list$Kingdom['k__Eukaryota', rownames(meta_df)]) + as.numeric(spl_res$tax_list$Kingdom['k__Bacteria', rownames(meta_df)]))
 Euk_all_ratio <- log10(as.numeric(spl_res$tax_list$Kingdom['k__Eukaryota', rownames(meta_df)]) / (as.numeric(spl_res$tax_list$Kingdom['k__Eukaryota', rownames(meta_df)]) + as.numeric(spl_res$tax_list$Kingdom['k__Bacteria', rownames(meta_df)])))
 
-sum(all_reads < 6) # 18
+sum(all_reads < 6) # 1
+table(meta_df[all_reads >= 6, "Stage"])
 
-sum(Euk_all_ratio > -2)  # 80
+sum(Euk_all_ratio < -4 & all_reads >=  6)  # 19
+table(meta_df[all_reads >= 6 & Euk_all_ratio >= -4, "Stage"])
 
-sum(Euk_all_ratio < -4)  # 19
 
-leave_sample <- rownames(meta_df)[all_reads >= 6 & Euk_all_ratio <= -2 & Euk_all_ratio > -4]
+sum(all_reads >= 6 & Euk_all_ratio >= -4 & Euk_all_ratio > -2)  # 78
+table(meta_df[all_reads >= 6 & Euk_all_ratio >= -4 & Euk_all_ratio <= -2, "Stage"])
+
+
+leave_sample <- rownames(meta_df)[all_reads >= 6 & Euk_all_ratio <= -2 & Euk_all_ratio >= -4]
 
 length(leave_sample)
+
 
 ```
 
@@ -337,15 +359,22 @@ euk_df <- species_df[euk_list, ]
 bac_ReAb_df <- bac_df; bac_ReAb_df[] <- apply(bac_ReAb_df,2,function(x){as.numeric(x)/sum(as.numeric(x))*100})
 euk_ReAb_df <- euk_df; euk_ReAb_df[] <- apply(euk_ReAb_df,2,function(x){as.numeric(x)/sum(as.numeric(x))*100}) 
 
-sum(bac_ReAb_df > 50)
+
+
 sel_bac_df <- bac_ReAb_df[, colSums(bac_ReAb_df > 50) == 0]
-sel_euk_df <- euk_ReAb_df[, colSums(euk_ReAb_df > 50) == 0]
+table(meta_df[colnames(sel_bac_df), "Stage"])
+sum(bac_ReAb_df > 50) # 69
 
-leave_sample2 <-intersect(colnames(sel_bac_df), colnames(sel_euk_df))
-table(meta_df[leave_sample2,]$Cohort)
+sel_euk_df <- euk_df[, colnames(sel_bac_df)]
+sel_euk_df <- sel_euk_df[, colSums(euk_ReAb_df[, colnames(sel_bac_df)] > 50) == 0]
+table(meta_df[colnames(sel_euk_df), "Stage"])
+sum(euk_ReAb_df[, colnames(sel_bac_df)] > 50)  # 45
 
-leave_sample3 <- intersect(leave_sample2, leave_sample2[meta_df[leave_sample2,]$Cohort!= '2018_HanniganGD'])
+
+leave_sample3 <-intersect(colnames(sel_bac_df), colnames(sel_euk_df))
 table(meta_df[leave_sample3,]$Cohort)
+length(leave_sample3)
+
 
 ```
 
@@ -364,7 +393,7 @@ if (save_or_not) {
   sel_spl_ReAbun <- spl_res
   for (n in names(sel_spl_res$tax_list)) {
     sel_spl_res$tax_list[[n]] <- sel_spl_res$tax_list[[n]][, leave_sample3]
-    write.csv(x = sel_spl_res$tax_list[[n]], file = FileCreate(DirPath = '../02.Filter_samples/RawData-1636', 
+    write.csv(x = sel_spl_res$tax_list[[n]], file = FileCreate(DirPath = '../02.Filter_samples/RawData-1625', 
                                                                Prefix = paste0("Selected-RawData-", n), Suffix = 'csv'))
     if (n == "Kingdom") {
       sel_spl_ReAbun$tax_list[[n]][] <- apply(sel_spl_ReAbun$tax_list[[n]],2,function(x){as.numeric(x)/sum(as.numeric(x)[c(1,2)])*100})
@@ -372,16 +401,16 @@ if (save_or_not) {
     }else{
       sel_spl_ReAbun$tax_list[[n]][] <- apply(sel_spl_ReAbun$tax_list[[n]],2,function(x){as.numeric(x)/sum(as.numeric(x))*100})
     }
-    write.csv(x = sel_spl_ReAbun$tax_list[[n]], file = FileCreate(DirPath = '../02.Filter_samples/RelativeAbundance-1636', 
+    write.csv(x = sel_spl_ReAbun$tax_list[[n]], file = FileCreate(DirPath = '../02.Filter_samples/RelativeAbundance-1625', 
                                                                   Prefix = paste0("Selected-RelAbundance-", n), Suffix = 'csv'))
   }
-  saveRDS(object = sel_spl_ReAbun, file = FileCreate(DirPath = '../02.Filter_samples/RelativeAbundance-1636',
+  saveRDS(object = sel_spl_ReAbun, file = FileCreate(DirPath = '../02.Filter_samples/RelativeAbundance-1625',
                                                   Prefix = 'sel_spl_ReAbun', Suffix = 'rds'))
-  saveRDS(object = sel_spl_res, file = FileCreate(DirPath = '../02.Filter_samples/RawData-1636',
+  saveRDS(object = sel_spl_res, file = FileCreate(DirPath = '../02.Filter_samples/RawData-1625',
                                                   Prefix = 'sel_spl_res', Suffix = 'rds'))
 }else{
-  sel_spl_ReAbun <- readRDS(file = '../02.Filter_samples/RelativeAbundance-1636/2021-07-20-sel_spl_ReAbun-v1.0.rds')
-  sel_spl_res <- readRDS(file = '../02.Filter_samples/RawData-1636/2021-07-20-sel_spl_res-v1.0.rds')
+  sel_spl_ReAbun <- readRDS(file = '../02.Filter_samples/RelativeAbundance-1625/2021-08-03-sel_spl_ReAbun-v1.0.rds')
+  sel_spl_res <- readRDS(file = '../02.Filter_samples/RawData-1625/2021-08-03-sel_spl_res-v1.0.rds')
 }
 ```
 
@@ -392,7 +421,7 @@ save_or_not <- F
 if (save_or_not) {
   new_meta_df <- meta_df[leave_sample3, ]
   write.csv(x = new_meta_df, file = FileCreate(DirPath = '../00.RawData/metaData/', 
-                                               Prefix = "metaInfo-subgroup_1636", Suffix = 'csv', version = '5.0'))
+                                               Prefix = "metaInfo-subgroup_1625", Suffix = 'csv', version = '5.1'))
 }
 ```
 
@@ -416,9 +445,9 @@ if (calculate_or_not) {
     bac_raw_res$tax_list[[n]] <- bac_otu
     bac_RelAbun_res$tax_list[[n]] <- bac_otu
     bac_RelAbun_res$tax_list[[n]][] <- apply(bac_RelAbun_res$tax_list[[n]], 2, function(x){as.numeric(x)/sum(as.numeric(x))*100})
-    write.csv(x = bac_raw_res$tax_list[[n]], file = FileCreate(DirPath = '../02.Filter_samples/Bacteria_RawData_1636',
+    write.csv(x = bac_raw_res$tax_list[[n]], file = FileCreate(DirPath = '../02.Filter_samples/Bacteria_RawData_1625',
                                                                Prefix = paste0("Selected-Bac_RawData-", n), Suffix = 'csv'))
-    write.csv(x = bac_RelAbun_res$tax_list[[n]], file = FileCreate(DirPath = '../02.Filter_samples/Bacteria_RelAbun_1636',
+    write.csv(x = bac_RelAbun_res$tax_list[[n]], file = FileCreate(DirPath = '../02.Filter_samples/Bacteria_RelAbun_1625',
                                                                    Prefix = paste0("Selected-Bac_RelAbun-", n), Suffix = 'csv'))
     
     # for Eukaryota
@@ -428,24 +457,24 @@ if (calculate_or_not) {
     euk_raw_res$tax_list[[n]] <- euk_otu
     euk_RelAbun_res$tax_list[[n]] <- euk_otu
     euk_RelAbun_res$tax_list[[n]][] <- apply(euk_RelAbun_res$tax_list[[n]], 2, function(x){as.numeric(x)/sum(as.numeric(x))*100})
-    write.csv(x = euk_raw_res$tax_list[[n]], file = FileCreate(DirPath = '../02.Filter_samples/Eukaryota_RawData_1636',
+    write.csv(x = euk_raw_res$tax_list[[n]], file = FileCreate(DirPath = '../02.Filter_samples/Eukaryota_RawData_1625',
                                                                Prefix = paste0("Selected-Euk_RawData-", n), Suffix = 'csv'))
-    write.csv(x = euk_RelAbun_res$tax_list[[n]], file = FileCreate(DirPath = '../02.Filter_samples/Eukaryota_RelAbun_1636',
+    write.csv(x = euk_RelAbun_res$tax_list[[n]], file = FileCreate(DirPath = '../02.Filter_samples/Eukaryota_RelAbun_1625',
                                                                    Prefix = paste0("Selected-Euk_RelAbun-", n), Suffix = 'csv'))
   }
-  saveRDS(object = bac_raw_res, file = FileCreate(DirPath = '../02.Filter_samples/Bacteria_RawData_1636',
+  saveRDS(object = bac_raw_res, file = FileCreate(DirPath = '../02.Filter_samples/Bacteria_RawData_1625',
                                                     Prefix = 'bac_raw_res', Suffix = 'rds'))
-  saveRDS(object = euk_raw_res, file = FileCreate(DirPath = '../02.Filter_samples/Eukaryota_RawData_1636',
+  saveRDS(object = euk_raw_res, file = FileCreate(DirPath = '../02.Filter_samples/Eukaryota_RawData_1625',
                                                   Prefix = 'euk_raw_res', Suffix = 'rds'))
-  saveRDS(object = bac_RelAbun_res, file = FileCreate(DirPath = '../02.Filter_samples/Bacteria_RelAbun_1636',
+  saveRDS(object = bac_RelAbun_res, file = FileCreate(DirPath = '../02.Filter_samples/Bacteria_RelAbun_1625',
                                                     Prefix = 'bac_RelAbun_res', Suffix = 'rds'))
-  saveRDS(object = euk_RelAbun_res, file = FileCreate(DirPath = '../02.Filter_samples/Eukaryota_RelAbun_1636',
+  saveRDS(object = euk_RelAbun_res, file = FileCreate(DirPath = '../02.Filter_samples/Eukaryota_RelAbun_1625',
                                                   Prefix = 'euk_RelAbun_res', Suffix = 'rds'))
 }else{
-  bac_raw_res <- readRDS(file = '../02.Filter_samples/Bacteria_RawData_1636/2021-07-22-bac_raw_res-v1.0.rds')
-  euk_raw_res <- readRDS(file = '../02.Filter_samples/Eukaryota_RawData_1636/2021-07-22-euk_raw_res-v1.0.rds')
-  bac_RelAbun_res <- readRDS(file = '../02.Filter_samples/Bacteria_RelAbun_1636/2021-07-22-bac_RelAbun_res-v1.0.rds')
-  euk_RelAbun_res <- readRDS(file = '../02.Filter_samples/Eukaryota_RelAbun_1636/2021-07-22-euk_RelAbun_res-v1.0.rds')
+  bac_raw_res <- readRDS(file = '../02.Filter_samples/Bacteria_RawData_1625/2021-08-03-bac_raw_res-v1.0.rds')
+  euk_raw_res <- readRDS(file = '../02.Filter_samples/Eukaryota_RawData_1625/2021-08-03-euk_raw_res-v1.0.rds')
+  bac_RelAbun_res <- readRDS(file = '../02.Filter_samples/Bacteria_RelAbun_1625/2021-08-03-bac_RelAbun_res-v1.0.rds')
+  euk_RelAbun_res <- readRDS(file = '../02.Filter_samples/Eukaryota_RelAbun_1625/2021-08-03-euk_RelAbun_res-v1.0.rds')
 }
 
 ```
