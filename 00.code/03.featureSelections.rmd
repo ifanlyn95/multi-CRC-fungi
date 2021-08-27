@@ -460,6 +460,7 @@ qbk <- seq(0, 5, length.out = 21)
 qColPR <- c(rep('white', 4),  colorRampPalette(colors = c("white","black"))(17))
 plot_list=list()
 
+wil_matrix <- NULL
 for (coh in unique(meta_df$Cohort)) {
   Trend_List[[coh]] <- read.csv(paste0('../07.FeatureSelection/01.SSTF/Cohort/2021-07-29-walsh-median-', coh, '-v1.0.0.csv'), header = T, row.names = 1, check.names = F)
   modify_List[[coh]] <- read.csv(paste0('../07.FeatureSelection/01.SSTF/Cohort/2021-07-29-modify_martix_norm-', coh, '-v1.0.0.csv'), header = T, row.names = 1, check.names = F)
@@ -480,6 +481,17 @@ for (coh in unique(meta_df$Cohort)) {
   names(group_list) <- sel_sample
   
   sub_wil_res <- matrix_wilcox(data = mod_df, group = group_list)
+  wil_csv <- FileCreate(DirPath = '../07.FeatureSelection/01.SSTF/Cohort/',
+                     Prefix = paste0(coh, '-wilcox-pvalue_FDR'), Suffix = 'csv')
+  sub_wil_res_ <- sub_wil_res 
+  colnames(sub_wil_res_) <- paste0(coh, '_', colnames(sub_wil_res_))
+  if (is.null(wil_matrix)) {
+    wil_matrix <- sub_wil_res_
+  }else{
+    wil_matrix <- cbind(wil_matrix, sub_wil_res_)
+  }
+  write.csv(x = sub_wil_res, file = wil_csv)
+  
   sub_wil_res$`-log_P` <- -log10(sub_wil_res$p_values)
   p_tmp <- sub_wil_res[main_list, "-log_P", drop = F] %>% t()
   
@@ -491,8 +503,9 @@ for (coh in unique(meta_df$Cohort)) {
   plot_list[[paste0(coh, "-p")]]=p0[[4]]
   plot_list[[paste0(coh, "-fc")]]=p1[[4]]
 }
-
-
+wil_csv_all <- FileCreate(DirPath = '../07.FeatureSelection/01.SSTF/',
+                          Prefix = 'all-wilcox-pvalue_FDR', Suffix = 'csv')
+write.csv(x = wil_matrix, file = wil_csv_all)
 # tmp <- Trend_List$`2014_ZellerG`
 # tmp1 <- tmp[main_list, "Median", drop = F] %>% t()
 # 

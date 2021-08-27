@@ -1,0 +1,320 @@
+---
+title: "Bacteria preprocess and feature selections"
+author: "ifanlyn@outlook.com"
+date: "2021/8/5"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Step 0: Loading packages and subroutines {.tabset}
+
+### Package
+
+```{r packages, message = F, warning = F}
+require(DT) # for databale
+require(reshape2) # for dcast
+require(ggplot2)
+require(ggthemes)
+```
+
+### Import table
+
+```{r ImportTable }
+ImportTable <- function(file, header = T, row.names = 1, sep = ',', check.names = FALSE, ...){
+  data <- read.csv(file = file, header = header, row.names = row.names, sep = sep, check.names = check.names, ...)
+  return(data)
+}
+```
+
+### Show_table
+
+```{r show_table}
+Show_table <- function(df, rownames = T, filter="top", options = list(pageLength = 10, scrollX=T), ...){
+  if (ncol(df) > 100) {
+    df <- df[, 1:100]
+    message('Due to the column dim is > 100, it only shows the top 100 columns')
+  }
+  datatable(df, rownames = rownames, 
+            filter=filter, options = options, ... )
+
+}
+```
+
+### MultMedFC
+
+MultMedFC: Multiple Median Fold Change, compared each samples between 2 Stages (Control vs CRC)
+
+```{r}
+MultMedFC <- function(data1, data2, other_df = NULL, FeatureAsRow = T, instead_zero = 'rnorm'){
+  if (FeatureAsRow) {
+    data1 <- t(data1)
+    data2 <- t(data2)
+    if (! is.null(other_df)) {
+      other_df <- t(other_df)
+    }
+  }
+  if (! is.null(other_df)) {
+    other_df <- as.data.frame(other_df)
+  }
+  data1 <- as.data.frame(data1)
+  data2 <- as.data.frame(data2)
+  if (! all(colnames(data1) == colnames(data2))) {
+    message("rowname of data1 and data2 is not fullly same!! plz check it !!")
+    return()
+  }
+  
+  sf_df <- matrix(NA, ncol = 4); sf_df <- sf_df[-1, ]
+  for (sf in colnames(data1)) {
+    # message(date(), "\t", sf)
+    sf_FC <- NULL
+    if (sum(data1[[sf]] == 0) == nrow(data1) & sum(data2[[sf]] == 0) == nrow(data2)) {
+    } else {
+      min_value <- min(c(data1[[sf]][data1[[sf]] != 0], data2[[sf]][data2[[sf]] != 0]))/10
+      if(instead_zero == 'rnorm'){
+        if (! is.null(other_df)) {
+          other_df[[sf]][other_df[[sf]] == 0] <- rnorm(n = length(other_df[[sf]][other_df[[sf]] == 0]),
+                                                       mean = min_value, sd = min_value/10)
+        }
+        set.seed(123)
+        data1[[sf]][data1[[sf]] == 0] <- rnorm(n = length(data1[[sf]][data1[[sf]] == 0]), 
+                                               mean = min_value, sd = min_value/10)
+        data2[[sf]][data2[[sf]] == 0] <- rnorm(n = length(data2[[sf]][data2[[sf]] == 0]), 
+                                               mean = min_value, sd = min_value/10)
+      }else if(instead_zero == 'min'){
+        if (! is.null(other_df)) {
+          other_df[[sf]][other_df[[sf]] == 0] <- min_value
+        }
+        data1[[sf]][data1[[sf]] == 0] <- min_value
+        data2[[sf]][data2[[sf]] == 0] <- min_value
+      }else{
+        message('instead_zero only accept the rnorm and min.')
+        return()
+      }
+      modif_Data <- rbind(rbind(data1, data2), other_df)
+      # for (i1 in 1:nrow(data1)) {
+      #   for (i2 in 1:nrow(data2)) {
+      #     sf_FC <- c(sf_FC, data1[[sf]][i1]/data2[[sf]][i2])
+      #   } 
+      # }
+      # sf_FC <- log2(sf_FC)
+      # sf_wil <- wilcox.test(sf_FC, conf.int = TRUE, mu = 0)
+      # sf_df <- rbind(sf_df, c(as.numeric(sf_wil$estimate), as.numeric(sf_wil$conf.int), as.numeric(sf_wil$p.value)))
+    }
+  }
+  # sf_df <- as.data.frame(sf_df); rownames(sf_df) <- colnames(data1); colnames(sf_df) <- c('Median', 'low-CI', 'high-CI', 'p-value')
+  # return(list(selFeatures_Data =sf_df, modif_Data = modif_Data))
+  return(modif_Data)
+}
+```
+
+### FileCreate
+
+```{r}
+FileCreate <- function(DirPath = "./",Prefix = "ExampleTest", Suffix = "pdf", version = "0.0.0"){
+  date=as.character(Sys.Date())
+  DirPath = gsub("/$","",DirPath)
+  Suffix = gsub('^[.]',"",Suffix)
+  if(! dir.exists(DirPath)){
+    dir.create(DirPath,recursive =TRUE)
+  }
+  if (version == "0.0.0") {
+    version=100
+    while(TRUE){
+      version_=paste(unlist(strsplit(as.character(version),"")),collapse=".")
+      DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version_,".",Suffix)
+      if(! file.exists(DirPathName)){
+        return(DirPathName)
+        break
+      }
+      version = version + 1
+    }
+  }else{
+    DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version_,".",Suffix)
+    if(! dir.exists(DirPathName)){
+      return(DirPathName)
+    }
+    return(DirPathName)
+  }
+}
+  
+```
+
+### matrix_wilcox
+
+matrix_wilcox: subroutine to comparison each row in matrix
+
+```{r subroutine: wilcoxon test from matrix}
+matrix_wilcox <- function(data, group, ad_pvalue = 'BH'){
+  data <- as.matrix(data)
+  group1 <- names(group)[group == unique(group)[1]]
+  group2 <- names(group)[group == unique(group)[2]]
+  p_values <- list()
+  for (i in 1:nrow(data)) {
+    if (sum(data[i, ]) == 0) {
+      p_values[[rownames(data)[i]]] = 1
+    }else{
+      p_values[[rownames(data)[i]]] = wilcox.test(data[i, group1], data[i, group2], 
+                                                  alternative = "two.sided", exact = FALSE)$p.value
+    }
+  }
+  p_values = data.frame(p_values = sapply(p_values, c))
+  p_values$adj_pvalue = p.adjust(p_values$p_values, method = ad_pvalue, n = nrow(p_values))
+  return(p_values)
+}
+```
+
+## Step0: Import data
+
+```{r taxonomy name, warning = FALSE}
+tax_name <- ImportTable(file = '../00.RawData/kraken2/2021-07-19-taxonomy_name-v1.0.csv', sep = ',')
+tax_name <- tax_name[grep('k__Eukaryota', rownames(tax_name)), ]
+tax_name$new_name <- gsub(pattern = 's__', replacement = '', x = tax_name$Specie) %>% 
+  gsub('_', ' ', .) # due to Feature names of CreateSeuratObject cannot have underscores, replace with blanket space.
+Show_table(tax_name)
+```
+
+### Taxonomy matrix
+
+```{r taxonomy matrix}
+relAbun_df <- ImportTable(file = '../05.Normalized/Rarefy_1329_fungi/2021-07-26-RelativeAbundance_matrix-v1.0.csv')
+Show_table(relAbun_df)%>%
+  formatSignif(columns = colnames(relAbun_df)[1:100],
+               digits = 3, interval = 1)
+```
+
+### Meta information
+
+```{r meta information}
+meta_df <- ImportTable(file = '../00.RawData/metaData/2021-07-26-metaInfo-subgroup_1329-v6.0.csv')
+Show_table(meta_df)
+```
+
+## Step 1: Selected same trend features (SSTF)
+
+
+```{r, warning = FALSE}
+main_df <- ImportTable(file = '../07.FeatureSelection/02.RelMedianAbundance/2021-07-30-normalized-0.1%-RelMedianAbundance-matrix-v1.0.0.csv')
+modify_Comb_all <- ImportTable(file = '../07.FeatureSelection/01.SSTF/2021-07-29-modify_martix_norm-ALL-v1.0.0.csv')
+modify_Comb <- modify_Comb_all[, colnames(main_df)]
+```
+
+## Step 2: Multiple-Median Fold Change and Wilcoxon-rank test by Relative Median Abundance
+
+Utilize Relative Median Abundance instead of raw or relative abundance. Only focus on the fungi with mean abundance \> 0.1% in each group
+
+```{r}
+calculate_or_not <- F
+if (calculate_or_not) {
+  # Relative Median Abundance
+  comb_cohort <- matrix(NA, ncol = ncol(modify_Comb)); comb_cohort <- comb_cohort[-1, ]
+  colnames(comb_cohort) <- colnames(modify_Comb)
+  
+  ade_modify_Comb <- modify_Comb[rownames(meta_df)[meta_df$Stage == 'adenoma'], ]
+  crc_modify_Comb <- modify_Comb[rownames(meta_df)[meta_df$Stage == 'CRC'], ]
+  
+  #  mean abundance > 0.1%
+
+  core_modify_Comb <- modify_Comb
+  
+  for (coh in unique(meta_df$Cohort)) {
+    sub_ade <- core_modify_Comb[rownames(meta_df)[meta_df$Cohort == coh & meta_df$Stage == 'CTRL'], ]
+    ade_median <- apply(sub_ade, 2, median)
+    ade_median[ade_median==0] <- rep(10^-06, sum(ade_median==0))
+    sub_cohort <- sweep(core_modify_Comb[rownames(meta_df)[meta_df$Cohort == coh], ], 2, ade_median, "/")
+    comb_cohort <- rbind(comb_cohort, sub_cohort)
+  }
+  relMedian_csv <- FileCreate(DirPath = '../09.euk-ade_crc/02.RelMedianAbundance', 
+                              Prefix = 'normalized-0.1%-RelMedianAbundance-matrix', Suffix = 'csv')
+  write.csv(x = comb_cohort, file = relMedian_csv)
+  
+  # multiple-Median Fold Change
+  data1 <- comb_cohort[rownames(meta_df)[meta_df$Stage == 'CRC'], ] %>%
+    t() %>% as.data.frame()
+  data2 <- comb_cohort[rownames(meta_df)[meta_df$Stage == 'adenoma'], ]%>%
+    t() %>% as.data.frame()
+  all_mmfc_res<- MultMedFC(data1 = data1, data2 = data2, FeatureAsRow = T)
+
+  
+  data1_m <- all_mmfc_res[rownames(meta_df)[meta_df$Stage == 'CRC'], ] %>%
+    t() %>% as.data.frame()
+  data2_m <- all_mmfc_res[rownames(meta_df)[meta_df$Stage == 'adenoma'], ] %>%
+    t() %>% as.data.frame()
+  
+  median_list <- NULL
+  for (sf in rownames(data1)) {
+    dd_tmp <- t(1/data2_m[sf, , drop = F]) %*% as.matrix(data1_m[sf, , drop = F])
+    median_list[sf] <- median(dd_tmp)
+  }
+  
+ 
+  # wilcoxon-rank test 
+  mData <- as.data.frame(t(all_mmfc_res))
+  groupList <- meta_df$Stage[meta_df$Stage %in% c('adenoma', 'CRC')]
+  names(groupList) <- rownames(meta_df)[meta_df$Stage %in% c('adenoma', 'CRC')]
+  wil_res <- matrix_wilcox(data = mData, group = groupList)
+  wil_res <- cbind(wil_res, mFC = median_list[rownames(wil_res)])
+  wil_res <- cbind(wil_res, AbsLog2FC = abs(log2(wil_res$mFC)))
+  wil_res <- wil_res[order(wil_res$AbsLog2FC, decreasing = T), ]
+  wil_csv <- FileCreate(DirPath = '../09.euk-ade_crc/', Prefix = paste0('wilcoxon-', 'all'), Suffix = 'csv')
+  write.csv(x = wil_res, file = wil_csv)
+  
+}else{
+  comb_cohort <- ImportTable('../09.euk-ade_crc/02.RelMedianAbundance/2021-08-19-normalized-0.1%-RelMedianAbundance-matrix-v1.0.0.csv')
+  wil_res <- ImportTable('../09.euk-ade_crc/2021-08-19-wilcoxon-all-v1.0.0.csv')
+}
+
+```
+
+
+## Step 3: Volcano plot for bacteria candidate
+
+```{r}
+volcano_df <- wil_res
+volcano_df$`-log10_Q` <- -log10(volcano_df$adj_pvalue)
+volcano_df$log2FC <- log2(volcano_df$mFC)
+g <- ggplot(volcano_df, aes(x = log2FC, y = `-log10_Q`)) +
+  geom_point(alpha = ifelse(volcano_df$`-log10_Q` > 2 & volcano_df$log2FC > 0.5, 0.7,
+                            ifelse(volcano_df$`-log10_Q` > 2 & volcano_df$log2FC < -0.5, 0.7, 0.5)),
+             color = ifelse(volcano_df$`-log10_Q` > 2 & volcano_df$log2FC > 0.5, "#E20001",
+                            ifelse(volcano_df$`-log10_Q` > 2 & volcano_df$log2FC < -0.5, "#004996","grey"))) + 
+  geom_vline(xintercept = c(-0.5, 0.5)) +
+  geom_hline(yintercept = 2)+
+  theme_bw()
+
+volcano_plot  <- FileCreate(DirPath = '../09.euk-ade_crc/', Prefix = paste0('volcanoPlot-', 'all'), Suffix = 'pdf')
+pdf(file = volcano_plot, width = 5, height = 5)
+plot(g)
+dev.off()
+
+
+
+```
+
+
+<!-- ## Step 3: Intersection of 2 criterion
+
+Only focus on 0.1% abundance relative Eukaryota.
+
+Totally **42** fungi leave after twice filters, and **6** of them are also general Fold change difference in all samples (`|log2(FC)| > 0.5`).
+
+```{r}
+sel_idx_1 <- rownames(wil_res)[Trend_Med_summary[rownames(wil_res), ]$N.count >=6 | Trend_Med_summary[rownames(wil_res), ]$N.count <= 2]
+length(sel_idx_1) # 112
+
+sel_idx_2 <- rownames(wil_res)[wil_res$adj_pvalue < 0.05]
+length(sel_idx_2) # 59
+
+sel_idx <- intersect(sel_idx_1, sel_idx_2)
+length(sel_idx) # 42
+
+sel_trend <- all_trend[sel_idx, ]
+
+sel3_trend <- sel_trend[abs(sel_trend$`all-Median`) > 0.5,  ] 
+sel3_trend <- sel3_trend[order(abs(sel3_trend$`all-Median`), decreasing = T), ]
+
+```
+-->
+
