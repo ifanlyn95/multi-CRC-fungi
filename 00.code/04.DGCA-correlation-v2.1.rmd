@@ -324,13 +324,17 @@ for (compared_name in names(param_list)) {
                         type = factor(bar_df$type))
   bar_dcast = dcast(bar_df2, type ~ Classes, fun.aggregate = length)
   bar_melt = melt(bar_dcast, id.vars = "type", variable.name = 'Classes')
+  
+  bar_melt <- group_by(bar_melt, type ) %>% mutate(percentage = value/sum(value)*100)
  
-  g_bar <- ggplot(bar_melt, aes(x = Classes,y = value, fill = type)) + 
+  g_bar <- ggplot(bar_melt, aes(x = Classes,y = percentage, fill = type)) + 
     geom_bar(stat = "identity", colour = "black", position = position_dodge(width = .8), width = 0.7) +
-    geom_text(aes(label = value), position = position_dodge(width = .8), vjust = -0.5) +
+    geom_text(aes(label = paste0(sprintf("%0.2f", percentage), "%")),
+              position = position_dodge(width = .8), vjust = -0.5) +
     theme_calc() + scale_fill_calc() + theme(legend.position="none", axis.title = element_blank())
   plot(g_bar)
   
+
   if (save_or_not) {
     bar_melt_csv <- FileCreate(DirPath = paste0('../08.correlation/DGCA/', group_name, '/table'),
                             Prefix = 'DGCA-subgroup-table',
