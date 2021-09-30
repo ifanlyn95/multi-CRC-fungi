@@ -1,0 +1,870 @@
+---
+title: "RandomForest"
+author: "ifanlyn@outlook.com"
+date: "2021/9/28"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Loading packages and subroutines {.tabset}
+
+### Package
+
+```{r packages, message = F, warning = F}
+require(DT) # for databale
+require(randomForest) # randomForest
+require(pROC)
+require(ROCR)
+require(mlbench)
+require(caret)
+require(ComplexHeatmap)
+require(circlize)
+```
+
+
+### Import table
+
+```{r ImportTable , message = F, warning = F}
+ImportTable <- function(file, header = T, row.names = 1, sep = ',', check.names = FALSE, ...){
+  data <- read.csv(file = file, header = header, row.names = row.names, sep = sep, check.names = check.names, ...)
+  return(data)
+}
+```
+
+### Show_table
+
+```{r show_table, message = F, warning = F}
+Show_table <- function(df, rownames = T, filter="top", options = list(pageLength = 10, scrollX=T), ...){
+  if (ncol(df) > 100) {
+    df <- df[, 1:100]
+    message('Due to the column dim is > 100, it only shows the top 100 columns')
+  }
+  datatable(df, rownames = rownames, 
+            filter=filter, options = options, ... )
+
+}
+```
+
+### FileCreate
+
+```{r , message = F, warning = F}
+FileCreate <- function(DirPath = "./",Prefix = "ExampleTest", Suffix = "pdf", version = "0.0.0"){
+  date=as.character(Sys.Date())
+  DirPath = gsub("/$","",DirPath)
+  Suffix = gsub('^[.]',"",Suffix)
+  if(! dir.exists(DirPath)){
+    dir.create(DirPath,recursive =TRUE)
+  }
+  if (version == "0.0.0") {
+    version=100
+    while(TRUE){
+      version_=paste(unlist(strsplit(as.character(version),"")),collapse=".")
+      DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version_,".",Suffix)
+      if(! file.exists(DirPathName)){
+        return(DirPathName)
+        break
+      }
+      version = version + 1
+    }
+  }else{
+    DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version_,".",Suffix)
+    if(! dir.exists(DirPathName)){
+      return(DirPathName)
+    }
+    return(DirPathName)
+  }
+}
+  
+```
+
+## Import data {.tabset}
+
+### metadata
+
+```{r , message = F, warning = F}
+meta_df <- ImportTable(file = '../00.RawData/metaData/2021-07-26-metaInfo-subgroup_1329-v6.0.csv')
+
+```
+
+### Import Eukaryota matrix
+
+```{r , message = F, warning = F}
+
+euk_otu <- ImportTable(file = '../07.FeatureSelection/02.RelMedianAbundance/2021-07-30-normalized-0.1%-RelMedianAbundance-matrix-v1.0.0.csv')
+euk_sel <- ImportTable(file = '../07.FeatureSelection/01.SSTF/2021-07-30-wilcoxon-all-v1.0.0.csv')
+euk_sel <- euk_sel[order(euk_sel$adj_pvalue),]
+euk_core <- euk_otu[, rownames(euk_sel)[euk_sel$adj_pvalue < 0.01]]
+euk_sel_list <- colnames(euk_core)
+
+```
+
+### Import Bacteria matrix
+
+```{r , message = F, warning = F}
+
+bac_otu <- ImportTable(file = '../09.Bacteria/02.RelMedianAbundance/2021-08-05-normalized-0.1%-RelMedianAbundance-matrix-v1.0.0.csv')
+bac_sel <- ImportTable(file = '../09.Bacteria/2021-08-06-wilcoxon-all-v1.0.0.csv')
+bac_sel <- bac_sel[order(bac_sel$adj_pvalue),]
+bac_core_all <- bac_otu[, rownames(bac_sel)[bac_sel$adj_pvalue < 0.01 & bac_sel$AbsLog2FC > 0.5]]
+bac_sel_list_all <- colnames(bac_core_all)
+bac_sel_list <- bac_sel_list_all[!grepl('sp. ', bac_sel_list_all)]
+bac_core <- bac_core_all[, bac_sel_list]
+```
+
+### Combine the core sets and stages
+
+```{r , message = F, warning = F}
+comb_core <- as.data.frame(cbind(Stage = meta_df$Stage, cbind(euk_core, bac_core)))
+colnames(comb_core) <- gsub("\\W+", '_', colnames(comb_core))
+colnames(comb_core) <- gsub("^_", '', colnames(comb_core))
+cn_combin_core <- comb_core[comb_core$Stage!= 'adenoma', ]
+cn_combin_core$Stage <- factor(x = cn_combin_core$Stage, levels = c('CRC', 'CTRL'))
+cn_meta_df <- meta_df[meta_df$Stage != 'adenoma', ]
+head(sapply(cn_combin_core, class))
+```
+
+
+## Random Forest LOSO
+
+random forest, leave one set out.
+
+
+
+### Rank Features By Importance
+
+[link](https://stats.stackexchange.com/questions/443234/random-forest-in-r-how-to-perform-feature-extraction-and-reach-the-best-accura)
+```{r, message = F, warning = F}
+require(dplyr)
+require(caret)
+require(randomForest)
+require(eegkit)
+require(rlist)
+require(edfReader)
+require(eegUtils)
+require(e1071)
+require(ggplot2)
+# sub_type <- 'fungi'
+for (sub_type in c('fungi', 'bac', 'all')) {
+  if (sub_type == 'fungi') {
+    n_feature <- 33
+    myData <- cn_combin_core[, 1:(1 + n_feature)]
+  }else if (sub_type == 'bac') {
+    n_feature <- 31
+    myData <- cn_combin_core[, c(1, 35: (34 + n_feature))]
+  }else{
+    n_feature <- 64
+    myData <- cn_combin_core
+  }
+  
+  important_score <- 50
+  set.seed(123)
+  ###############################Random Forest
+  Importance_list <- matrix(data = NA, nrow = 1, ncol = n_feature)
+  Importance_list <- Importance_list[-1, ]
+  for (c in cohort_lst){
+    Importance_Table <- matrix(data = NA, nrow = 1, ncol = n_feature )
+    Importance_Table <- Importance_Table[-1, ]
+    for (t in 1:10) {
+      seed <- sample.int(10)
+      set.seed(seed)  
+      seeds <- vector(mode = "list", length = 50)
+      for(i in 1:50){
+        seeds[[i]] <- sample.int(1000, 12)
+      }
+      
+      ## For the last model:
+      seeds[[50]] <- sample.int(1000, 1)
+    
+      myData$Stage <- as.factor(myData$Stage)
+      
+      training <- myData[rownames(cn_meta_df)[cn_meta_df$Cohort == c],]
+      testing <- myData[rownames(cn_meta_df)[cn_meta_df$Cohort != c], ] 
+      
+      train_control <- trainControl(method="cv", number=10, verboseIter = TRUE, seeds = seeds) 
+      
+      model <- train(training[,2:ncol(training)],
+                     as.factor(training[,1]), 
+                     method = "rf", type="classification",
+                     metric= "Accuracy", maximize= TRUE, 
+                     trControl = train_control, importance = TRUE) 
+      
+      
+      Adding_columns <- NULL
+      varImp2 <- varImp(model, scale = TRUE)
+      Adding_columns <- t(varImp2$importance)
+      rownames(Adding_columns) <- paste0(rownames(Adding_columns),".", t)
+      Importance_Table <- rbind(Importance_Table, Adding_columns[1, ,drop = F])
+    }
+    Importance_Table_csv <- FileCreate(DirPath = paste0('../11.Classifier/RF/FeatureSel_Important/', sub_type), 
+                                       Prefix = paste0('Importance_Table_', c), Suffix = 'csv')
+    Importance_Table_Mean <- t(apply(Importance_Table, MARGIN = 2, function(x) mean(x, na.rm=TRUE)))
+    rownames(Importance_Table_Mean) <- paste0(c, "_Mean")
+    Importance_list <- rbind(Importance_list, Importance_Table_Mean)
+    Importance_Table_2 <- as.data.frame(Importance_Table)
+    Importance_Table_2 <- rbind(Mean=Importance_Table_Mean, Importance_Table_2)
+    write.csv(x = Importance_Table_2, file = Importance_Table_csv)
+  
+    Importance_Table_Filter <- as.data.frame(Importance_Table_Mean)
+    Importance_Table_Filter2 <- Importance_Table_Filter[,Importance_Table_Filter< important_score]
+    Importance_Table_Filter3 <- colnames(Importance_Table_Filter2) 
+    Excluding_Channels <- names(myData) %in% Importance_Table_Filter3
+    myData_filter <- myData[!Excluding_Channels]
+    Importance_filter_csv <- FileCreate(DirPath = paste0('../11.Classifier/RF/FeatureSel_Important/', sub_type), 
+                                       Prefix = paste0('Importance_feature_', c, "_", important_score), Suffix = 'csv')
+    write.csv(x = Importance_Table_Filter[,Importance_Table_Filter>= important_score], file = Importance_filter_csv)
+
+    
+  }
+  
+  Importance_df2 <- as.data.frame(t(Importance_list))
+  for (c in cohort_lst) {
+    Importance_df2[[paste0(c, "_Rank")]] <- rank(-Importance_df2[[paste0(c, "_Mean")]])
+  }
+  rank_list <- grep('_Rank', colnames(Importance_df2))
+  Importance_df2$Rank3 <- apply(Importance_df2[, rank_list] , 1, function(x){ifelse(any(x <= 3), 'Sel', "Ign")})
+  Importance_df2$Rank5 <- apply(Importance_df2[, rank_list] , 1, function(x){ifelse(any(x <= 5), 'Sel', "Ign")})
+  Importance_df2$Rank10 <- apply(Importance_df2[, rank_list] , 1, function(x){ifelse(any(x <= 10), 'Sel', "Ign")})
+  
+  Importance_df2_csv <-  FileCreate(DirPath = paste0('../11.Classifier/RF/FeatureSel_Important/', sub_type), 
+                                     Prefix = 'Combine_importantScore_rank_all', Suffix = 'csv')
+  write.csv(Importance_df2, Importance_df2_csv)
+  
+  
+  
+
+    
+  
+    # Importance_Table_Filter <- as.data.frame(Importance_Table_Mean)
+    # Importance_Table_Filter2 <- Importance_Table_Filter[,Importance_Table_Filter< important_score]
+    # Importance_Table_Filter3 <- colnames(Importance_Table_Filter2) 
+    # Excluding_Channels <- names(myData) %in% Importance_Table_Filter3
+    # myData_filter <- myData[!Excluding_Channels]
+    # myData_filter <- as.data.frame(t(myData_filter))
+    # Importance_filter_csv <- FileCreate(DirPath = paste0('../11.Classifier/RF/FeatureSel_Important/'), 
+    #                                    Prefix = paste0('Importance_feature_all_', important_score), Suffix = 'csv')
+    # write.csv(x = Importance_Table_Filter[,Importance_Table_Filter>= important_score], file = Importance_filter_csv)
+
+    
+  # }
+  
+
+}
+
+###############################Random Forest
+# for (sub_type in c("all", "bac", "fungi")) {
+
+for (sub_type in c("fungi")) {
+  if (sub_type == 'all') {
+    tmp_column = 1:65
+    n_feature = 64
+  }else if(sub_type == 'bac'){
+    tmp_column = c(1, 35:65)
+    n_feature = 31
+  }else{
+    tmp_column = 1:34
+    n_feature = 33
+  }
+  Importance_list <- matrix(data = NA, nrow = 1, ncol = n_feature)
+  Importance_list <- Importance_list[-1, ]
+  
+  set.seed(123)
+  Importance_Table <- matrix(data = NA, nrow = 1, ncol = n_feature )
+  Importance_Table <- Importance_Table[-1, ]
+  for (t in 1:10) {
+    seed <- sample.int(10)
+    set.seed(seed)  
+    seeds <- vector(mode = "list", length = 50)
+    for(i in 1:50){
+      seeds[[i]] <- sample.int(1000, 12)
+    }
+    
+    ## For the last model:
+    seeds[[50]] <- sample.int(1000, 1)
+  
+    myData$Stage <- as.factor(myData$Stage)
+    
+    training <- myData[, tmp_column]
+    
+    train_control <- trainControl(method="cv", number=10, verboseIter = TRUE, seeds = seeds) 
+    
+    model <- train(training[,2:ncol(training)],
+                   as.factor(training[,1]), 
+                   method = "rf", type="classification",
+                   metric= "Accuracy", maximize= TRUE, 
+                   trControl = train_control, importance = TRUE) 
+    
+    
+    Adding_columns <- NULL
+    varImp2 <- varImp(model, scale = TRUE)
+    Adding_columns <- t(varImp2$importance)
+    rownames(Adding_columns) <- paste0(rownames(Adding_columns),".", t)
+    Importance_Table <- rbind(Importance_Table, Adding_columns[1, ,drop = F])
+  }
+  Importance_Table_csv <- FileCreate(DirPath = paste0('../11.Classifier/RF/FeatureSel_Important/'), 
+                                     Prefix = paste0('Importance_Table_',sub_type), Suffix = 'csv')
+  Importance_Table_Mean <- t(apply(Importance_Table, MARGIN = 2, function(x) mean(x, na.rm=TRUE)))
+  rownames(Importance_Table_Mean) <- "all_Mean"
+  Importance_list <- rbind(Importance_list, Importance_Table_Mean)
+  Importance_Table_2 <- as.data.frame(Importance_Table)
+  Importance_Table_2 <- rbind(Mean=Importance_Table_Mean, Importance_Table_2)
+  Importance_Table_3 <- as.data.frame(t(Importance_Table_2))
+  Importance_Table_3$Rank <- rank(-Importance_Table_3$Mean)
+  write.csv(x = Importance_Table_3, file = Importance_Table_csv)
+}
+```
+
+### Train model
+```{r, message = F, warning = F}
+for (sub_type in c('fungi', 'bac', 'all')) {
+# for (sub_type in c('bac', 'all')) {
+  Importance_df2 <- ImportTable(file = paste0('../11.Classifier/RF/FeatureSel_Important/',
+                                              sub_type, '/2021-09-29-Combine_importantScore_rank_all-v1.0.0.csv'), 
+                                sep = ',')
+  sel_all_list <- rownames(Importance_df2)[Importance_df2$Rank3 == 'Sel']
+  sel_imp_df <- cn_combin_core[, c('Stage', sel_all_list)]
+  
+  auc_df <- as.data.frame(matrix(data = NA, nrow = 100, ncol = 9))
+  rownames(auc_df) <- paste0("Seed_", 1:100)
+  colnames(auc_df) <- c(cohort_lst, "Mean")
+  auc_mean <- 0
+  auc_seed <- 1
+  for (k in c(1:100)) {
+    auc_tmp <- NULL
+    for (c in cohort_lst) {
+      train_set <- sel_imp_df[rownames(cn_meta_df)[cn_meta_df$Cohort != c], ]
+      valda_set <- sel_imp_df[rownames(cn_meta_df)[cn_meta_df$Cohort == c], ]
+      set.seed(k)
+      # set.seed(123)
+      rf <- randomForest(Stage ~ ., data = train_set)
+      pred <- predict(rf, newdata=valda_set[-1], type = 'prob')[,2]
+      pred_result <- prediction(pred, valda_set[,1])
+      auc_value <- round(performance(pred_result, measure = "auc")@y.values[[1]]*100, 2)
+      # message(c, "\t", auc_value, "%")
+      auc_tmp <- c(auc_tmp, auc_value)
+    }
+    auc_df[paste0("Seed_", k),] <- c(auc_tmp, mean(auc_tmp))
+    if (mean(auc_tmp) > auc_mean) {
+      message(sub_type, "\t", k, "\t", round(mean(auc_tmp), 2), "%")
+    }
+    auc_seed <- ifelse(mean(auc_tmp) > auc_mean, k, auc_seed)
+    auc_mean <- ifelse(mean(auc_tmp) > auc_mean, mean(auc_tmp), auc_mean)
+    
+  }
+  auc_df_csv <- FileCreate(DirPath = paste0('../11.Classifier/RF/AUC_res/'), 
+                           Prefix = paste0('AUC_matrix-', sub_type), Suffix = 'csv')
+  write.csv(auc_df, auc_df_csv)
+}
+
+```
+
+
+
+
+```{r, message = F, warning = F}
+auc_comp <- matrix(data = NA, nrow = 1, ncol = 2)
+auc_comp <- auc_comp[-1, ]
+for (sub_type in c('fungi', 'bac', 'all')) {
+  auc_df <- ImportTable(file = paste0('../11.Classifier/RF/AUC_res/2021-09-29-AUC_matrix-',
+                                              sub_type, '-v1.0.0.csv'))
+  auc_comp <- rbind(auc_comp, cbind(auc_df, Group = rep(sub_type, 100)))
+}
+
+wilcox.test(Mean ~ Group, data = auc_comp, subset = Group %in% c('all', 'bac'))
+wilcox.test(Mean ~ Group, data = auc_comp, subset = Group %in% c('all', 'fungi'))
+wilcox.test(Mean ~ Group, data = auc_comp, subset = Group %in% c('fungi', 'bac'))
+```
+
+## Plot Heatmap
+
+```{r, message = F, warning = F}
+Importance_df2 <- ImportTable(file = '../11.Classifier/RF/FeatureSel_Important/all/2021-09-29-Combine_importantScore_rank_all-v1.0.0.csv')
+subset_imp <- Importance_df2[Importance_df2$Rank3 == 'Sel', ]
+subset_imp2 <- subset_imp[, grep('_Rank', colnames(subset_imp))]
+
+fungi_median <- ImportTable(file = '../07.FeatureSelection/01.SSTF/2021-07-30-walsh-median-all-v1.0.0.csv')
+rownames(fungi_median) <- gsub("\\W+", '_', rownames(fungi_median))
+rownames(fungi_median) <- gsub("^_", '', rownames(fungi_median))
+fungi_median$EnrDep <- ifelse(fungi_median$`all-Median` >0, 'Enriched', 'Depleted')
+fungi_median$Kingdoms <- 'fungi'
+
+bac_median <- ImportTable(file = '../09.Bacteria/2021-08-06-wilcoxon-all-v1.0.0.csv')
+rownames(bac_median) <- gsub("\\W+", '_', rownames(bac_median))
+rownames(bac_median) <- gsub("^_", '', rownames(bac_median))
+bac_median$EnrDep <- ifelse(bac_median$mFC >1, 'Enriched', 'Depleted')
+bac_median$Kingdoms <- 'bac'
+
+combine_EnrDep <- rbind(fungi_median[, c(5, 6), drop = F], bac_median[, c(5, 6), drop = F])
+combine_EnrDep <- combine_EnrDep[rownames(subset_imp), , drop = F]
+
+comb_AUC <- ImportTable(file = paste0('../11.Classifier/RF/AUC_res/2021-09-29-AUC_matrix-all-v1.0.0.csv'))
+bac_AUC <- ImportTable(file = paste0('../11.Classifier/RF/AUC_res/2021-09-29-AUC_matrix-bac-v1.0.0.csv'))
+
+summary_AUC <- rbind(Comb_AUC = comb_AUC[which.max(comb_AUC$Mean),], Bac_AUC = bac_AUC[which.max(bac_AUC$Mean),])
+summary_AUC <- rbind(summary_AUC, Ratio = (summary_AUC[1,]/summary_AUC[2,]-1)*100)
+
+all_Feature_imp <- ImportTable(file ="../11.Classifier/RF/FeatureSel_Important/2021-09-30-Importance_Table_all-v1.0.0.csv")
+all_Feature_imp1 <- all_Feature_imp[rownames(subset_imp), "Rank", drop = F]
+all_Feature_imp2 <- cbind(all_Feature_imp1, combine_EnrDep)
+all_Feature_imp2 <- all_Feature_imp2[order(all_Feature_imp2$Rank,all_Feature_imp2$EnrDep), ]
+
+
+## plot enriched sub
+enrich_mt <- subset_imp2[rownames(all_Feature_imp2)[all_Feature_imp2$EnrDep == 'Enriched'],]
+enrich_col <- colorRamp2(c(0, 30), c('#bc0025', '#ffffcc'))
+
+enrich_all_list <- all_Feature_imp2$Rank[all_Feature_imp2$EnrDep == 'Enriched']
+names(enrich_all_list) <- rownames(all_Feature_imp2)[all_Feature_imp2$EnrDep == 'Enriched']
+
+enrich_all_list_label <- as.character(enrich_all_list)
+names(enrich_all_list_label) <- rownames(all_Feature_imp2)[all_Feature_imp2$EnrDep == 'Enriched']
+
+anno_col_enrich <- enrich_col(enrich_all_list)
+names(anno_col_enrich) <- enrich_all_list
+enrich_label_col <- lapply(enrich_all_list, function(x){ifelse(x<=3, "white", "black")}) %>% unlist
+
+enrich_rowname_col <- lapply(all_Feature_imp2$Kingdoms[all_Feature_imp2$EnrDep == 'Enriched'],
+                             function(x){ifelse(x == 'fungi', "#ff410d", "#014586")})%>% unlist
+
+enrich_row_anno <- rowAnnotation(all = anno_simple(enrich_all_list, 
+                                                   pch = enrich_all_list_label,
+                                                   col = anno_col_enrich,
+                                                   gp = gpar(col = "black", lwd = 2),
+                                                   simple_anno_size = unit(1, "cm"),
+                                                   pt_gp = gpar(fontsize = 12, fontface = 'bold',
+                                                                col = enrich_label_col),
+                                                   pt_size = unit(5, "mm")), annotation_label = c(""))
+h1 <- Heatmap(enrich_mt, col = enrich_col, name = "CRC-enriched\nSpecies",
+              cluster_columns = F, cluster_rows = F, border = T, 
+              rect_gp = gpar(col = "black", lwd = 2),
+              cell_fun = function(j, i, x, y, width, height, fill){
+                grid.text(enrich_mt[i, j], x, y, gp = gpar(fontsize = 12, fontface = 'bold', 
+                                    col = ifelse(enrich_mt[i, j]<=3,'white', 'black')))},
+              width = ncol(enrich_mt)*unit(10, "mm"), 
+              height = nrow(enrich_mt)*unit(10, "mm"),
+              right_annotation = enrich_row_anno,
+              row_names_gp = gpar(col = enrich_rowname_col, fontface = 4))
+
+h1
+
+
+
+
+## plot depleted sub
+
+deplet_mt <- subset_imp2[rownames(all_Feature_imp2)[all_Feature_imp2$EnrDep == 'Depleted'],]
+deplet_col <- colorRamp2(c(0, 30), c('#243493', '#ffffcc'))
+
+deplet_all_list <- all_Feature_imp2$Rank[all_Feature_imp2$EnrDep == 'Depleted']
+names(deplet_all_list) <- rownames(all_Feature_imp2)[all_Feature_imp2$EnrDep == 'Depleted']
+
+deplet_all_list_label <- as.character(deplet_all_list)
+names(deplet_all_list_label) <- rownames(all_Feature_imp2)[all_Feature_imp2$EnrDep == 'Depleted']
+
+anno_col_deplet <- deplet_col(deplet_all_list)
+names(anno_col_deplet) <- deplet_all_list
+deplet_label_col <- lapply(deplet_all_list, function(x){ifelse(x<=3, "white", "black")}) %>% unlist
+
+deplet_rowname_col <- lapply(all_Feature_imp2$Kingdoms[all_Feature_imp2$EnrDep == 'Depleted'],
+                             function(x){ifelse(x == 'fungi', "#ff410d", "#014586")})%>% unlist
+
+deplet_row_anno <- rowAnnotation(all = anno_simple(deplet_all_list, 
+                                                   pch = deplet_all_list_label,
+                                                   col = anno_col_deplet,
+                                                   gp = gpar(col = "black", lwd = 2),
+                                                   simple_anno_size = unit(1, "cm"),
+                                                   pt_gp = gpar(fontsize = 12, fontface = 'bold',
+                                                                col = deplet_label_col),
+                                                   pt_size = unit(5, "mm")))
+
+h2 <- Heatmap(deplet_mt, col = deplet_col, name = "CRC-depleted\nSpecies",
+              cluster_columns = F, cluster_rows = F, border = T, 
+              rect_gp = gpar(col = "black", lwd = 2),
+              cell_fun = function(j, i, x, y, width, height, fill){
+                grid.text(deplet_mt[i, j], x, y, 
+                          gp = gpar(fontsize = 12, fontface = 'bold', 
+                                    col = ifelse(deplet_mt[i, j]<=3,'white', 'black')))},
+              width = ncol(deplet_mt)*unit(10, "mm"), 
+              height = nrow(deplet_mt)*unit(10, "mm"), 
+              right_annotation = deplet_row_anno,
+              row_names_gp = gpar(col = deplet_rowname_col, fontface = 4))
+h2
+
+AUC_col <- colorRamp2(c(65, 70,75,80,85,90), c('snow', 'khaki1', 'yellow', 'red', 'red3', 'red4'))
+
+h3 <- Heatmap(summary_AUC[1, c(1:8), drop =F],
+              cluster_columns = F, col = AUC_col, 
+              rect_gp = gpar(col = "black", lwd = 2),
+              cell_fun = function(j, i, x, y, width, height, fill){
+                grid.text(round(summary_AUC[1, j],2), x, y, 
+                          gp = gpar(fontsize = 8, fontface = 'bold', 
+                                    col = ifelse(summary_AUC[1, j] > 80, "white",'black')))},
+              height = unit(10, "mm"))
+
+h4 <- Heatmap(summary_AUC[2, c(1:8), drop =F],
+              cluster_columns = F, col = AUC_col, 
+              rect_gp = gpar(col = "black", lwd = 2),
+              cell_fun = function(j, i, x, y, width, height, fill){
+                grid.text(round(summary_AUC[2, j],2), x, y, 
+                          gp = gpar(fontsize = 8, fontface = 'bold', 
+                                    col = ifelse(summary_AUC[2, j] > 80, "white",'black')))},
+              height = unit(10, "mm"))
+
+
+Ratio_col <- colorRamp2(c(-1, 0, 5, 10), c('darkblue', 'white', 'violetred', '#810f7b'))
+
+h5 <- Heatmap(summary_AUC[3, c(1:8), drop =F],
+              cluster_columns = F, col = Ratio_col, 
+              rect_gp = gpar(col = "black", lwd = 2),
+              cell_fun = function(j, i, x, y, width, height, fill){
+                grid.text(round(abs(summary_AUC[3, j]),2), x, y, 
+                          gp = gpar(fontsize = 8, fontface = 'bold', 
+                                    col = ifelse(abs(summary_AUC[3, j]) > 5, "white",'black')))},
+              height = unit(10, "mm"))
+
+ht_list <- h1 %v% h2 %v% h3 %v% h4 %v% h5
+
+ht_pdf <- FileCreate(DirPath = '../11.Classifier/RF/Plot', Prefix = 'heatmap_RF_AUC', Suffix = 'pdf')
+
+pdf(file = ht_pdf, width = 15, height = 15)
+draw(ht_list)
+dev.off()
+
+```
+
+
+
+
+## Plot AUC
+
+```{r, message = F, warning = F}
+
+comb_AUC <- ImportTable(file = paste0('../11.Classifier/RF/AUC_res/2021-09-29-AUC_matrix-all-v1.0.0.csv'))
+bac_AUC <- ImportTable(file = paste0('../11.Classifier/RF/AUC_res/2021-09-29-AUC_matrix-bac-v1.0.0.csv'))
+fungi_AUC <- ImportTable(file = paste0('../11.Classifier/RF/AUC_res/2021-09-29-AUC_matrix-fungi-v1.0.0.csv'))
+
+best_seed_list <- list()
+best_seed_list[['all']] <- which.max(comb_AUC$Mean)
+best_seed_list[['bac']] <- which.max(bac_AUC$Mean)
+best_seed_list[['fungi']] <- which.max(fungi_AUC$Mean)
+
+
+roc_comp_df <- matrix(data = NA, nrow = 1, ncol = 2)
+roc_comp_df <- roc_comp_df[-1,]
+for (c in cohort_lst) {
+  roc_list <- list()
+  for (sub_type in c('fungi', 'bac', 'all')) {
+    Importance_df2 <- ImportTable(file = paste0('../11.Classifier/RF/FeatureSel_Important/',
+                                                sub_type, '/2021-09-29-Combine_importantScore_rank_all-v1.0.0.csv'), 
+                                  sep = ',')
+    sel_all_list <- rownames(Importance_df2)[Importance_df2$Rank3 == 'Sel']
+    sel_imp_df <- cn_combin_core[, c('Stage', sel_all_list)]
+    train_set <- sel_imp_df[rownames(cn_meta_df)[cn_meta_df$Cohort != c], ]
+    valda_set <- sel_imp_df[rownames(cn_meta_df)[cn_meta_df$Cohort == c], ]
+    set.seed(best_seed_list[[sub_type]])
+    # set.seed(123)
+    rf <- randomForest(Stage ~ ., data = train_set)
+    pred <- predict(rf, newdata=valda_set[-1], type = 'prob')[,2]
+    pred_result <- prediction(pred, valda_set[,1])
+    auc_value <- round(performance(pred_result, measure = "auc")@y.values[[1]]*100, 2)
+    
+    roc_list[[sub_type]] <- roc(valda_set[,1], pred, legacy.axes = T, percent = T)
+  }
+  roc_pdf <- FileCreate(DirPath = "../11.Classifier/RF/Comparison/", Prefix = paste0('ROC-', c), Suffix = 'pdf')
+  pdf(file = roc_pdf)
+  par(pty = "s")
+  plot(roc_list$all, col = '#ffd320', lwd = 4, legacy.axes = T, 
+       xlab = "False Postive Percentage", ylab = "True Postive Percentage")
+  # lines(roc_list$fungi, col = '#ff420e', lwd = 2, lty = 1)
+  lines(roc_list$bac, col = '#004586', lwd = 2, lty = 1)
+  dev.off()
+  roc_comp <- roc.test(roc_list$all, roc_list$bac)
+  roc_comp_df <- rbind(roc_comp_df, c(roc_comp$p.value, roc_comp$statistic))
+  
+}
+roc_comp_df <- as.data.frame(roc_comp_df)
+rownames(roc_comp_df) <- cohort_lst
+colnames(roc_comp_df) <- c("p-value", "Z")
+
+roc_comp_csv <- FileCreate(DirPath = "../11.Classifier/RF/Comparison", Prefix = "ROC_Comparison", Suffix = 'csv')
+write.csv(roc_comp_df, roc_comp_csv)
+
+#ff420e   fungi
+#004586   bac
+#ffd320   combine
+
+
+```
+
+
+## Supplementary Heatmap
+
+### Bac Heatmap
+
+```{r, message = F, warning = F}
+Importance_df2 <- ImportTable(file = '../11.Classifier/RF/FeatureSel_Important/bac/2021-09-29-Combine_importantScore_rank_all-v1.0.0.csv')
+subset_imp <- Importance_df2[Importance_df2$Rank3 == 'Sel', ]
+subset_imp2 <- subset_imp[, grep('_Rank', colnames(subset_imp))]
+
+
+bac_median <- ImportTable(file = '../09.Bacteria/2021-08-06-wilcoxon-all-v1.0.0.csv')
+rownames(bac_median) <- gsub("\\W+", '_', rownames(bac_median))
+rownames(bac_median) <- gsub("^_", '', rownames(bac_median))
+bac_median$EnrDep <- ifelse(bac_median$mFC >1, 'Enriched', 'Depleted')
+bac_median$Kingdoms <- 'bac'
+
+subset_imp2 <- subset_imp2[rownames(subset_imp2) %in% rownames(bac_median), ]
+
+
+combine_EnrDep <- bac_median[, c(5, 6), drop = F]
+combine_EnrDep <- combine_EnrDep[rownames(subset_imp2), , drop = F]
+
+comb_AUC <- ImportTable(file = paste0('../11.Classifier/RF/AUC_res/2021-09-29-AUC_matrix-all-v1.0.0.csv'))
+bac_AUC <- ImportTable(file = paste0('../11.Classifier/RF/AUC_res/2021-09-29-AUC_matrix-bac-v1.0.0.csv'))
+
+summary_AUC <- rbind(Comb_AUC = comb_AUC[which.max(comb_AUC$Mean),], Bac_AUC = bac_AUC[which.max(bac_AUC$Mean),])
+summary_AUC <- rbind(summary_AUC, Ratio = (summary_AUC[1,]/summary_AUC[2,]-1)*100)
+
+all_Feature_imp <- ImportTable(file ="../11.Classifier/RF/FeatureSel_Important/2021-09-30-Importance_Table_bac-v1.0.0.csv")
+all_Feature_imp1 <- all_Feature_imp[rownames(subset_imp2), "Rank", drop = F]
+all_Feature_imp2 <- cbind(all_Feature_imp1, combine_EnrDep)
+all_Feature_imp2 <- all_Feature_imp2[order(all_Feature_imp2$Rank,all_Feature_imp2$EnrDep), ]
+
+
+## plot enriched sub
+enrich_mt <- subset_imp2[rownames(all_Feature_imp2)[all_Feature_imp2$EnrDep == 'Enriched'],]
+enrich_col <- colorRamp2(c(0, 30), c('#bc0025', '#ffffcc'))
+
+enrich_all_list <- all_Feature_imp2$Rank[all_Feature_imp2$EnrDep == 'Enriched']
+names(enrich_all_list) <- rownames(all_Feature_imp2)[all_Feature_imp2$EnrDep == 'Enriched']
+
+enrich_all_list_label <- as.character(enrich_all_list)
+names(enrich_all_list_label) <- rownames(all_Feature_imp2)[all_Feature_imp2$EnrDep == 'Enriched']
+
+anno_col_enrich <- enrich_col(enrich_all_list)
+names(anno_col_enrich) <- enrich_all_list
+enrich_label_col <- lapply(enrich_all_list, function(x){ifelse(x<=3, "white", "black")}) %>% unlist
+
+enrich_rowname_col <- lapply(all_Feature_imp2$Kingdoms[all_Feature_imp2$EnrDep == 'Enriched'],
+                             function(x){ifelse(x == 'fungi', "#ff410d", "#014586")})%>% unlist
+
+enrich_row_anno <- rowAnnotation(all = anno_simple(enrich_all_list, 
+                                                   pch = enrich_all_list_label,
+                                                   col = anno_col_enrich,
+                                                   gp = gpar(col = "black", lwd = 2),
+                                                   simple_anno_size = unit(1, "cm"),
+                                                   pt_gp = gpar(fontsize = 12, fontface = 'bold',
+                                                                col = enrich_label_col),
+                                                   pt_size = unit(5, "mm")), annotation_label = c(""))
+
+colnames(enrich_mt) <- c("2014_ZellerG", "2015_FengQ", "2016_VogtmannE", "2019_ThomasA", "2019_WirbelJ", "2019_YachidaS", "2017_JunY", "2021_JunY")
+h1 <- Heatmap(enrich_mt, col = enrich_col, name = "CRC-enriched\nSpecies",
+              cluster_columns = F, cluster_rows = F, border = T, 
+              rect_gp = gpar(col = "black", lwd = 2),
+              cell_fun = function(j, i, x, y, width, height, fill){
+                grid.text(enrich_mt[i, j], x, y, gp = gpar(fontsize = 12, fontface = 'bold', 
+                                    col = ifelse(enrich_mt[i, j]<=3,'white', 'black')))},
+              width = ncol(enrich_mt)*unit(10, "mm"), 
+              height = nrow(enrich_mt)*unit(10, "mm"),
+              right_annotation = enrich_row_anno,
+              row_names_gp = gpar(col = enrich_rowname_col, fontface = 4))
+
+h1
+
+
+
+
+## plot depleted sub
+
+deplet_mt <- subset_imp2[rownames(all_Feature_imp2)[all_Feature_imp2$EnrDep == 'Depleted'],]
+deplet_col <- colorRamp2(c(0, 30), c('#243493', '#ffffcc'))
+
+deplet_all_list <- all_Feature_imp2$Rank[all_Feature_imp2$EnrDep == 'Depleted']
+names(deplet_all_list) <- rownames(all_Feature_imp2)[all_Feature_imp2$EnrDep == 'Depleted']
+
+deplet_all_list_label <- as.character(deplet_all_list)
+names(deplet_all_list_label) <- rownames(all_Feature_imp2)[all_Feature_imp2$EnrDep == 'Depleted']
+
+anno_col_deplet <- deplet_col(deplet_all_list)
+names(anno_col_deplet) <- deplet_all_list
+deplet_label_col <- lapply(deplet_all_list, function(x){ifelse(x<=3, "white", "black")}) %>% unlist
+
+deplet_rowname_col <- lapply(all_Feature_imp2$Kingdoms[all_Feature_imp2$EnrDep == 'Depleted'],
+                             function(x){ifelse(x == 'fungi', "#ff410d", "#014586")})%>% unlist
+
+deplet_row_anno <- rowAnnotation(all = anno_simple(deplet_all_list, 
+                                                   pch = deplet_all_list_label,
+                                                   col = anno_col_deplet,
+                                                   gp = gpar(col = "black", lwd = 2),
+                                                   simple_anno_size = unit(1, "cm"),
+                                                   pt_gp = gpar(fontsize = 12, fontface = 'bold',
+                                                                col = deplet_label_col),
+                                                   pt_size = unit(5, "mm")))
+
+colnames(deplet_mt) <- c("2014_ZellerG", "2015_FengQ", "2016_VogtmannE", "2019_ThomasA", "2019_WirbelJ", "2019_YachidaS", "2017_JunY", "2021_JunY")
+h2 <- Heatmap(deplet_mt, col = deplet_col, name = "CRC-depleted\nSpecies",
+              cluster_columns = F, cluster_rows = F, border = T, 
+              rect_gp = gpar(col = "black", lwd = 2),
+              cell_fun = function(j, i, x, y, width, height, fill){
+                grid.text(deplet_mt[i, j], x, y, 
+                          gp = gpar(fontsize = 12, fontface = 'bold', 
+                                    col = ifelse(deplet_mt[i, j]<=3,'white', 'black')))},
+              width = ncol(deplet_mt)*unit(10, "mm"), 
+              height = nrow(deplet_mt)*unit(10, "mm"), 
+              right_annotation = deplet_row_anno,
+              row_names_gp = gpar(col = deplet_rowname_col, fontface = 4))
+h2
+
+ht_list <- h1 %v% h2 
+
+ht_pdf <- FileCreate(DirPath = '../11.Classifier/RF/Plot', Prefix = 'supplementary-Bac-heatmap_RF_AUC', Suffix = 'pdf')
+
+pdf(file = ht_pdf, width = 15, height = 15)
+draw(ht_list)
+dev.off()
+
+```
+
+### Fungi Heatmap
+
+```{r, message = F, warning = F}
+Importance_df2 <- ImportTable(file = '../11.Classifier/RF/FeatureSel_Important/fungi/2021-09-29-Combine_importantScore_rank_all-v1.0.0.csv')
+subset_imp <- Importance_df2[Importance_df2$Rank3 == 'Sel', ]
+subset_imp2 <- subset_imp[, grep('_Rank', colnames(subset_imp))]
+
+
+fungi_median <- ImportTable(file = '../07.FeatureSelection/01.SSTF/2021-07-30-walsh-median-all-v1.0.0.csv')
+rownames(fungi_median) <- gsub("\\W+", '_', rownames(fungi_median))
+rownames(fungi_median) <- gsub("^_", '', rownames(fungi_median))
+fungi_median$EnrDep <- ifelse(fungi_median$`all-Median` >0, 'Enriched', 'Depleted')
+fungi_median$Kingdoms <- 'fungi'
+
+subset_imp2 <- subset_imp2[(rownames(subset_imp2) %in% rownames(fungi_median)), ]
+
+
+combine_EnrDep <- fungi_median[, c(5, 6), drop = F]
+combine_EnrDep <- combine_EnrDep[rownames(subset_imp2), , drop = F]
+
+comb_AUC <- ImportTable(file = paste0('../11.Classifier/RF/AUC_res/2021-09-29-AUC_matrix-all-v1.0.0.csv'))
+bac_AUC <- ImportTable(file = paste0('../11.Classifier/RF/AUC_res/2021-09-29-AUC_matrix-bac-v1.0.0.csv'))
+
+summary_AUC <- rbind(Comb_AUC = comb_AUC[which.max(comb_AUC$Mean),], Bac_AUC = bac_AUC[which.max(bac_AUC$Mean),])
+summary_AUC <- rbind(summary_AUC, Ratio = (summary_AUC[1,]/summary_AUC[2,]-1)*100)
+
+all_Feature_imp <- ImportTable(file ="../11.Classifier/RF/FeatureSel_Important/2021-09-30-Importance_Table_fungi-v1.0.0.csv")
+all_Feature_imp1 <- all_Feature_imp[rownames(subset_imp2), "Rank", drop = F]
+all_Feature_imp2 <- cbind(all_Feature_imp1, combine_EnrDep)
+all_Feature_imp2 <- all_Feature_imp2[order(all_Feature_imp2$Rank,all_Feature_imp2$EnrDep), ]
+
+
+## plot enriched sub
+enrich_mt <- subset_imp2[rownames(all_Feature_imp2)[all_Feature_imp2$EnrDep == 'Enriched'],]
+enrich_col <- colorRamp2(c(0, 30), c('#bc0025', '#ffffcc'))
+
+enrich_all_list <- all_Feature_imp2$Rank[all_Feature_imp2$EnrDep == 'Enriched']
+names(enrich_all_list) <- rownames(all_Feature_imp2)[all_Feature_imp2$EnrDep == 'Enriched']
+
+enrich_all_list_label <- as.character(enrich_all_list)
+names(enrich_all_list_label) <- rownames(all_Feature_imp2)[all_Feature_imp2$EnrDep == 'Enriched']
+
+anno_col_enrich <- enrich_col(enrich_all_list)
+names(anno_col_enrich) <- enrich_all_list
+enrich_label_col <- lapply(enrich_all_list, function(x){ifelse(x<=3, "white", "black")}) %>% unlist
+
+enrich_rowname_col <- lapply(all_Feature_imp2$Kingdoms[all_Feature_imp2$EnrDep == 'Enriched'],
+                             function(x){ifelse(x == 'fungi', "#ff410d", "#014586")})%>% unlist
+
+enrich_row_anno <- rowAnnotation(all = anno_simple(enrich_all_list, 
+                                                   pch = enrich_all_list_label,
+                                                   col = anno_col_enrich,
+                                                   gp = gpar(col = "black", lwd = 2),
+                                                   simple_anno_size = unit(1, "cm"),
+                                                   pt_gp = gpar(fontsize = 12, fontface = 'bold',
+                                                                col = enrich_label_col),
+                                                   pt_size = unit(5, "mm")), annotation_label = c(""))
+
+colnames(enrich_mt) <- c("2014_ZellerG", "2015_FengQ", "2016_VogtmannE", "2019_ThomasA", "2019_WirbelJ", "2019_YachidaS", "2017_JunY", "2021_JunY")
+h1 <- Heatmap(enrich_mt, col = enrich_col, name = "CRC-enriched\nSpecies",
+              cluster_columns = F, cluster_rows = F, border = T, 
+              rect_gp = gpar(col = "black", lwd = 2),
+              cell_fun = function(j, i, x, y, width, height, fill){
+                grid.text(enrich_mt[i, j], x, y, gp = gpar(fontsize = 12, fontface = 'bold', 
+                                    col = ifelse(enrich_mt[i, j]<=3,'white', 'black')))},
+              width = ncol(enrich_mt)*unit(10, "mm"), 
+              height = nrow(enrich_mt)*unit(10, "mm"),
+              right_annotation = enrich_row_anno,
+              row_names_gp = gpar(col = enrich_rowname_col, fontface = 4))
+
+h1
+
+
+
+
+## plot depleted sub
+
+deplet_mt <- subset_imp2[rownames(all_Feature_imp2)[all_Feature_imp2$EnrDep == 'Depleted'],]
+deplet_col <- colorRamp2(c(0, 30), c('#243493', '#ffffcc'))
+
+deplet_all_list <- all_Feature_imp2$Rank[all_Feature_imp2$EnrDep == 'Depleted']
+names(deplet_all_list) <- rownames(all_Feature_imp2)[all_Feature_imp2$EnrDep == 'Depleted']
+
+deplet_all_list_label <- as.character(deplet_all_list)
+names(deplet_all_list_label) <- rownames(all_Feature_imp2)[all_Feature_imp2$EnrDep == 'Depleted']
+
+anno_col_deplet <- deplet_col(deplet_all_list)
+names(anno_col_deplet) <- deplet_all_list
+deplet_label_col <- lapply(deplet_all_list, function(x){ifelse(x<=3, "white", "black")}) %>% unlist
+
+deplet_rowname_col <- lapply(all_Feature_imp2$Kingdoms[all_Feature_imp2$EnrDep == 'Depleted'],
+                             function(x){ifelse(x == 'fungi', "#ff410d", "#014586")})%>% unlist
+
+deplet_row_anno <- rowAnnotation(all = anno_simple(deplet_all_list, 
+                                                   pch = deplet_all_list_label,
+                                                   col = anno_col_deplet,
+                                                   gp = gpar(col = "black", lwd = 2),
+                                                   simple_anno_size = unit(1, "cm"),
+                                                   pt_gp = gpar(fontsize = 12, fontface = 'bold',
+                                                                col = deplet_label_col),
+                                                   pt_size = unit(5, "mm")))
+
+colnames(deplet_mt) <- c("2014_ZellerG", "2015_FengQ", "2016_VogtmannE", "2019_ThomasA", "2019_WirbelJ", "2019_YachidaS", "2017_JunY", "2021_JunY")
+h2 <- Heatmap(deplet_mt, col = deplet_col, name = "CRC-depleted\nSpecies",
+              cluster_columns = F, cluster_rows = F, border = T, 
+              rect_gp = gpar(col = "black", lwd = 2),
+              cell_fun = function(j, i, x, y, width, height, fill){
+                grid.text(deplet_mt[i, j], x, y, 
+                          gp = gpar(fontsize = 12, fontface = 'bold', 
+                                    col = ifelse(deplet_mt[i, j]<=3,'white', 'black')))},
+              width = ncol(deplet_mt)*unit(10, "mm"), 
+              height = nrow(deplet_mt)*unit(10, "mm"), 
+              right_annotation = deplet_row_anno,
+              row_names_gp = gpar(col = deplet_rowname_col, fontface = 4))
+h2
+
+ht_list <- h1 %v% h2 
+
+ht_pdf <- FileCreate(DirPath = '../11.Classifier/RF/Plot', Prefix = 'supplementary-Fungi-heatmap_RF_AUC', Suffix = 'pdf')
+
+pdf(file = ht_pdf, width = 15, height = 15)
+draw(ht_list)
+dev.off()
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
