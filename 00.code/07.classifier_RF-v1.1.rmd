@@ -22,6 +22,7 @@ require(mlbench)
 require(caret)
 require(ComplexHeatmap)
 require(circlize)
+require(reshape2) # dcast
 ```
 
 
@@ -868,32 +869,44 @@ mydata <- cn_combin_core
 cohort_lst <- unique(cn_meta_df$Cohort)
 
 auc_sub_list <- list()
-for (sub_cohort in cohort_lst) {
-  roc_feature_df <- matrix(data = NA,
-                           nrow = 100,
-                           ncol = ncol(mydata)-1) %>% 
-    as.data.frame()
-  rownames(roc_feature_df) <- paste0('Seed_', 1:100)
-  colnames(roc_feature_df) <- colnames(mydata)[2:ncol(mydata)]
-  for (sel_seed in 1:100) {
-    for (single_feature in colnames(mydata)[2:ncol(mydata)]) {
-      train_set <- mydata[rownames(cn_meta_df)[cn_meta_df$Cohort != sub_cohort], ]
-      valda_set <- mydata[rownames(cn_meta_df)[cn_meta_df$Cohort == sub_cohort], ]
-      set.seed(sel_seed)
-      rf <- randomForest(as.formula(paste0("Stage ~ ", single_feature)), data = train_set)
-      pred <- predict(rf, newdata=valda_set[, single_feature, drop = F], type = 'prob')[,2]
-      pred_result <- prediction(pred, valda_set[,1])
-      auc_value <- round(performance(pred_result, measure = "auc")@y.values[[1]]*100, 2)
-      
-      roc_feature_df[paste0('Seed_', sel_seed), single_feature] <- auc_value
-      
+calculate_or_not <- F
+if (calculate_or_not) {
+  for (sub_cohort in cohort_lst) {
+    roc_feature_df <- matrix(data = NA,
+                             nrow = 100,
+                             ncol = ncol(mydata)-1) %>% 
+      as.data.frame()
+    rownames(roc_feature_df) <- paste0('Seed_', 1:100)
+    colnames(roc_feature_df) <- colnames(mydata)[2:ncol(mydata)]
+    for (sel_seed in 1:100) {
+      for (single_feature in colnames(mydata)[2:ncol(mydata)]) {
+        train_set <- mydata[rownames(cn_meta_df)[cn_meta_df$Cohort != sub_cohort], ]
+        valda_set <- mydata[rownames(cn_meta_df)[cn_meta_df$Cohort == sub_cohort], ]
+        set.seed(sel_seed)
+        rf <- randomForest(as.formula(paste0("Stage ~ ", single_feature)), data = train_set)
+        pred <- predict(rf, newdata=valda_set[, single_feature, drop = F], type = 'prob')[,2]
+        pred_result <- prediction(pred, valda_set[,1])
+        auc_value <- round(performance(pred_result, measure = "auc")@y.values[[1]]*100, 2)
+        
+        roc_feature_df[paste0('Seed_', sel_seed), single_feature] <- auc_value
+        
+      }
+    }
+    roc_csv <- FileCreate(DirPath = "../11.Classifier/RF/single_AUC", Suffix = "csv",
+                          Prefix = paste0("SingleFeature_AUC_Performance-", sub_cohort))
+    write.csv(x = roc_feature_df, file = roc_csv)
+    auc_sub_list[[sub_cohort]] <- roc_feature_df
+  }
+}else{
+  for (sub_cohort in cohort_lst) {
+    if (file.exists(paste0( '../11.Classifier/RF/single_AUC/2021-10-01-SingleFeature_AUC_Performance-',sub_cohort,'-v1.0.0.csv'))) {
+      auc_sub_list[[sub_cohort]] <- ImportTable(file = paste0( '../11.Classifier/RF/single_AUC/2021-10-01-SingleFeature_AUC_Performance-',sub_cohort,'-v1.0.0.csv'))
+    }else{
+      auc_sub_list[[sub_cohort]] <- ImportTable(file = paste0( '../11.Classifier/RF/single_AUC/2021-10-02-SingleFeature_AUC_Performance-',sub_cohort,'-v1.0.0.csv'))
     }
   }
-  roc_csv <- FileCreate(DirPath = "../11.Classifier/RF/single_AUC", Suffix = "csv",
-                        Prefix = paste0("SingleFeature_AUC_Performance-", sub_cohort))
-  write.csv(x = roc_feature_df, file = roc_csv)
-  auc_sub_list[[sub_cohort]] <- roc_feature_df
 }
+
 
 
 
@@ -915,6 +928,9 @@ best_seed_df$MeanAUC <- apply(best_seed_df, 1, function(x){
   round(mean(as.numeric(best_seed_df$AUC[best_seed_df$Feature == x[2]])),2)
 })
 
+best_seed_df$Kingdoms <- lapply(best_seed_df$Feature , function(x){ 
+  ifelse(x %in% rownames(bac_median), "Bac", "Fungi")}) %>% unlist()
+
 best_seed_csv <- FileCreate(DirPath = "../11.Classifier/RF/single_AUC",
                             Prefix = "Summary-Best_Seed_AUC", Suffix = "csv")
 
@@ -935,6 +951,84 @@ head(tmp_df2[order(tmp_df2$AUC, decreasing = T),], 10)
 
 ```
 
+## Plot single-AUC
+
+```{r, message = F, warning = F}
+
+best_seed_df <- ImportTable(file =  "../11.Classifier/RF/single_AUC/2021-10-04-Summary-Best_Seed_AUC-v1.0.0.csv")
+
+sed_AUC_60_df <- best_seed_df[best_seed_df$MeanAUC >= 60, ]
+
+sel_single_list <- unique(sed_AUC_60_df$Feature)
+
+for (c in cohort_lst) {
+  roc_list <- list()
+  auc_list <- list()
+  for (sel_single_feature in sel_single_list) {
+    sel_imp_df <- cn_combin_core[, c('Stage', sel_single_feature)]
+    train_set <- sel_imp_df[rownames(cn_meta_df)[cn_meta_df$Cohort != c], ]
+    valda_set <- sel_imp_df[rownames(cn_meta_df)[cn_meta_df$Cohort == c], ]
+    set.seed(sed_AUC_60_df$Seed[sed_AUC_60_df$Cohort == c & sed_AUC_60_df$Feature == sel_single_feature])
+    # set.seed(123)
+    rf <- randomForest(Stage ~ ., data = train_set)
+    pred <- predict(rf, newdata=valda_set[-1], type = 'prob')[,2]
+    pred_result <- prediction(pred, valda_set[,1])
+    auc_value <- round(performance(pred_result, measure = "auc")@y.values[[1]]*100, 2)
+    
+    roc_list[[sel_single_feature]] <- roc(valda_set[,1], pred, legacy.axes = T, percent = T)
+    auc_list[[sel_single_feature]] <- auc_value
+  }
+  roc_pdf <- FileCreate(DirPath = "../11.Classifier/RF/single_AUC/", Prefix = paste0('singleFeature-ROC-', c), Suffix = 'pdf')
+  pdf(file = roc_pdf)
+  par(pty = "s")
+  plot(roc_list[[sel_single_list[1]]], col = '#E41A1C', lwd = 3, legacy.axes = T, 
+       xlab = "False Postive Percentage", ylab = "True Postive Percentage", 
+       main = paste0("Single feature performance in ", c))
+  lines(roc_list[[sel_single_list[2]]], col = '#F781BF', lwd = 3, lty = 1)
+  
+  lines(roc_list[[sel_single_list[3]]], col = '#377EB8', lwd = 1, lty = 1)
+  lines(roc_list[[sel_single_list[4]]], col = '#4DAF4A', lwd = 1, lty = 1)
+  lines(roc_list[[sel_single_list[5]]], col = '#984EA3', lwd = 1, lty = 1)
+  lines(roc_list[[sel_single_list[6]]], col = '#FF7F00', lwd = 1, lty = 1) 
+  
+  text(x = 0, y = 40, labels = paste0(sel_single_list[1], ": ", auc_list[[sel_single_list[1]]], "%"), 
+       col =  '#E41A1C', font = 4, adj = 1)  
+  text(x = 0, y = 35, labels = paste0(sel_single_list[2], ": ", auc_list[[sel_single_list[2]]], "%"), 
+       col =  '#F781BF', font = 4, adj = 1)
+  
+  text(x = 0, y = 28, labels = paste0(sel_single_list[3], ": ", auc_list[[sel_single_list[3]]], "%"), 
+       col =  '#377EB8', font = 3, adj = 1)
+  text(x = 0, y = 23, labels = paste0(sel_single_list[4], ": ", auc_list[[sel_single_list[4]]], "%"), 
+       col =  '#4DAF4A', font = 3, adj = 1)
+  text(x = 0, y = 18, labels = paste0(sel_single_list[5], ": ", auc_list[[sel_single_list[5]]], "%"), 
+       col =  '#984EA3', font = 3, adj = 1)
+  text(x = 0, y = 13, labels = paste0(sel_single_list[6], ": ", auc_list[[sel_single_list[6]]], "%"), 
+       col =  '#FF7F00', font = 3, adj = 1)
+  
+  
+  # lines(roc_list[[sel_single_list[3]]], col = '#377EB8', lwd = 2, lty = 2)
+  # lines(roc_list[[sel_single_list[4]]], col = '#4DAF4A', lwd = 2, lty = 2)
+  # lines(roc_list[[sel_single_list[5]]], col = '#984EA3', lwd = 2, lty = 2)
+  # lines(roc_list[[sel_single_list[6]]], col = '#FF7F00', lwd = 2, lty = 2)
+  
+  dev.off()
+  
+}
+
+#ff420e   fungi
+#004586   bac
+#ffd320   combine
+
+
+dcast_60_df <- dcast(sed_AUC_60_df, Feature ~ Cohort, value.var = "AUC")
+rownames(dcast_60_df) <- dcast_60_df$Feature
+dcast_60_df <- dcast_60_df[, -1]
+dcast_60_df$Mean <- round(rowMeans(dcast_60_df),2)
+dcast_60_df <- rbind(dcast_60_df, Mean = round(colMeans(dcast_60_df), 2))
+dcast_60_csv <- FileCreate(DirPath = "../11.Classifier/RF/single_AUC/", Prefix = paste0('Matrix-singleFeature-ROC-all', c), Suffix = 'csv')
+write.csv(dcast_60_df, dcast_60_csv)
+
+```
 
 
 
