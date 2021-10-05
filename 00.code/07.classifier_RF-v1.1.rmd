@@ -402,9 +402,12 @@ combine_EnrDep <- combine_EnrDep[rownames(subset_imp), , drop = F]
 
 comb_AUC <- ImportTable(file = paste0('../11.Classifier/RF/AUC_res/2021-09-29-AUC_matrix-all-v1.0.0.csv'))
 bac_AUC <- ImportTable(file = paste0('../11.Classifier/RF/AUC_res/2021-09-29-AUC_matrix-bac-v1.0.0.csv'))
+fungi_AUC <- ImportTable(file = paste0('../11.Classifier/RF/AUC_res/2021-09-29-AUC_matrix-fungi-v1.0.0.csv'))
+summary_AUC <- rbind(Fun_AUC = fungi_AUC[which.max(fungi_AUC$Mean),],
+                     rbind(Bac_AUC = bac_AUC[which.max(bac_AUC$Mean),], 
+                           Comb_AUC = comb_AUC[which.max(comb_AUC$Mean),]))
 
-summary_AUC <- rbind(Comb_AUC = comb_AUC[which.max(comb_AUC$Mean),], Bac_AUC = bac_AUC[which.max(bac_AUC$Mean),])
-summary_AUC <- rbind(summary_AUC, Ratio = (summary_AUC[1,]/summary_AUC[2,]-1)*100)
+summary_AUC <- rbind(summary_AUC, Ratio = (summary_AUC[3,]/summary_AUC[2,]-1)*100)
 
 all_Feature_imp <- ImportTable(file ="../11.Classifier/RF/FeatureSel_Important/2021-09-30-Importance_Table_all-v1.0.0.csv")
 all_Feature_imp1 <- all_Feature_imp[rownames(subset_imp), "Rank", drop = F]
@@ -495,37 +498,39 @@ h2
 
 AUC_col <- colorRamp2(c(65, 70,75,80,85,90), c('snow', 'khaki1', 'yellow', 'red', 'red3', 'red4'))
 
-h3 <- Heatmap(summary_AUC[1, c(1:8), drop =F],
-              cluster_columns = F, col = AUC_col, 
+h3 <- Heatmap(summary_AUC[c(1:3), c(1:8), drop =F],
+              cluster_columns = F, cluster_rows = F, 
+              col = AUC_col, split = c("", " ", "  "), 
               rect_gp = gpar(col = "black", lwd = 2),
               cell_fun = function(j, i, x, y, width, height, fill){
-                grid.text(round(summary_AUC[1, j],2), x, y, 
+                grid.text(round(summary_AUC[i, j],2), x, y, 
                           gp = gpar(fontsize = 8, fontface = 'bold', 
-                                    col = ifelse(summary_AUC[1, j] > 80, "white",'black')))},
-              height = unit(10, "mm"))
+                                    col = ifelse(summary_AUC[i, j] > 80, "white",'black')))},
+              height = unit(30, "mm"))
 
-h4 <- Heatmap(summary_AUC[2, c(1:8), drop =F],
-              cluster_columns = F, col = AUC_col, 
-              rect_gp = gpar(col = "black", lwd = 2),
-              cell_fun = function(j, i, x, y, width, height, fill){
-                grid.text(round(summary_AUC[2, j],2), x, y, 
-                          gp = gpar(fontsize = 8, fontface = 'bold', 
-                                    col = ifelse(summary_AUC[2, j] > 80, "white",'black')))},
-              height = unit(10, "mm"))
+# h4 <- Heatmap(summary_AUC[2, c(1:8), drop =F],
+#               cluster_columns = F, col = AUC_col, 
+#               rect_gp = gpar(col = "black", lwd = 2),
+#               cell_fun = function(j, i, x, y, width, height, fill){
+#                 grid.text(round(summary_AUC[2, j],2), x, y, 
+#                           gp = gpar(fontsize = 8, fontface = 'bold', 
+#                                     col = ifelse(summary_AUC[2, j] > 80, "white",'black')))},
+#               height = unit(10, "mm"))
 
 
 Ratio_col <- colorRamp2(c(-1, 0, 5, 10), c('darkblue', 'white', 'violetred', '#810f7b'))
 
-h5 <- Heatmap(summary_AUC[3, c(1:8), drop =F],
+h5 <- Heatmap(summary_AUC[4, c(1:8), drop =F],
               cluster_columns = F, col = Ratio_col, 
               rect_gp = gpar(col = "black", lwd = 2),
               cell_fun = function(j, i, x, y, width, height, fill){
-                grid.text(round(abs(summary_AUC[3, j]),2), x, y, 
+                grid.text(round(abs(summary_AUC[4, j]),2), x, y, 
                           gp = gpar(fontsize = 8, fontface = 'bold', 
-                                    col = ifelse(abs(summary_AUC[3, j]) > 5, "white",'black')))},
+                                    col = ifelse(abs(summary_AUC[4, j]) > 5, "white",'black')))},
               height = unit(10, "mm"))
 
-ht_list <- h1 %v% h2 %v% h3 %v% h4 %v% h5
+# ht_list <- h1 %v% h2 %v% h3 %v% h4 %v% h5
+ht_list <- h1 %v% h2 %v% h3  %v% h5
 
 ht_pdf <- FileCreate(DirPath = '../11.Classifier/RF/Plot', Prefix = 'heatmap_RF_AUC', Suffix = 'pdf')
 
@@ -624,9 +629,11 @@ combine_EnrDep <- combine_EnrDep[rownames(subset_imp2), , drop = F]
 
 comb_AUC <- ImportTable(file = paste0('../11.Classifier/RF/AUC_res/2021-09-29-AUC_matrix-all-v1.0.0.csv'))
 bac_AUC <- ImportTable(file = paste0('../11.Classifier/RF/AUC_res/2021-09-29-AUC_matrix-bac-v1.0.0.csv'))
+fungi_AUC <- ImportTable(file = paste0('../11.Classifier/RF/AUC_res/2021-09-29-AUC_matrix-fungi-v1.0.0.csv'))
+summary_AUC <- rbind(Fun_AUC = fungi_AUC[which.max(fungi_AUC$Mean),],
+                     rbind(Bac_AUC = bac_AUC[which.max(bac_AUC$Mean),], 
+                           Comb_AUC = comb_AUC[which.max(comb_AUC$Mean),]))
 
-summary_AUC <- rbind(Comb_AUC = comb_AUC[which.max(comb_AUC$Mean),], Bac_AUC = bac_AUC[which.max(bac_AUC$Mean),])
-summary_AUC <- rbind(summary_AUC, Ratio = (summary_AUC[1,]/summary_AUC[2,]-1)*100)
 
 all_Feature_imp <- ImportTable(file ="../11.Classifier/RF/FeatureSel_Important/2021-09-30-Importance_Table_bac-v1.0.0.csv")
 all_Feature_imp1 <- all_Feature_imp[rownames(subset_imp2), "Rank", drop = F]
@@ -718,7 +725,26 @@ h2 <- Heatmap(deplet_mt, col = deplet_col, name = "CRC-depleted\nSpecies",
               row_names_gp = gpar(col = deplet_rowname_col, fontface = 4))
 h2
 
-ht_list <- h1 %v% h2 
+h3 <- Heatmap(summary_AUC[, c(1:8), drop =F], col = AUC_col, 
+              cluster_columns = F, cluster_rows = F, split = c("", " ", "  "),
+              rect_gp = gpar(col = "black", lwd = 2),
+              cell_fun = function(j, i, x, y, width, height, fill){
+                grid.text(round(summary_AUC[i, j],2), x, y, 
+                          gp = gpar(fontsize = 8, fontface = 'bold', 
+                                    col = ifelse(summary_AUC[i, j] > 80, "white",'black')))},
+              height = unit(30, "mm"))
+
+# h3 <- Heatmap(summary_AUC[2, c(1:8), drop =F],
+#               cluster_columns = F, col = AUC_col, 
+#               rect_gp = gpar(col = "black", lwd = 2),
+#               cell_fun = function(j, i, x, y, width, height, fill){
+#                 grid.text(round(summary_AUC[2, j],2), x, y, 
+#                           gp = gpar(fontsize = 8, fontface = 'bold', 
+#                                     col = ifelse(summary_AUC[2, j] > 80, "white",'black')))},
+#               height = unit(10, "mm"))
+
+
+ht_list <- h1 %v% h2 %v% h3
 
 ht_pdf <- FileCreate(DirPath = '../11.Classifier/RF/Plot', Prefix = 'supplementary-Bac-heatmap_RF_AUC', Suffix = 'pdf')
 
@@ -750,9 +776,10 @@ combine_EnrDep <- combine_EnrDep[rownames(subset_imp2), , drop = F]
 
 comb_AUC <- ImportTable(file = paste0('../11.Classifier/RF/AUC_res/2021-09-29-AUC_matrix-all-v1.0.0.csv'))
 bac_AUC <- ImportTable(file = paste0('../11.Classifier/RF/AUC_res/2021-09-29-AUC_matrix-bac-v1.0.0.csv'))
-
-summary_AUC <- rbind(Comb_AUC = comb_AUC[which.max(comb_AUC$Mean),], Bac_AUC = bac_AUC[which.max(bac_AUC$Mean),])
-summary_AUC <- rbind(summary_AUC, Ratio = (summary_AUC[1,]/summary_AUC[2,]-1)*100)
+fungi_AUC <- ImportTable(file = paste0('../11.Classifier/RF/AUC_res/2021-09-29-AUC_matrix-fungi-v1.0.0.csv'))
+summary_AUC <- rbind(Fun_AUC = fungi_AUC[which.max(fungi_AUC$Mean),],
+                     rbind(Bac_AUC = bac_AUC[which.max(bac_AUC$Mean),], 
+                           Comb_AUC = comb_AUC[which.max(comb_AUC$Mean),]))
 
 all_Feature_imp <- ImportTable(file ="../11.Classifier/RF/FeatureSel_Important/2021-09-30-Importance_Table_fungi-v1.0.0.csv")
 all_Feature_imp1 <- all_Feature_imp[rownames(subset_imp2), "Rank", drop = F]
@@ -844,7 +871,16 @@ h2 <- Heatmap(deplet_mt, col = deplet_col, name = "CRC-depleted\nSpecies",
               row_names_gp = gpar(col = deplet_rowname_col, fontface = 4))
 h2
 
-ht_list <- h1 %v% h2 
+h3 <- Heatmap(summary_AUC[, c(1:8), drop =F], col = AUC_col, 
+              cluster_columns = F, cluster_rows = F, split = c("", " ", "  "),
+              rect_gp = gpar(col = "black", lwd = 2),
+              cell_fun = function(j, i, x, y, width, height, fill){
+                grid.text(round(summary_AUC[i, j],2), x, y, 
+                          gp = gpar(fontsize = 8, fontface = 'bold', 
+                                    col = ifelse(summary_AUC[i, j] > 80, "white",'black')))},
+              height = unit(30, "mm"))
+
+ht_list <- h1 %v% h2 %v% h3
 
 ht_pdf <- FileCreate(DirPath = '../11.Classifier/RF/Plot', Prefix = 'supplementary-Fungi-heatmap_RF_AUC', Suffix = 'pdf')
 
