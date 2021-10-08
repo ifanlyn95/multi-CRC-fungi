@@ -219,39 +219,22 @@ if (calculate_or_not) {
 
   core_modify_Comb <- modify_Comb
   
-  for (coh in unique(meta_df$Cohort)) {
-    sub_ade <- core_modify_Comb[rownames(meta_df)[meta_df$Cohort == coh & meta_df$Stage == 'CTRL'], ]
-    ade_median <- apply(sub_ade, 2, median)
-    ade_median[ade_median==0] <- rep(10^-06, sum(ade_median==0))
-    sub_cohort <- sweep(core_modify_Comb[rownames(meta_df)[meta_df$Cohort == coh], ], 2, ade_median, "/")
-    comb_cohort <- rbind(comb_cohort, sub_cohort)
-  }
-  relMedian_csv <- FileCreate(DirPath = '../09.euk-ade_crc/02.RelMedianAbundance', 
-                              Prefix = 'normalized-0.1%-RelMedianAbundance-matrix', Suffix = 'csv')
-  write.csv(x = comb_cohort, file = relMedian_csv)
-  
-  # multiple-Median Fold Change
-  data1 <- comb_cohort[rownames(meta_df)[meta_df$Stage == 'CRC'], ] %>%
-    t() %>% as.data.frame()
-  data2 <- comb_cohort[rownames(meta_df)[meta_df$Stage == 'adenoma'], ]%>%
-    t() %>% as.data.frame()
-  all_mmfc_res<- MultMedFC(data1 = data1, data2 = data2, FeatureAsRow = T)
 
-  
-  data1_m <- all_mmfc_res[rownames(meta_df)[meta_df$Stage == 'CRC'], ] %>%
+
+  data1_m <- core_modify_Comb[rownames(meta_df)[meta_df$Stage == 'CRC'], ] %>%
     t() %>% as.data.frame()
-  data2_m <- all_mmfc_res[rownames(meta_df)[meta_df$Stage == 'adenoma'], ] %>%
+  data2_m <- core_modify_Comb[rownames(meta_df)[meta_df$Stage == 'adenoma'], ] %>%
     t() %>% as.data.frame()
-  
+
   median_list <- NULL
   for (sf in rownames(data1)) {
     dd_tmp <- t(1/data2_m[sf, , drop = F]) %*% as.matrix(data1_m[sf, , drop = F])
     median_list[sf] <- median(dd_tmp)
   }
-  
+
  
   # wilcoxon-rank test 
-  mData <- as.data.frame(t(all_mmfc_res))
+  mData <- as.data.frame(t(core_modify_Comb[rownames(meta_df)[meta_df$Stage %in% c('adenoma', 'CRC')],]))
   groupList <- meta_df$Stage[meta_df$Stage %in% c('adenoma', 'CRC')]
   names(groupList) <- rownames(meta_df)[meta_df$Stage %in% c('adenoma', 'CRC')]
   wil_res <- matrix_wilcox(data = mData, group = groupList)
@@ -262,8 +245,7 @@ if (calculate_or_not) {
   write.csv(x = wil_res, file = wil_csv)
   
 }else{
-  comb_cohort <- ImportTable('../09.euk-ade_crc/02.RelMedianAbundance/2021-08-19-normalized-0.1%-RelMedianAbundance-matrix-v1.0.0.csv')
-  wil_res <- ImportTable('../09.euk-ade_crc/2021-08-19-wilcoxon-all-v1.0.0.csv')
+  wil_res <- ImportTable('../09.euk-ade_crc/2021-10-07-wilcoxon-all-v1.0.0.csv')
 }
 
 ```
@@ -275,46 +257,46 @@ if (calculate_or_not) {
 volcano_df <- wil_res
 volcano_df$`-log10_Q` <- -log10(volcano_df$adj_pvalue)
 volcano_df$log2FC <- log2(volcano_df$mFC)
+volcano_df$name <- rownames(volcano_df)
+volcano_df2 <- volcano_df[! (volcano_df$`-log10_Q` < 2 & abs(volcano_df$log2FC) < 0.5), ]
 g <- ggplot(volcano_df, aes(x = log2FC, y = `-log10_Q`)) +
   geom_point(alpha = ifelse(volcano_df$`-log10_Q` > 2 & volcano_df$log2FC > 0.5, 0.7,
                             ifelse(volcano_df$`-log10_Q` > 2 & volcano_df$log2FC < -0.5, 0.7, 0.5)),
              color = ifelse(volcano_df$`-log10_Q` > 2 & volcano_df$log2FC > 0.5, "#E20001",
-                            ifelse(volcano_df$`-log10_Q` > 2 & volcano_df$log2FC < -0.5, "#004996","grey"))) + 
+                            ifelse(volcano_df$`-log10_Q` > 2 & volcano_df$log2FC < -0.5, "#004996",
+                                   ifelse(volcano_df$`-log10_Q` < 2 & abs(volcano_df$log2FC) < 0.5 ,"grey", "darkgreen")))) + 
   geom_vline(xintercept = c(-0.5, 0.5)) +
   geom_hline(yintercept = 2)+
+  geom_text_repel(data = volcano_df2,
+                   mapping = aes(label = name, x = log2FC, y = `-log10_Q`),
+                   color = ifelse(volcano_df2$`-log10_Q` > 2 &
+                                    volcano_df2$log2FC > 0.5, "#E20001",
+                            ifelse(volcano_df2$`-log10_Q` > 2 & 
+                                     volcano_df2$log2FC < -0.5, "#004996",
+                                   ifelse(volcano_df2$`-log10_Q` < 2 &
+                                            abs(volcano_df2$log2FC) < 0.5 ,"grey",
+                                          "darkgreen"))),
+                  size = ifelse((abs(volcano_df2$log2FC) < 0.5 | volcano_df2$`-log10_Q` < 2), 3, 5),
+                  max.overlaps = getOption("ggrepel.max.overlaps", default = 20),) + 
   theme_bw()
 
 volcano_plot  <- FileCreate(DirPath = '../09.euk-ade_crc/', Prefix = paste0('volcanoPlot-', 'all'), Suffix = 'pdf')
-pdf(file = volcano_plot, width = 5, height = 5)
+pdf(file = volcano_plot, width = 10, height = 10)
 plot(g)
 dev.off()
 
 
-
 ```
 
 
-<!-- ## Step 3: Intersection of 2 criterion
 
-Only focus on 0.1% abundance relative Eukaryota.
 
-Totally **42** fungi leave after twice filters, and **6** of them are also general Fold change difference in all samples (`|log2(FC)| > 0.5`).
 
-```{r}
-sel_idx_1 <- rownames(wil_res)[Trend_Med_summary[rownames(wil_res), ]$N.count >=6 | Trend_Med_summary[rownames(wil_res), ]$N.count <= 2]
-length(sel_idx_1) # 112
 
-sel_idx_2 <- rownames(wil_res)[wil_res$adj_pvalue < 0.05]
-length(sel_idx_2) # 59
 
-sel_idx <- intersect(sel_idx_1, sel_idx_2)
-length(sel_idx) # 42
 
-sel_trend <- all_trend[sel_idx, ]
 
-sel3_trend <- sel_trend[abs(sel_trend$`all-Median`) > 0.5,  ] 
-sel3_trend <- sel3_trend[order(abs(sel3_trend$`all-Median`), decreasing = T), ]
 
-```
--->
+
+
 

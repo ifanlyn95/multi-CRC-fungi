@@ -338,7 +338,8 @@ if (calculate_or_not) {
   write.csv(x = all_trend, file = median_file)
   
   # wilcoxon-rank test 
-  mData <- as.data.frame(t(all_mmfc_res$modif_Data))
+  # mData <- as.data.frame(t(all_mmfc_res$modif_Data))
+  mData <- as.data.frame(t(comb_cohort[rownames(meta_df)[meta_df$Stage != 'adenoma'], ]))
   groupList <- meta_df$Stage[meta_df$Stage %in% c('CTRL', 'CRC')]
   names(groupList) <- rownames(meta_df)[meta_df$Stage %in% c('CTRL', 'CRC')]
   wil_res <- matrix_wilcox(data = mData, group = groupList)
