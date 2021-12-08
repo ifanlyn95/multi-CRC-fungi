@@ -18,6 +18,7 @@ require(DT) # for databale
 require(reshape2) # for dcast
 require(ggplot2)
 require(ggthemes)
+require(ggrepel)
 ```
 
 ### Import table
@@ -332,32 +333,62 @@ if (calculate_or_not) {
 
 ```
 
-
 ## Step 3: Volcano plot for bacteria candidate
 
 ```{r}
+# volcano_df <- wil_res
+# volcano_df$`-log10_Q` <- -log10(volcano_df$adj_pvalue)
+# volcano_df$log2FC <- log2(volcano_df$mFC)
+# g <- ggplot(volcano_df, aes(x = log2FC, y = `-log10_Q`)) +
+#   geom_point(alpha = ifelse(volcano_df$`-log10_Q` > 2 & volcano_df$log2FC > 0.5, 0.7,
+#                             ifelse(volcano_df$`-log10_Q` > 2 & volcano_df$log2FC < -0.5, 0.7, 0.5)),
+#              color = ifelse(volcano_df$`-log10_Q` > 2 & volcano_df$log2FC > 0.5, "#E20001",
+#                             ifelse(volcano_df$`-log10_Q` > 2 & volcano_df$log2FC < -0.5, "#004996","grey"))) + 
+#   geom_vline(xintercept = c(-0.5, 0.5)) +
+#   geom_hline(yintercept = 2)+
+#   theme_bw()
+# 
+# volcano_plot  <- FileCreate(DirPath = '../09.Bacteria/', Prefix = paste0('volcanoPlot-', 'all'), Suffix = 'pdf')
+# pdf(file = volcano_plot, width = 5, height = 5)
+# plot(g)
+# dev.off()
+
+
+
 volcano_df <- wil_res
 volcano_df$`-log10_Q` <- -log10(volcano_df$adj_pvalue)
 volcano_df$log2FC <- log2(volcano_df$mFC)
+volcano_df$name <- rownames(volcano_df)
+volcano_df2 <- volcano_df[volcano_df$`-log10_Q` >= 2 & abs(volcano_df$log2FC) >= 0.75, ]
 g <- ggplot(volcano_df, aes(x = log2FC, y = `-log10_Q`)) +
   geom_point(alpha = ifelse(volcano_df$`-log10_Q` > 2 & volcano_df$log2FC > 0.5, 0.7,
                             ifelse(volcano_df$`-log10_Q` > 2 & volcano_df$log2FC < -0.5, 0.7, 0.5)),
              color = ifelse(volcano_df$`-log10_Q` > 2 & volcano_df$log2FC > 0.5, "#E20001",
-                            ifelse(volcano_df$`-log10_Q` > 2 & volcano_df$log2FC < -0.5, "#004996","grey"))) + 
+                            ifelse(volcano_df$`-log10_Q` > 2 & volcano_df$log2FC < -0.5, "#004996",
+                                   ifelse(volcano_df$`-log10_Q` < 2 & abs(volcano_df$log2FC) < 0.5 ,"grey", "darkgreen")))) + 
   geom_vline(xintercept = c(-0.5, 0.5)) +
   geom_hline(yintercept = 2)+
+  geom_text_repel(data = volcano_df2,
+                   mapping = aes(label = name, x = log2FC, y = `-log10_Q`),
+                   color = ifelse(volcano_df2$`-log10_Q` > 2 &
+                                    volcano_df2$log2FC > 0.75, "#E20001",
+                            ifelse(volcano_df2$`-log10_Q` > 2 & 
+                                     volcano_df2$log2FC < -0.75, "#004996",
+                                   ifelse(volcano_df2$`-log10_Q` < 2 &
+                                            abs(volcano_df2$log2FC) < 0.75 ,"grey",
+                                          "darkgreen"))),
+                  size = ifelse((abs(volcano_df2$log2FC) < 0.7 | volcano_df2$`-log10_Q` < 2), 3, 5),
+                  max.overlaps = getOption("ggrepel.max.overlaps", default = 20),) + 
   theme_bw()
 
 volcano_plot  <- FileCreate(DirPath = '../09.Bacteria/', Prefix = paste0('volcanoPlot-', 'all'), Suffix = 'pdf')
-pdf(file = volcano_plot, width = 5, height = 5)
+pdf(file = volcano_plot, width = 10, height = 10)
 plot(g)
 dev.off()
 
-
-
 ```
 
-
+```{=html}
 <!-- ## Step 3: Intersection of 2 criterion
 
 Only focus on 0.1% abundance relative Eukaryota.
@@ -381,4 +412,4 @@ sel3_trend <- sel3_trend[order(abs(sel3_trend$`all-Median`), decreasing = T), ]
 
 ```
 -->
-
+```

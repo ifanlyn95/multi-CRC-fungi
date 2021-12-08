@@ -1,0 +1,298 @@
+---
+title: "08.heatmap"
+author: "ifanlyn@outlook.com"
+date: "2021/12/3"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Loading packages and subroutines {.tabset}
+
+### Packages
+
+```{r packages, message=FALSE, warning=FALSE}
+require(dplyr) # for %>%
+require(ComplexHeatmap)
+require(reshape2) # cast
+require(circlize) # colorRamp2
+```
+
+### FileCreate
+
+```{r}
+FileCreate <- function(DirPath = "./",Prefix = "ExampleTest", Suffix = "pdf", version = "0.0"){
+  date=as.character(Sys.Date())
+  DirPath = gsub("/$","",DirPath)
+  Suffix = gsub('^[.]',"",Suffix)
+  if(! dir.exists(DirPath)){
+    dir.create(DirPath,recursive =TRUE)
+  }
+  if (version == "0.0") {
+    version=10
+    while(TRUE){
+      version_=paste(unlist(strsplit(as.character(version),"")),collapse=".")
+      DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version_,".",Suffix)
+      if(! file.exists(DirPathName)){
+        return(DirPathName)
+        break
+      }
+      version = version + 1
+    }
+  }else{
+    DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version,".",Suffix)
+    if(! dir.exists(DirPathName)){
+      return(DirPathName)
+    }
+    return(DirPathName)
+  }
+}
+  
+```
+
+### ImportTable
+
+```{r ImportTable }
+ImportTable <- function(file, header = T, row.names = 1, sep = ',', check.names = FALSE, ...){
+  data <- read.csv(file = file, header = header, row.names = row.names, sep = sep, check.names = check.names, ...)
+  return(data)
+}
+```
+
+## Import data {.tabset}
+
+### Import metadata
+
+```{r , message = F, warning = F}
+meta_df <- ImportTable(file = '../00.RawData/metaData/2021-07-26-metaInfo-subgroup_1329-v6.0.csv')
+
+```
+
+### Import Eukaryota matrix
+
+```{r , message = F, warning = F}
+euk_sel <- ImportTable(file = '../07.FeatureSelection/01.SSTF/2021-07-30-wilcoxon-all-v1.0.0.csv')
+euk_sel <- euk_sel[order(euk_sel$adj_pvalue),]
+euk_core <- euk_sel[euk_sel$adj_pvalue < 0.01, ]
+
+bac_sel <- ImportTable(file = '../09.Bacteria/2021-08-06-wilcoxon-all-v1.0.0.csv')
+bac_sel <- bac_sel[order(bac_sel$adj_pvalue),]
+bac_core_all <- bac_sel[bac_sel$adj_pvalue < 0.01 & bac_sel$AbsLog2FC > 0.5, ]
+bac_sel_list_all <- rownames(bac_core_all)
+bac_sel_list <- bac_sel_list_all[!grepl('sp. ', bac_sel_list_all)]
+bac_core <- bac_core_all[bac_sel_list,]
+
+
+interesct_corr_melt <- read.csv(file = '../08.correlation/DGCA/CTRL_CRC/table/2021-08-16-melt-correlation-DGCA-Intersect-v1.0.0.csv')
+interesct_corr_melt_2 <- apply(interesct_corr_melt, 1, function(x){
+  if (x[1] %in% rownames(euk_core)) {
+    return(x)
+  }else{
+    m <- x[1]
+    x[1] <- x[2]
+    x[2] <- m
+    return(x)
+  }
+}) %>% t() %>% as.data.frame()
+
+colnames(interesct_corr_melt_2)[c(1,2)] <- c("Fungi", "Bacteria")
+
+# CRC
+interesct_corr_crc <- dcast(interesct_corr_melt_2, Fungi ~ Bacteria, value.var =  "CRC_cor")
+rownames(interesct_corr_crc) <- interesct_corr_crc$Fungi
+interesct_corr_crc <- interesct_corr_crc[,-1]
+interesct_corr_crc <- interesct_corr_crc[rownames(euk_core), rownames(bac_core)]
+
+# CTRL
+interesct_corr_ctrl <- dcast(interesct_corr_melt_2, Fungi ~ Bacteria, value.var =  "CTRL_cor")
+rownames(interesct_corr_ctrl) <- interesct_corr_ctrl$Fungi
+interesct_corr_ctrl <- interesct_corr_ctrl[,-1]
+interesct_corr_ctrl <- interesct_corr_ctrl[rownames(euk_core), rownames(bac_core)]
+
+# adenoma
+interesct_corr_melt2 <- read.csv(file = '../08.correlation/DGCA/adenoma_CRC/table/2021-08-16-melt-correlation-DGCA-Intersect-v1.0.0.csv')
+interesct_corr_melt2_2 <- apply(interesct_corr_melt2, 1, function(x){
+  if (x[1] %in% rownames(euk_core)) {
+    return(x)
+  }else{
+    m <- x[1]
+    x[1] <- x[2]
+    x[2] <- m
+    return(x)
+  }
+}) %>% t() %>% as.data.frame()
+colnames(interesct_corr_melt2_2)[c(1,2)] <- c("Fungi", "Bacteria")
+
+# adenoma
+interesct_corr_ade <- dcast(interesct_corr_melt2_2, Fungi ~ Bacteria, value.var =  "adenoma_cor")
+rownames(interesct_corr_ade) <- interesct_corr_ade$Fungi
+interesct_corr_ade <- interesct_corr_ade[,-1]
+interesct_corr_ade <- interesct_corr_ade[rownames(euk_core), rownames(bac_core)]
+
+icorr_crc <- mutate_all(interesct_corr_crc, function(x) as.numeric(as.character(x))) %>% as.matrix()
+icorr_ctrl <- mutate_all(interesct_corr_ctrl, function(x) as.numeric(as.character(x))) %>% as.matrix()
+icorr_ade <- mutate_all(interesct_corr_ade, function(x) as.numeric(as.character(x))) %>% as.matrix()
+
+col_fun = colorRamp2(c(-0.4, -0.15, 0, 0.15, 0.4), c("#000247", "#0F418D", "white", "#F74747", "#D61616"))
+
+Heatmap(icorr_crc, cluster_rows = F, cluster_columns = F, 
+        col = col_fun, width = unit(ncol(icorr_crc)*4, "mm"), 
+        height = unit(nrow(icorr_crc)*4, "mm"), border = TRUE) + 
+  Heatmap(icorr_ade, cluster_rows = F, cluster_columns = F, 
+        col = col_fun, width = unit(ncol(icorr_crc)*5, "mm"), 
+        height = unit(nrow(icorr_crc)*4, "mm"), border = TRUE) + 
+  Heatmap(icorr_ctrl, cluster_rows = F, cluster_columns = F, 
+        col = col_fun, width = unit(ncol(icorr_crc)*4, "mm"), 
+        height = unit(nrow(icorr_crc)*4, "mm"), border = TRUE)
+
+enrich_df <- icorr_crc > icorr_ade & icorr_ade > icorr_ctrl
+deplete_df <- icorr_crc < icorr_ade & icorr_ade < icorr_ctrl
+
+icorr_crc_enrich <- icorr_crc; icorr_crc_enrich[!enrich_df] <- 0
+icorr_ade_enrich <- icorr_ade; icorr_ade_enrich[!enrich_df] <- 0
+icorr_ctrl_enrich <- icorr_ctrl; icorr_ctrl_enrich[!enrich_df] <- 0
+
+
+Heatmap(icorr_crc_enrich, cluster_rows = F, cluster_columns = F, 
+        col = col_fun, width = unit(ncol(icorr_crc)*4, "mm"), 
+        height = unit(nrow(icorr_crc)*4, "mm"), border = TRUE, column_title = "CRC") + 
+  Heatmap(icorr_ade_enrich, cluster_rows = F, cluster_columns = F, 
+        col = col_fun, width = unit(ncol(icorr_crc)*4, "mm"), 
+        height = unit(nrow(icorr_crc)*4, "mm"), border = TRUE, column_title = "Adenoma") + 
+  Heatmap(icorr_ctrl_enrich, cluster_rows = F, cluster_columns = F, 
+        col = col_fun, width = unit(ncol(icorr_crc)*4, "mm"), 
+        height = unit(nrow(icorr_crc)*4, "mm"), border = TRUE, column_title = "Control")
+
+
+icorr_crc_deplete <- icorr_crc; icorr_crc_deplete[!deplete_df] <- 0
+icorr_ade_deplete <- icorr_ade; icorr_ade_deplete[!deplete_df] <- 0
+icorr_ctrl_deplete <- icorr_ctrl; icorr_ctrl_deplete[!deplete_df] <- 0
+
+
+Heatmap(icorr_crc_deplete, cluster_rows = F, cluster_columns = F, 
+        col = col_fun, width = unit(ncol(icorr_crc)*4, "mm"), 
+        height = unit(nrow(icorr_crc)*4, "mm"), border = TRUE, column_title = "CRC") + 
+  Heatmap(icorr_ade_deplete, cluster_rows = F, cluster_columns = F, 
+        col = col_fun, width = unit(ncol(icorr_crc)*4, "mm"), 
+        height = unit(nrow(icorr_crc)*4, "mm"), border = TRUE, column_title = "Adenoma") + 
+  Heatmap(icorr_ctrl_deplete, cluster_rows = F, cluster_columns = F, 
+        col = col_fun, width = unit(ncol(icorr_crc)*4, "mm"), 
+        height = unit(nrow(icorr_crc)*4, "mm"), border = TRUE, column_title = "Control")
+
+icorr_crc_merge <- rbind(icorr_crc_enrich, icorr_crc_deplete)
+icorr_ade_merge <- rbind(icorr_ade_enrich, icorr_ade_deplete)
+icorr_ctrl_merge <- rbind(icorr_ctrl_enrich, icorr_ctrl_deplete)
+
+icorr_all_merge <- cbind(cbind(icorr_crc_merge, icorr_ade_merge), icorr_ctrl_merge)
+
+# col_fun = colorRamp2(c(-0.4, -0.15, 0, 0.15, 0.4), c("#000247", "#0F418D", "white", "#F74747", "#D61616"))
+col_fun = colorRamp2(c(-0.4, -0.2, 0, 0.2, 0.4), c("#000247", "#0F418D", "white", "#F74747", "#D61616"))
+in2mm <-25.4
+
+interect_cor_pdf <- FileCreate(DirPath = "../08.correlation/DGCA/heatmap",Prefix = "Heatmap-AllStages-Enhance_Reduce", Suffix = "pdf")
+pdf(file = interect_cor_pdf, height = ((nrow(icorr_all_merge)*8 + 20)/in2mm),
+    width = ((nrow(icorr_all_merge)*12 + 50)/in2mm))
+Heatmap(icorr_all_merge, cluster_rows = F, cluster_columns = F, 
+        col = col_fun, width = unit(ncol(icorr_all_merge)*4, "mm"), 
+        height = unit(nrow(icorr_all_merge)*4, "mm"), border = TRUE, 
+        column_split = factor(rep(c("CRC", "Adenoma", "Conrtol"), each = ncol(icorr_crc)), 
+                              levels = c("CRC", "Adenoma", "Conrtol")),
+        row_split = factor(rep(c("Increasing Trend", "Decreasing Trend"), each = nrow(icorr_crc)), 
+                           levels = c("Increasing Trend", "Decreasing Trend")),
+        row_gap = unit(10, "mm"), column_gap = unit(4, "mm"),
+        row_names_gp = gpar(fontface = "italic"),
+        column_names_gp = gpar(fontface = "italic"),
+        row_title_gp = gpar(fontsize = 30, fontface = "bold"),
+        column_title_gp = gpar(fontsize = 30, fontface = "bold")) 
+dev.off()
+
+## Cluster!!!
+# interect_cor_clstr_pdf <- FileCreate(DirPath = "../08.correlation/DGCA/heatmap",Prefix = "Heatmap_cluster-AllStages-Enhance_Reduce", Suffix = "pdf")
+# pdf(file = interect_cor_clstr_pdf, height = ((nrow(icorr_all_merge)*8 + 20)/in2mm),
+#     width = ((nrow(icorr_all_merge)*12 + 50)/in2mm))
+# Heatmap(icorr_all_merge, 
+#         cluster_rows = T, cluster_row_slices = F,
+#         cluster_columns = T, cluster_column_slices = F,
+#         col = col_fun, width = unit(ncol(icorr_all_merge)*4, "mm"), 
+#         height = unit(nrow(icorr_all_merge)*4, "mm"), border = TRUE, 
+#         column_split = factor(rep(c("CRC", "Adenoma", "Conrtol"), each = ncol(icorr_crc)), 
+#                               levels = c("CRC", "Adenoma", "Conrtol")),
+#         row_split = factor(rep(c("Increasing Trend", "Decreasing Trend"), each = nrow(icorr_crc)), 
+#                            levels = c("Increasing Trend", "Decreasing Trend")),
+#         row_gap = unit(10, "mm"), column_gap = unit(4, "mm"),
+#         row_names_gp = gpar(fontface = "italic"),
+#         column_names_gp = gpar(fontface = "italic"),
+#         row_title_gp = gpar(fontsize = 30, fontface = "bold"),
+#         column_title_gp = gpar(fontsize = 30, fontface = "bold")) 
+# dev.off()
+# mess_df <- deplete_df | enrich_df
+# icorr_crc_mess <- icorr_crc; icorr_crc_mess[mess_df] <- 0
+# icorr_ade_mess <- icorr_ade; icorr_ade_mess[mess_df] <- 0
+# icorr_ctrl_mess <- icorr_ctrl; icorr_ctrl_mess[mess_df] <- 0
+# 
+# 
+# Heatmap(icorr_crc_mess, cluster_rows = F, cluster_columns = F, 
+#         col = col_fun, width = unit(ncol(icorr_crc)*4, "mm"), 
+#         height = unit(nrow(icorr_crc)*4, "mm"), border = TRUE) + 
+#   Heatmap(icorr_ade_mess, cluster_rows = F, cluster_columns = F, 
+#         col = col_fun, width = unit(ncol(icorr_crc)*4, "mm"), 
+#         height = unit(nrow(icorr_crc)*4, "mm"), border = TRUE) + 
+#   Heatmap(icorr_ctrl_mess, cluster_rows = F, cluster_columns = F, 
+#         col = col_fun, width = unit(ncol(icorr_crc)*4, "mm"), 
+#         height = unit(nrow(icorr_crc)*4, "mm"), border = TRUE)
+
+```
+
+<!-- ### Import Bacteria matrix -->
+
+<!-- ```{r , message = F, warning = F} -->
+
+<!-- bac_otu <- ImportTable(file = '../09.Bacteria/02.RelMedianAbundance/2021-08-05-normalized-0.1%-RelMedianAbundance-matrix-v1.0.0.csv') -->
+<!-- bac_sel <- ImportTable(file = '../09.Bacteria/2021-08-06-wilcoxon-all-v1.0.0.csv') -->
+<!-- bac_sel <- bac_sel[order(bac_sel$adj_pvalue),] -->
+<!-- bac_core_all <- bac_otu[, rownames(bac_sel)[bac_sel$adj_pvalue < 0.01 & bac_sel$AbsLog2FC > 0.5]] -->
+<!-- bac_sel_list_all <- colnames(bac_core_all) -->
+<!-- bac_sel_list <- bac_sel_list_all[!grepl('sp. ', bac_sel_list_all)] -->
+<!-- bac_core <- bac_core_all[, bac_sel_list] -->
+<!-- # bac_sel_list <- bac_sel_list_all[c(1:7, 9:10, 12:24, 27, 30, 32, 35, 38:42)] -->
+<!-- ``` -->
+
+<!-- ## Heatmap -->
+
+<!-- ### Abundance heatmap -->
+
+<!-- ```{r, message = F, warning = F} -->
+<!-- groupList <- meta_df$Stage -->
+
+<!-- abun_df <- t(euk_core) %>% log() -->
+
+<!-- clust_method <- c("ward.D", "ward.D2", "single", "complete", "average", "mcquitty", "median", "centroid") -->
+
+<!-- abun_df <- abun_df[, order(abun_df[1,], decreasing = T)] -->
+<!-- abund_hm <- Heatmap(abun_df[rownames(euk_sel_core)[euk_sel_core$logCRC_CTRL >0], ] %>% scale(),  -->
+<!--                     show_column_names = F,  -->
+<!--                     column_split = groupList,  -->
+<!--                     clustering_method_columns = "ward.D") -->
+
+<!-- for (sub_cmtd in clust_method) { -->
+<!--   row_order <- hclust(abun_df, method = sub_cmtd)$order -->
+<!--   abund_hm <- Heatmap(abun_df, show_column_names = F,  -->
+<!--                       column_split = groupList,  -->
+<!--                       clustering_method_columns = "ward.D", -->
+<!--                       cluster_columns = F) -->
+<!-- } -->
+
+
+
+
+<!-- ``` -->
+
+
+
+
+
+
+
+

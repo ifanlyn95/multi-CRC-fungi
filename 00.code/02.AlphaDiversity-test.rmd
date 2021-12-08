@@ -1,0 +1,572 @@
+---
+title: "alpha diversity"
+author: "ifanlyn@outlook.com"
+date: "2021/7/26"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Loading packages and subroutines {.tabset}
+
+### Packages
+
+```{r packages, message=FALSE, warning=FALSE}
+require(DT) # for datatable
+require(dplyr) # for %>%
+require(ggplot2) # for plot pictures
+require(reshape2) # for melt
+require(dutchmasters) # scale_color_dutchmasters
+require(vegan) # for rrarefy 
+require(otuSummary) # for alphaDiversity
+require(ggpubr) # for stat_compare_means
+require(ochRe) # for scale_fill_ochre
+```
+
+### FileCreate
+
+```{r}
+FileCreate <- function(DirPath = "./",Prefix = "ExampleTest", Suffix = "pdf", version = "0.0"){
+  date=as.character(Sys.Date())
+  DirPath = gsub("/$","",DirPath)
+  Suffix = gsub('^[.]',"",Suffix)
+  if(! dir.exists(DirPath)){
+    dir.create(DirPath,recursive =TRUE)
+  }
+  if (version == "0.0") {
+    version=10
+    while(TRUE){
+      version_=paste(unlist(strsplit(as.character(version),"")),collapse=".")
+      DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version_,".",Suffix)
+      if(! file.exists(DirPathName)){
+        return(DirPathName)
+        break
+      }
+      version = version + 1
+    }
+  }else{
+    DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version,".",Suffix)
+    if(! dir.exists(DirPathName)){
+      return(DirPathName)
+    }
+    return(DirPathName)
+  }
+}
+  
+```
+
+### ImportTable
+
+```{r ImportTable }
+ImportTable <- function(file, header = T, row.names = 1, sep = ',', check.names = FALSE, ...){
+  data <- read.csv(file = file, header = header, row.names = row.names, sep = sep, check.names = check.names, ...)
+  return(data)
+}
+```
+
+### Show_table
+
+```{r show_table}
+Show_table <- function(df, rownames = T, filter="top", options = list(pageLength = 10, scrollX=T), ...){
+  if (ncol(df) > 100) {
+    df <- df[, 1:100]
+    message('Due to the column dim is > 100, it only shows the top 100 columns')
+  }else if(nrow(df) > 500){
+    df <- df[1:500, ]
+    message('Due to the row dim is > 500, it only shows the top 500 rows')
+  }
+  datatable(df, rownames = rownames, 
+            filter=filter, options = options, ... )
+
+}
+```
+
+### Nor_Rarefy
+
+```{r Nor_Rarefy}
+Nor_Rarefy <- function(data, SampleAsColumn=T, randomNum=123, minSize = 9999999999){
+  if (SampleAsColumn) {
+    data <- as.data.frame(t(data))
+  }
+  set.seed(randomNum)
+  RareData <- rrarefy(x = data, sample = ifelse(min(rowSums(data)) > minSize, minSize, min(rowSums(data))))
+  if (SampleAsColumn) {
+    RareData <- t(RareData)
+  }
+  RareData <- as.data.frame(RareData)
+  return(RareData)
+}
+```
+
+### pred_bar
+
+```{r}
+pred_bar <- function(data, sel_features, span = 0.25){
+  preData <- data
+  for (line in rev(sel_features)) {
+    x <- 1:nrow(data)
+    y <- unlist(preData[, line], use.names = F)
+    lo <- loess(y~x, span = span)
+    pred_y <- predict(lo)
+    pred_y[pred_y < 0] <- 0
+    preData[, line] <- pred_y
+  }
+  return(preData)
+}
+```
+
+## Import data {.tabset}
+
+### Taxonomy matrix
+
+```{r taxonomy matrix, warning = FALSE}
+tax_df <- ImportTable(file = '../02.Filter_samples/Eukaryota_RawData_1625/2021-08-03-Selected-Euk_RawData-Species-v1.0.csv', sep = ',')
+rownames(tax_df) <- gsub(pattern = 's__', replacement = '', x = rownames(tax_df)) %>% 
+  gsub('_', ' ', .) # due to Feature names of CreateSeuratObject cannot have underscores, replace with blanket space.
+Show_table(tax_df)
+```
+
+### Meta information
+
+```{r meta information}
+meta_df <- ImportTable(file = '../00.RawData/metaData/2021-08-03-metaInfo-subgroup_1625-v5.1.csv')
+Show_table(meta_df)
+```
+
+## Pre-process data
+
+### rarefied normalization
+
+-   Based on previous analysis, the chao1 achieved the platform around 10,000 sequencing depth.
+
+-   We have reduce some low sequencing depth sample to enhance the accuracy.
+
+-   296 samples (CTRL:91, adenoma:128, CRC:66) would be filtered,
+
+    and 1,329 samples (CTRL:525, adenoma:350, CRC:454) leave.
+
+```{r rarefied}
+calculate_or_not <- F
+reduce_tax_df <- tax_df[, colSums(tax_df) >= 10000]
+reduce_meta_df <- meta_df[colnames(reduce_tax_df), ]
+
+if (calculate_or_not) {
+  nor_rarefy_df <- Nor_Rarefy(data = reduce_tax_df, SampleAsColumn = T, 
+                              randomNum = 123, minSize = 10000)
+  reduce_meta_csv <- FileCreate(DirPath = '../00.RawData/metaData/', version = '6.0',
+                                Prefix = 'metaInfo-subgroup_1329', Suffix = 'csv')
+  write.csv(x = reduce_meta_df, file = reduce_meta_csv)
+  rarefy_csv <- FileCreate(DirPath = '../05.Normalized/Rarefy_1329_fungi/', 
+                           Prefix = 'Rarefy_Norm_matrix', Suffix = 'csv')
+  write.csv(x = nor_rarefy_df, file = rarefy_csv)
+  rawAbun_csv <- FileCreate(DirPath = '../05.Normalized/Rarefy_1329_fungi/', 
+                            Prefix = 'RawAbundance_matrix', Suffix = 'csv')
+  write.csv(x = reduce_tax_df, file = rawAbun_csv)
+  relAbund_tax_df <- apply(reduce_tax_df, 2, function(x) x/sum(x)*100 ) %>% as.data.frame()
+  reaAbund_csv <- FileCreate(DirPath = '../05.Normalized/Rarefy_1329_fungi/',
+                             Prefix = 'RelativeAbundance_matrix', Suffix = 'csv')
+  write.csv(x = relAbund_tax_df, file = reaAbund_csv)
+}else{
+  reduce_tax_df <- ImportTable(file = '../05.Normalized/Rarefy_1329_fungi/2021-07-26-RawAbundance_matrix-v1.0.csv')
+  nor_rarefy_df <- ImportTable(file = '../05.Normalized/Rarefy_1329_fungi/2021-07-26-Rarefy_Norm_matrix-v1.0.csv')
+  relAbund_tax_df <- ImportTable(file = '../05.Normalized/Rarefy_1329_fungi/2021-07-26-RelativeAbundance_matrix-v1.0.csv')
+  reduce_meta_csv <- ImportTable(file = '../00.RawData/metaData/2021-07-26-metaInfo-subgroup_1329-v6.0.csv')
+}
+
+```
+
+## Alpha Diversity {.tabset}
+
+### Violin-plot in alpha index {.tabset}
+
+#### Code
+
+```{r code}
+calculate_or_not = F
+if (calculate_or_not) {
+  alpha_res <- alphaDiversity(reduce_tax_df, siteInCol = TRUE,
+                              taxhead = "taxonomy", threshold = 1, 
+                              percent = FALSE, write = FALSE)
+  alpha_rds <- FileCreate(DirPath = '../06.AlphaDiversity/AlphaIndex/', 
+                          Prefix = 'alpha_res', Suffix = 'rds')
+  saveRDS(object = alpha_res, file = alpha_rds)
+  for (sub_set in names(alpha_res)) {
+    sub_alpha <- alpha_res[[sub_set]] %>% 
+                 cbind(., meta_df[rownames(.), c('Cohort', "Stage")]) %>% 
+                 as.data.frame()
+    sub_alpha_csv <- FileCreate(DirPath = '../06.AlphaDiversity/AlphaIndex/table', 
+                                Prefix = paste0('AlphaIndex-matrix-', sub_set), Suffix = 'csv')
+    write.csv(x = sub_alpha, file = sub_alpha_csv)
+  }
+  
+  ##  manual selected
+  # all Bio
+  sub_set = 'allBio'
+  sub_alpha <- alpha_res[[sub_set]] %>% 
+               cbind(., meta_df[rownames(.), c('Cohort', "Stage")]) %>% 
+               as.data.frame()
+  sub_alpha <- sub_alpha[sub_alpha$Stage != 'adenoma', ]
+  gplot_list <- list()
+  for (alphIdx in colnames(sub_alpha)[c(1,5,6)]) {
+    sub_idx_df <- sub_alpha[, c(alphIdx, 'Cohort', "Stage")]
+    # sub_idx_df$Stage <- factor(sub_idx_df$Stage, c('CTRL', 'adenoma', 'CRC'))
+    sub_idx_df$Stage <- factor(sub_idx_df$Stage, c('CTRL', 'CRC'))
+    gplot <- ggplot(data = sub_idx_df, aes(x = Stage, y = log10(.data[[alphIdx]]))) + 
+      geom_violin(aes(fill = Stage), trim = F, scale = "width") +
+      geom_boxplot(outlier.colour = NA, width = 0.2) +
+      stat_compare_means(label.y = 2.8) +
+      facet_wrap(~Cohort, nrow = 2)+
+      coord_cartesian(ylim = quantile(log10(sub_idx_df[[alphIdx]]), c(0.005, 1))*c(1, 1.02)) +
+      theme_bw() +
+      # scale_fill_manual(values = c("CTRL" = '#57868c', adenoma = '#f3c200', "CRC" = '#e82546'))+
+      scale_fill_manual(values = c("CTRL" = '#57868c', "CRC" = '#e82546'))+
+      stat_summary(fun=median, geom="point", size=2, color="red", shape = 8) +
+      theme_light() + theme(legend.position = "top")
+    # plot(gplot)  
+    gplot_list[[alphIdx]][['individual']] <- gplot
+    pdf_file <- FileCreate(DirPath = '../06.AlphaDiversity/AlphaIndex/figure', 
+                           Prefix = paste0('boxplot-', sub_set, '-', alphIdx), 
+                           Suffix = 'pdf')
+    pdf(file = pdf_file, width = 10, height = 7)
+    plot(gplot)
+    dev.off()
+    
+    gplot2 <- ggplot(data = sub_idx_df, aes(x = Stage, y = log10(.data[[alphIdx]]))) + 
+      geom_violin(aes(fill = Stage), trim = F, scale = "width") +
+      geom_boxplot(outlier.colour = NA, width = 0.2) +
+      stat_compare_means(label.y = 2.8) +
+      # facet_wrap(~Cohort, nrow = 2)+
+      coord_cartesian(ylim = quantile(log10(sub_idx_df[[alphIdx]]), c(0.001, 1))*c(1, 1.02)) +
+      theme_bw() +
+      # scale_fill_manual(values = c("CTRL" = '#57868c', adenoma = '#f3c200', "CRC" = '#e82546'))+
+      scale_fill_manual(values = c("CTRL" = '#57868c', "CRC" = '#e82546'))+
+      stat_summary(fun=median, geom="point", size=2, color="red", shape = 8) +
+      theme_light() + theme(legend.position = "top")
+    # plot(gplot2)
+    pdf_file <- FileCreate(DirPath = '../06.AlphaDiversity/AlphaIndex/figure', 
+                           Prefix = paste0('all_boxplot-', sub_set, '-', alphIdx), 
+                           Suffix = 'pdf')
+    pdf(file = pdf_file, width = 4, height = 7)
+    plot(gplot2)
+    dev.off()
+    gplot_list[[alphIdx]][['all']] <- gplot2
+  }
+  gplot_list_rds <- FileCreate(DirPath = '../06.AlphaDiversity/AlphaIndex/',
+                               Prefix = 'gplot_list', Suffix = 'rds')
+  saveRDS(object = gplot_list, file = gplot_list_rds)
+}else{
+  alpha_res <- readRDS(file = '../06.AlphaDiversity/AlphaIndex/2021-07-27-alpha_res-v1.0.rds')
+  gplot_list <- readRDS(file = '../06.AlphaDiversity/AlphaIndex/2021-07-27-gplot_list-v1.0.rds')
+}
+
+
+
+```
+
+#### Plot individual cohorts
+
+```{r}
+plot(gplot_list$chao1$individual)
+```
+
+#### Plot combined result
+
+```{r}
+plot(gplot_list$chao1$all)
+```
+
+### Phylum level composition of Fungi
+
+-   Import the phylum level taxonomy table
+
+-   Filter the selection samples
+
+-   Counts the top fungal phylum (relative abundance \> 1%)
+
+-   Fitting the smooth curve
+
+-   Calculate each cohorts
+
+-   Merge all the individuals
+
+#### Import phylum table
+
+```{r}
+raw_phylum_df <- ImportTable('../00.RawData/kraken2/kraken2-separate/2021-07-19-RawData-Phylum-v1.0.csv')
+# modify the feature names
+rownames(raw_phylum_df) <- rownames(raw_phylum_df) %>% gsub("^p__", "", .) %>% gsub("_", " ", .)
+# import the taxonomy names file
+tax_name_df <- ImportTable('../00.RawData/kraken2/2021-07-19-taxonomy_name-v1.0.csv')
+# select the euk phylum
+sel_euk_phy <- unique(tax_name_df$Phylum[grep('Eukaryota', tax_name_df$Kingdom)]) 
+sel_euk_phy <- sel_euk_phy[! is.na(sel_euk_phy)]
+# select the samples and euk phylum
+fungi_phy_df <- raw_phylum_df[sel_euk_phy, rownames(reduce_meta_df)]
+# calculate the eukaryota phylum level relative abundance 
+fu_phy_rel_df <- sweep(fungi_phy_df, 2, colSums(fungi_phy_df), "/")*100
+mean_fu_phy <-  sort(rowMeans(fu_phy_rel_df), decreasing = T)
+Show_table(data.frame(MeanAbundance =mean_fu_phy))
+```
+
+#### Sort the sample rank by top 2 phylum
+
+Calculate the cluster with the abundance phylum (relative abundance \> 1%)
+
+I wrote the program order by cluster but seems not good enough.
+
+```{r}
+calculate_or_not <- F
+sel_phy_list <- mean_fu_phy[mean_fu_phy > 1]
+sel_phy_df <- fu_phy_rel_df[names(sel_phy_list), ] %>% t()
+sel_phy_df <- cbind(sel_phy_df, meta_df[rownames(sel_phy_df), c('Cohort', 'Stage')]) %>%
+  as.data.frame()
+
+if (calculate_or_not) {
+  # clustering 
+  # Clust_method <- c("ward.D", "ward.D2", "single", "complete", "average","mcquitty","median","centroid")
+  # Clust_method <- c("centroid")
+  # dist_method <- c("euclidean", "maximum", "manhattan", "canberra", "binary", "minkowski")
+  # separate stage
+  phy_df_list <- list()
+  pre_phy_list <- list()
+  
+  for (i in unique(sel_phy_df$Cohort)) {
+    
+    sub_cohort_df <- matrix(NA, ncol = length(sel_phy_list) + 3)
+    sub_cohort_df <- sub_cohort_df[-1, ]
+    colnames(sub_cohort_df) <- c(names(sel_phy_list), 'Cohort', 'Stage', 'SampleName')
+    pre_cohort_df <- sub_cohort_df
+    
+    for (k in unique(sel_phy_df$Stage)) {
+      if (!any(sel_phy_df$Cohort == i & sel_phy_df$Stage == k)) {
+        next
+      }
+      sub_sel_phy_df <- sel_phy_df[sel_phy_df$Cohort == i & sel_phy_df$Stage == k, ]
+      sub_sel_phy_df$SampleName <- rownames(sub_sel_phy_df)
+      order_sel_phy_df <- sub_sel_phy_df[order(rowSums(sub_sel_phy_df[, c(1, 2)]), decreasing = T), ]
+      pre_sel_phy_df <- pred_bar(data = order_sel_phy_df, sel_features = names(sel_phy_list))
+      pre_cohort_df <- rbind(pre_cohort_df, pre_sel_phy_df)
+      sub_cohort_df <- rbind(sub_cohort_df, order_sel_phy_df)
+    }
+    
+    phy_df_list[[i]][['top2']] <- sub_cohort_df
+    pre_phy_list[[i]][['top2']] <- pre_cohort_df
+    test_melt <- melt(pre_cohort_df[,c(1:5,7,8)], 
+                      id.vars = c("SampleName","Stage"), 
+                      variable.name = "Phylum",
+                      value.name = "Abundance")
+    test_melt$Stage <- factor(ifelse(test_melt$Stage == 'adenoma',
+                                     "ADE", test_melt$Stage),
+                              c('CTRL', 'ADE', 'CRC'))
+    pre_gplot <- ggplot(test_melt, aes(x = factor(SampleName, levels = pre_cohort_df$SampleName),
+                                       y = Abundance, fill = Phylum))+
+      geom_bar(stat = "identity", width = 1) +
+      facet_grid( ~ Stage, scales = "free", space = "free") +
+      scale_y_continuous(expand=c(0,0)) + theme_bw() +
+      theme(axis.text = element_blank(),
+            axis.title = element_blank(), 
+            axis.ticks =element_blank(),
+            legend.position = 'none',
+            plot.title = element_text(hjust = 0.5))+
+      scale_fill_ochre(option = 'olsen_qual')+
+      ggtitle(i)
+    pre_gplot_pdf <- FileCreate(DirPath = paste0('../06.AlphaDiversity/Fungal_Components/Top2/', i),
+                                Prefix = paste0('Components_bar-', i, '-top2'), Suffix = 'pdf')
+    sub_width = (1.5 + 40/1329*nrow(pre_cohort_df))/2.54
+    pdf(pre_gplot_pdf, width = sub_width, height = 3)
+    plot(pre_gplot)
+    dev.off()
+    pre_table_csv <- FileCreate(DirPath = paste0('../06.AlphaDiversity/Fungal_Components/Top2/', i, '/pre-table'),
+                                Prefix = paste0('Prediction_Table-', i,'-top2'), Suffix = 'csv')
+    write.csv(x = pre_cohort_df, file = pre_table_csv)
+    
+    raw_table_csv <- FileCreate(DirPath = paste0('../06.AlphaDiversity/Fungal_Components/Top2/', i, '/raw-table'),
+                                Prefix = paste0('Raw_Splited_Table-', i,'-top2'), Suffix = 'csv')
+    write.csv(x = sub_cohort_df, file = raw_table_csv)
+  }
+  
+  
+  sub_cohort_df <- matrix(NA, ncol = length(sel_phy_list) + 3); sub_cohort_df <- sub_cohort_df[-1, ]
+  colnames(sub_cohort_df) <- c(names(sel_phy_list), 'Cohort', 'Stage', 'SampleName')
+  pre_cohort_df <- sub_cohort_df
+  for (k in unique(sel_phy_df$Stage)) {
+    sub_sel_phy_df <- sel_phy_df[sel_phy_df$Stage == k, ]
+    sub_sel_phy_df$SampleName <- rownames(sub_sel_phy_df)
+    order_sel_phy_df <- sub_sel_phy_df[order(rowSums(sub_sel_phy_df[, c(1, 2)]), decreasing = T), ]
+    pre_sel_phy_df <- pred_bar(data = order_sel_phy_df, sel_features = names(sel_phy_list))
+    pre_cohort_df <- rbind(pre_cohort_df, pre_sel_phy_df)
+    sub_cohort_df <- rbind(sub_cohort_df, order_sel_phy_df)
+  }
+  
+  phy_df_list[['all']][['top2']] <- sub_cohort_df
+  pre_phy_list[['all']][['top2']] <- pre_cohort_df
+  
+  test_melt <- melt(pre_cohort_df[,c(1:5,7,8)], 
+                    id.vars = c("SampleName","Stage"), 
+                    variable.name = "Phylum",
+                    value.name = "Abundance")
+  test_melt$Stage <- factor(ifelse(test_melt$Stage == 'adenoma',
+                                   "ADE", test_melt$Stage),
+                            c('CTRL', 'ADE', 'CRC'))
+    pre_gplot <- ggplot(test_melt, aes(x = factor(SampleName, levels = pre_cohort_df$SampleName),
+                                       y = Abundance, fill = Phylum))+
+      geom_bar(stat = "identity", width = 1) +
+      facet_grid( ~ Stage, scales = "free", space = "free") +
+      scale_y_continuous(expand=c(0,0)) + theme_bw() +
+      theme(axis.text = element_blank(),
+            axis.title = element_blank(), 
+            axis.ticks =element_blank())+
+      scale_fill_ochre(option = 'olsen_qual')
+  pre_gplot_pdf <- FileCreate(DirPath = '../06.AlphaDiversity/Fungal_Components/Top2/all',
+                              Prefix = 'Components_bar-all-top2', Suffix = 'pdf')
+  pdf(pre_gplot_pdf, width = 20, height = 5)
+  plot(pre_gplot + theme(legend.position = 'none'))
+  plot(pre_gplot)
+  dev.off()
+  pre_table_csv <- FileCreate(DirPath = '../06.AlphaDiversity/Fungal_Components/Top2/all/pre-table',
+                              Prefix = paste0('Prediction_Table-all-top2'), Suffix = 'csv')
+  write.csv(x = pre_cohort_df, file = pre_table_csv)
+  
+  raw_table_csv <- FileCreate(DirPath = '../06.AlphaDiversity/Fungal_Components/Top2/all/raw-table',
+                              Prefix = paste0('Raw_Splited_Table-all-top2'), Suffix = 'csv')
+  write.csv(x = sub_cohort_df, file = raw_table_csv)
+  
+  
+  
+  phy_df_rds <- FileCreate(DirPath = '../06.AlphaDiversity/Fungal_Components', 
+                           Prefix = 'phy_df_list', Suffix = 'rds')
+  saveRDS(object = phy_df_list, file = phy_df_rds)
+  
+  pre_phy_rds <- FileCreate(DirPath = '../06.AlphaDiversity/Fungal_Components', 
+                           Prefix = 'pre_phy_list', Suffix = 'rds')
+  saveRDS(object = pre_phy_list, file = pre_phy_rds)
+  
+
+}else{
+  pre_phy_list <- readRDS('../06.AlphaDiversity/Fungal_Components/2021-07-28-pre_phy_list-v1.0.rds')
+  phy_df_list <- readRDS('../06.AlphaDiversity/Fungal_Components/2021-07-28-phy_df_list-v1.0.rds')
+}
+
+
+
+
+
+```
+
+#### Longitudinal and horizontal comparison in fungal phylum level
+
+**Pre-process:**
+
+To correct for bias arising from uneven geographic sampling, we measured the relative abundance of each taxon by calculating the fraction of reads classified to each taxon and compared the raw distribution to the distribution of median control abundances within each cohort.
+
+```{r}
+p2_sel_phy_df <- sel_phy_df
+p2_sel_phy_df$Ratio_BA <- p2_sel_phy_df$Basidiomycota/p2_sel_phy_df$Ascomycota
+p2_sel_phy_df$SampleName <- rownames(p2_sel_phy_df)
+sel_feature <- c(names(sel_phy_list), "Ratio_BA")
+
+p2_median_df <- p2_sel_phy_df
+median_df <- matrix(NA, ncol = ncol(p2_median_df)); median_df <- median_df[-1, ] 
+for (coh in unique(p2_median_df$Cohort)) {
+  sub_phy_df <- p2_median_df[p2_median_df$Cohort== coh, ]
+  median_list <- apply(sub_phy_df[sub_phy_df$Stage == 'CTRL', sel_feature], 2, median)
+  sub_median_df <- sweep(sub_phy_df[,sel_feature], 2, median_list, FUN = "/") %>%
+    cbind(., sub_phy_df[, !colnames(sub_phy_df) %in% sel_feature]) 
+  median_df <- rbind(median_df, sub_median_df)
+}
+median_df <- as.data.frame(median_df)
+
+all_melt_median_df <- melt(median_df, 
+                           id.vars = c("SampleName", "Stage", "Cohort"), 
+                           variable.name = "Phylum",
+                           value.name = "Relative Median Abudance")
+melt_median_df <- all_melt_median_df[all_melt_median_df$Stage != 'adenoma', ]
+melt_median_df$Stage <- factor(melt_median_df$Stage, c('CTRL', 'CRC'))
+
+box_plot <- ggplot(melt_median_df, aes(x = Cohort, y = `Relative Median Abudance`))+
+  geom_violin(aes(fill = Stage),  scale = "width",trim = F,
+              position=position_dodge()) +
+  geom_boxplot(aes(color = Stage), outlier.color = NA,
+               width=0.2, fill="white", position = position_dodge(width =0.9))+
+  facet_wrap(~Phylum, ncol = 1, scales = 'free_y') + 
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.5, vjust = 0.5), 
+        legend.position = 'none') +
+  scale_color_manual(values = c('black', 'black')) +
+  stat_compare_means(aes(group = Stage,
+                         label=ifelse(..p.. > 0.05,"", 
+                                      format(..p.., scientific = TRUE, digits = 4))))+
+   scale_fill_manual(values = c("CTRL" = '#57868c', adenoma = '#f3c200', "CRC" = '#e82546'))
+
+boxplot_pdf <- FileCreate(DirPath = '../06.AlphaDiversity/Normaled_Median',
+                          Prefix = "boxplot-normalized_control_median-phylum",
+                          Suffix = 'pdf')
+pdf(file = boxplot_pdf, width = 8, height = 15)
+plot(box_plot)
+dev.off()
+
+
+sel_df <- melt_median_df[melt_median_df$Phylum == "Ratio_BA", ]
+box_plot2 <- ggplot(sel_df, aes(x = Stage, y = `Relative Median Abudance`))+
+  geom_violin(aes(fill = Stage),  scale = "width",trim = F,
+              position=position_dodge()) +
+  geom_boxplot(aes(color = Stage), outlier.color = NA,
+               width=0.2, fill="white", position = position_dodge(width =0.9))+
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.5, vjust = 0.5), 
+        legend.position = 'none') +
+  scale_color_manual(values = c('black', 'black')) +
+  stat_compare_means(aes(group = Stage,
+                         label=ifelse(..p.. > 0.05,"", 
+                                      format(..p.., scientific = TRUE, digits = 4))))+
+   scale_fill_manual(values = c("CTRL" = '#57868c', adenoma = '#f3c200', "CRC" = '#e82546'))
+
+```
+
+## Beta Diversity
+
+```{r beta diversity}
+
+beta_import <- nor_rarefy_df
+
+pca <- prcomp(t(beta_import), scale = T, center = T)
+pca_var <- pca$sdev^2
+pca_var_per <- round(pca_var/sum(pca_var)*100,1)
+pca_df <- data.frame(Sample = rownames(pca$x), X = pca$x[,1], Y = pca$x[,2], 
+                     Group = meta_df[rownames(pca$x),]$Cohort,
+                     Stage = meta_df[rownames(pca$x),]$Stage)
+ggplot(data = pca_df, aes(x=X, y=Y, color = Group)) + 
+  geom_point(alpha = 0.3) +
+  xlab(paste("PC1 = ", pca_var_per[1], "%", sep = "")) +
+  ylab(paste("PC2 = ", pca_var_per[2], "%", sep = "")) +
+  theme_bw()+
+  ggtitle("PCA Graph")
+ggplot(data = pca_df, aes(x=X, y=Y, color = Stage)) + 
+  geom_point(alpha = 0.3) +
+  xlab(paste("PC1 = ", pca_var_per[1], "%", sep = "")) +
+  ylab(paste("PC2 = ", pca_var_per[2], "%", sep = "")) +
+  theme_bw()+
+  ggtitle("PCA Graph")
+
+distance_mt <- dist(scale(t(beta_import), center = T, scale = T), method = 'euclidean')
+mds_stuff <- cmdscale(distance_mt, eig = T, x.ret = T)
+mds_var_per <- round(mds_stuff$eig/sum(mds_stuff$eig)*100,1)
+mds_df <- data.frame(Sample = rownames(mds_stuff$points), X = mds_stuff$points[,1], 
+                     Y = mds_stuff$points[,2], 
+                     Group = meta_df[rownames(mds_stuff$points),]$Cohort,
+                     Stage = meta_df[rownames(mds_stuff$points),]$Stage)
+ggplot(data = mds_df, aes(x=X, y=Y, color = Group)) + 
+  geom_point(alpha = 0.3) +
+  xlab(paste("PC1 = ", pca_var_per[1], "%", sep = "")) +
+  ylab(paste("PC2 = ", pca_var_per[2], "%", sep = "")) +
+  theme_bw()+
+  ggtitle("PCA Graph")
+ggplot(data = mds_df, aes(x=X, y=Y, color = Stage)) + 
+  geom_point(alpha = 0.3) +
+  xlab(paste("PC1 = ", pca_var_per[1], "%", sep = "")) +
+  ylab(paste("PC2 = ", pca_var_per[2], "%", sep = "")) +
+  theme_bw()+
+  ggtitle("PCA Graph")
+```
