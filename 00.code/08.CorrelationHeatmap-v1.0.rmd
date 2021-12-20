@@ -132,8 +132,11 @@ interesct_corr_ade <- interesct_corr_ade[,-1]
 interesct_corr_ade <- interesct_corr_ade[rownames(euk_core), rownames(bac_core)]
 
 icorr_crc <- mutate_all(interesct_corr_crc, function(x) as.numeric(as.character(x))) %>% as.matrix()
+icorr_crc <- icorr_crc[,rev(colnames(icorr_crc))]
 icorr_ctrl <- mutate_all(interesct_corr_ctrl, function(x) as.numeric(as.character(x))) %>% as.matrix()
+icorr_ctrl <- icorr_ctrl[,rev(colnames(icorr_ctrl))]
 icorr_ade <- mutate_all(interesct_corr_ade, function(x) as.numeric(as.character(x))) %>% as.matrix()
+icorr_ade <- icorr_ade[,rev(colnames(icorr_ade))]
 
 col_fun = colorRamp2(c(-0.4, -0.15, 0, 0.15, 0.4), c("#000247", "#0F418D", "white", "#F74747", "#D61616"))
 
