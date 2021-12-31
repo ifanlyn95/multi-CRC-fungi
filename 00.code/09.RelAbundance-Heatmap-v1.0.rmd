@@ -1,0 +1,282 @@
+---
+title: "08.heatmap"
+author: "ifanlyn@outlook.com"
+date: "2021/12/3"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Loading packages and subroutines {.tabset}
+
+### Packages
+
+```{r packages, message=FALSE, warning=FALSE}
+require(dplyr) # for %>%
+require(ComplexHeatmap)
+require(reshape2) # cast
+require(circlize) # colorRamp2
+require(qvalue)
+```
+
+### FileCreate
+
+```{r}
+FileCreate <- function(DirPath = "./",Prefix = "ExampleTest", Suffix = "pdf", version = "0.0"){
+  date=as.character(Sys.Date())
+  DirPath = gsub("/$","",DirPath)
+  Suffix = gsub('^[.]',"",Suffix)
+  if(! dir.exists(DirPath)){
+    dir.create(DirPath,recursive =TRUE)
+  }
+  if (version == "0.0") {
+    version=10
+    while(TRUE){
+      version_=paste(unlist(strsplit(as.character(version),"")),collapse=".")
+      DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version_,".",Suffix)
+      if(! file.exists(DirPathName)){
+        return(DirPathName)
+        break
+      }
+      version = version + 1
+    }
+  }else{
+    DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version,".",Suffix)
+    if(! dir.exists(DirPathName)){
+      return(DirPathName)
+    }
+    return(DirPathName)
+  }
+}
+  
+```
+
+### ImportTable
+
+```{r ImportTable }
+ImportTable <- function(file, header = T, row.names = 1, sep = ',', check.names = FALSE, ...){
+  data <- read.csv(file = file, header = header, row.names = row.names, sep = sep, check.names = check.names, ...)
+  return(data)
+}
+```
+
+## Import data {.tabset}
+
+### Import metadata
+
+```{r , message = F, warning = F}
+meta_df <- ImportTable(file = '../00.RawData/metaData/2021-07-26-metaInfo-subgroup_1329-v6.0.csv')
+meta_df <- meta_df[order(meta_df$Stage), ]
+# meta_df$Stage <- factor(meta_df$Stage, c("CRC", "adenoma", "CTRL"))
+```
+
+### Import Eukaryota matrix
+
+```{r , message = F, warning = F}
+otu_df <- ImportTable(file = '../07.FeatureSelection/01.SSTF/2021-07-29-modify_martix_norm-ALL-v1.0.0.csv')
+euk_sel <- ImportTable(file = '../07.FeatureSelection/01.SSTF/2021-07-30-wilcoxon-all-v1.0.0.csv')
+euk_sel <- euk_sel[order(euk_sel$adj_pvalue),]
+euk_core <- euk_sel[euk_sel$adj_pvalue < 0.01, ]
+
+core_otu <- otu_df[rownames(meta_df), rownames(euk_core)]
+
+cohort_list <-unique(meta_df$Cohort)
+
+sub_obj <- list()
+for (sub_cohort in cohort_list) {
+  sub_otu_df <- otu_df[rownames(meta_df)[meta_df$Cohort == sub_cohort & meta_df$Stage %in% c("CTRL", "CRC")], ]
+  sub_meta_df <- meta_df[rownames(sub_otu_df), ]
+  comb_df <- cbind(sub_otu_df, sub_meta_df)
+  diff_df <- matrix(data = NA, nrow = nrow(comb_df), ncol = 0)
+  rownames(diff_df) <- rownames(comb_df)
+  p_df <- matrix(data = NA, nrow = ncol(sub_otu_df), ncol = 2, 
+                 dimnames = list(colnames(sub_otu_df), c('pvalue', 'FDR')))
+  for (species in colnames(sub_otu_df)) {
+    # if (length(unique(sub_meta_df$Stage))!=2) {
+    #   if (all(comb_df[, species] == mean(comb_df[, species]))) {
+    #     p_df[species, 'pvalue'] <- 1
+    #     next
+    #   }
+    #   test_res <- aov(as.formula(paste0("`", species, "` ~ Stage")), data = comb_df)
+    #   test_p <- summary(test_res)[[1]][["Pr(>F)"]][1]
+    #   p_df[species, 'pvalue'] <- test_p
+    #   if (test_p < 0.05) {
+    #     diff_df <- cbind(diff_df, sub_otu_df[, species])
+    #     colnames(diff_df)[ncol(diff_df)] <- species
+    #   }
+    # }else{
+      if (all(comb_df[, species] == mean(comb_df[, species]))) {
+        p_df[species, 'pvalue'] <- 1
+        next
+      }
+      test_res <- wilcox.test(as.formula(paste0("`", species, "` ~ Stage")), data = comb_df)
+      test_p <- test_res$p.value
+      p_df[species, 'pvalue'] <- test_p
+      if (test_p < 0.05) {
+        diff_df <- cbind(diff_df, sub_otu_df[, species])
+        colnames(diff_df)[ncol(diff_df)] <- species
+      }
+      
+    # }
+  }
+  p_df <- as.data.frame(p_df)
+  p_df$FDR <- fdrtool(p_df$pvalue,statistic="pvalue")$qval
+  diff_df <- as.data.frame(diff_df)
+  sub_obj[[sub_cohort]]$p_df <- p_df
+  sub_obj[[sub_cohort]]$diff_df <- diff_df
+  sub_obj[[sub_cohort]]$meta_df <- sub_meta_df
+  sub_obj[[sub_cohort]]$exist_df <- apply(diff_df, 2, function(x){
+    return(ifelse(x>quantile(x = x, probs = .75),2,
+                  ifelse(x>quantile(x = x, probs = .5),1,
+                         ifelse(x>quantile(x = x, probs = .25),-1,-2))))
+    }) %>% t()
+  sub_obj[[sub_cohort]]$two_exist_df <- apply(diff_df, 2, function(x){
+    return(ifelse(x>quantile(x = x, probs = .75),2,
+                  ifelse(x>quantile(x = x, probs = .5),1,
+                         ifelse(x>quantile(x = x, probs = .25),-1,-2))))
+    }) %>% t()
+}
+
+for (sub_cohort in cohort_list) {
+  
+  exist_df <- sub_obj[[sub_cohort]]$exist_df
+  sub_meta_df <- sub_obj[[sub_cohort]]$meta_df
+  col_split_list <- factor(sub_meta_df$Stage, c("CTRL", "CRC"))
+  
+  
+  # Heatmap(scale_otu,  show_column_names = F, col = col_fun,
+  tmp_hm <- Heatmap(exist_df,  show_column_names = F, col = col_fun,
+                    column_split = col_split_list, 
+                    cluster_row_slices = FALSE, cluster_column_slices = FALSE,
+                    row_names_gp = gpar(fontface = "italic"),
+                    column_names_gp = gpar(fontface = "italic"),
+                    row_title_gp = gpar(fontsize = 30, fontface = "bold"),
+                    column_title_gp = gpar(fontsize = 30, fontface = "bold")) 
+  
+  
+}
+
+
+
+
+
+
+
+
+
+scale_otu <- scale(core_otu)
+
+row_split_list <- meta_df$Stage
+
+ggplot(as.data.frame(scale_otu), aes(x=`Debaryomyces hansenii`)) +
+    geom_line(stat = "density") +  xlim(-1,1)
+
+ggplot(as.data.frame(scale_otu), aes(x=`Aspergillus rambellii`)) +
+    geom_line(stat = "density") +  xlim(-1,10)
+
+col_fun = colorRamp2(c(-2, -1, 0, 1, 2), c("#000247", "#0F418D", "white", "#F74747", "#D61616"))
+
+
+sub_otu <- core_otu[rownames(meta_df)[meta_df$Cohort == '2014_ZellerG'], ]
+scale_sub_otu <- scale(sub_otu)
+sub_row_split_list <- meta_df[meta_df$Cohort == '2014_ZellerG', "Stage"]
+
+Heatmap(scale_sub_otu, cluster_columns = T, show_row_names = F, col = col_fun,
+        row_split = sub_row_split_list, cluster_row_slices = FALSE,
+        row_names_gp = gpar(fontface = "italic"),
+        column_names_gp = gpar(fontface = "italic"),
+        row_title_gp = gpar(fontsize = 30, fontface = "bold"),
+        column_title_gp = gpar(fontsize = 30, fontface = "bold")) 
+
+
+Heatmap(scale_otu, cluster_columns = T, show_row_names = F, col = col_fun,
+        row_split = row_split_list, cluster_row_slices = FALSE,
+        row_names_gp = gpar(fontface = "italic"),
+        column_names_gp = gpar(fontface = "italic"),
+        row_title_gp = gpar(fontsize = 30, fontface = "bold"),
+        column_title_gp = gpar(fontsize = 30, fontface = "bold")) 
+
+
+
+
+Heatmap(icorr_crc, cluster_rows = F, cluster_columns = F, 
+        col = col_fun, width = unit(ncol(icorr_crc)*4, "mm"), 
+        height = unit(nrow(icorr_crc)*4, "mm"), border = TRUE) + 
+  Heatmap(icorr_ade, cluster_rows = F, cluster_columns = F, 
+        col = col_fun, width = unit(ncol(icorr_crc)*5, "mm"), 
+        height = unit(nrow(icorr_crc)*4, "mm"), border = TRUE) + 
+  Heatmap(icorr_ctrl, cluster_rows = F, cluster_columns = F, 
+        col = col_fun, width = unit(ncol(icorr_crc)*4, "mm"), 
+        height = unit(nrow(icorr_crc)*4, "mm"), border = TRUE)
+
+enrich_df <- icorr_crc > icorr_ade & icorr_ade > icorr_ctrl
+deplete_df <- icorr_crc < icorr_ade & icorr_ade < icorr_ctrl
+
+icorr_crc_enrich <- icorr_crc; icorr_crc_enrich[!enrich_df] <- 0
+icorr_ade_enrich <- icorr_ade; icorr_ade_enrich[!enrich_df] <- 0
+icorr_ctrl_enrich <- icorr_ctrl; icorr_ctrl_enrich[!enrich_df] <- 0
+
+
+Heatmap(icorr_crc_enrich, cluster_rows = F, cluster_columns = F, 
+        col = col_fun, width = unit(ncol(icorr_crc)*4, "mm"), 
+        height = unit(nrow(icorr_crc)*4, "mm"), border = TRUE, column_title = "CRC") + 
+  Heatmap(icorr_ade_enrich, cluster_rows = F, cluster_columns = F, 
+        col = col_fun, width = unit(ncol(icorr_crc)*4, "mm"), 
+        height = unit(nrow(icorr_crc)*4, "mm"), border = TRUE, column_title = "Adenoma") + 
+  Heatmap(icorr_ctrl_enrich, cluster_rows = F, cluster_columns = F, 
+        col = col_fun, width = unit(ncol(icorr_crc)*4, "mm"), 
+        height = unit(nrow(icorr_crc)*4, "mm"), border = TRUE, column_title = "Control")
+
+
+icorr_crc_deplete <- icorr_crc; icorr_crc_deplete[!deplete_df] <- 0
+icorr_ade_deplete <- icorr_ade; icorr_ade_deplete[!deplete_df] <- 0
+icorr_ctrl_deplete <- icorr_ctrl; icorr_ctrl_deplete[!deplete_df] <- 0
+
+
+Heatmap(icorr_crc_deplete, cluster_rows = F, cluster_columns = F, 
+        col = col_fun, width = unit(ncol(icorr_crc)*4, "mm"), 
+        height = unit(nrow(icorr_crc)*4, "mm"), border = TRUE, column_title = "CRC") + 
+  Heatmap(icorr_ade_deplete, cluster_rows = F, cluster_columns = F, 
+        col = col_fun, width = unit(ncol(icorr_crc)*4, "mm"), 
+        height = unit(nrow(icorr_crc)*4, "mm"), border = TRUE, column_title = "Adenoma") + 
+  Heatmap(icorr_ctrl_deplete, cluster_rows = F, cluster_columns = F, 
+        col = col_fun, width = unit(ncol(icorr_crc)*4, "mm"), 
+        height = unit(nrow(icorr_crc)*4, "mm"), border = TRUE, column_title = "Control")
+
+icorr_crc_merge <- rbind(icorr_crc_enrich, icorr_crc_deplete)
+icorr_ade_merge <- rbind(icorr_ade_enrich, icorr_ade_deplete)
+icorr_ctrl_merge <- rbind(icorr_ctrl_enrich, icorr_ctrl_deplete)
+
+icorr_all_merge <- cbind(cbind(icorr_crc_merge, icorr_ade_merge), icorr_ctrl_merge)
+
+# col_fun = colorRamp2(c(-0.4, -0.15, 0, 0.15, 0.4), c("#000247", "#0F418D", "white", "#F74747", "#D61616"))
+col_fun = colorRamp2(c(-0.4, -0.2, 0, 0.2, 0.4), c("#000247", "#0F418D", "white", "#F74747", "#D61616"))
+in2mm <-25.4
+
+interect_cor_pdf <- FileCreate(DirPath = "../08.correlation/DGCA/heatmap",Prefix = "Heatmap-AllStages-Enhance_Reduce", Suffix = "pdf")
+pdf(file = interect_cor_pdf, height = ((nrow(icorr_all_merge)*8 + 20)/in2mm),
+    width = ((nrow(icorr_all_merge)*12 + 50)/in2mm))
+Heatmap(icorr_all_merge, cluster_rows = F, cluster_columns = F, 
+        col = col_fun, width = unit(ncol(icorr_all_merge)*4, "mm"), 
+        height = unit(nrow(icorr_all_merge)*4, "mm"), border = TRUE, 
+        column_split = factor(rep(c("CRC", "Adenoma", "Conrtol"), each = ncol(icorr_crc)), 
+                              levels = c("CRC", "Adenoma", "Conrtol")),
+        row_split = factor(rep(c("Increasing Trend", "Decreasing Trend"), each = nrow(icorr_crc)), 
+                           levels = c("Increasing Trend", "Decreasing Trend")),
+        row_gap = unit(10, "mm"), column_gap = unit(4, "mm"),
+        row_names_gp = gpar(fontface = "italic"),
+        column_names_gp = gpar(fontface = "italic"),
+        row_title_gp = gpar(fontsize = 30, fontface = "bold"),
+        column_title_gp = gpar(fontsize = 30, fontface = "bold")) 
+dev.off()
+
+```
+
+
+
+
+
+
+
