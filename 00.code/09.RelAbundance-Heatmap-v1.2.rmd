@@ -1,0 +1,1016 @@
+---
+title: "08.heatmap"
+author: "ifanlyn@outlook.com"
+date: "2021/12/3"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Loading packages and subroutines {.tabset}
+
+### Packages
+
+```{r packages, message=FALSE, warning=FALSE}
+require(dplyr) # for %>%
+require(ComplexHeatmap)
+require(reshape2) # cast
+require(circlize) # colorRamp2
+require(qvalue)
+require(fdrtool) # fdrtool
+require(ggpubr) # stat_compare_means
+require(scales) # trans_breaks
+```
+
+### FileCreate
+
+```{r}
+FileCreate <- function(DirPath = "./",Prefix = "ExampleTest", Suffix = "pdf", version = "0.0"){
+  date=as.character(Sys.Date())
+  DirPath = gsub("/$","",DirPath)
+  Suffix = gsub('^[.]',"",Suffix)
+  if(! dir.exists(DirPath)){
+    dir.create(DirPath,recursive =TRUE)
+  }
+  if (version == "0.0") {
+    version=10
+    while(TRUE){
+      version_=paste(unlist(strsplit(as.character(version),"")),collapse=".")
+      DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version_,".",Suffix)
+      if(! file.exists(DirPathName)){
+        return(DirPathName)
+        break
+      }
+      version = version + 1
+    }
+  }else{
+    DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version,".",Suffix)
+    if(! dir.exists(DirPathName)){
+      return(DirPathName)
+    }
+    return(DirPathName)
+  }
+}
+  
+```
+
+### ImportTable
+
+```{r ImportTable }
+ImportTable <- function(file, header = T, row.names = 1, sep = ',', check.names = FALSE, ...){
+  data <- read.csv(file = file, header = header, row.names = row.names, sep = sep, check.names = check.names, ...)
+  return(data)
+}
+```
+
+## Import data {.tabset}
+
+### Import metadata
+
+```{r , message = F, warning = F}
+meta_df <- ImportTable(file = '../00.RawData/metaData/2021-07-26-metaInfo-subgroup_1329-v6.0.csv')
+meta_df <- meta_df[order(meta_df$Stage), ]
+meta_df$Cohort <- ifelse(meta_df$Cohort == "2014_ZellerG", "2014_ZellerG", 
+                        ifelse(meta_df$Cohort == "2015_FengQ", "2015_FengQ", 
+                               ifelse(meta_df$Cohort == "2016_VogtmannE", "2016_VogtmannE", 
+                                      ifelse(meta_df$Cohort == "2019_Thom", "2019_ThomasAM", 
+                                             ifelse(meta_df$Cohort == "2019_WirbelJ", "2019_WirbelJ", 
+                                                    ifelse(meta_df$Cohort == "2019_Yachida", "2019_YachidaS", 
+                                                           ifelse(meta_df$Cohort == "2021_JunY_1", "2017_YuJ","2021_YuJ")))))))
+# meta_df$Stage <- factor(meta_df$Stage, c("CRC", "adenoma", "CTRL"))
+```
+
+### Import Eukaryota matrix
+
+```{r , message = F, warning = F}
+otu_df <- ImportTable('../07.FeatureSelection/02.RelMedianAbundance/2021-07-30-normalized-0.1%-RelMedianAbundance-matrix-v1.0.0.csv')
+
+# otu_df <- ImportTable(file = '../07.FeatureSelection/01.SSTF/2021-07-29-modify_martix_norm-ALL-v1.0.0.csv')
+euk_sel <- ImportTable(file = '../07.FeatureSelection/01.SSTF/2021-07-30-wilcoxon-all-v1.0.0.csv')
+euk_sel <- euk_sel[order(euk_sel$adj_pvalue),]
+euk_core <- euk_sel[euk_sel$adj_pvalue < 0.01, ]
+
+core_otu <- otu_df[rownames(meta_df), rownames(euk_core)]
+
+cohort_list <- c(unique(meta_df$Cohort), 'all')
+# col_fun = colorRamp2(c(-3, -2, -1, 0, 1, 2, 3), c("#99ffff", "#02cbff", "#030097", "#000000", "#9d0e10", "#ff8a44", "#ffff66"))
+# col_fun = colorRamp2(c(-3, -2, -1, 0, 1, 2, 3), c("#99ffff", "#000098", "#010055", "#000000", "#4c0809", "#970f0f", "#ffff66"))
+col_fun = colorRamp2(c(-4, -3, -2, -1, 0, 1, 2, 3, 4), c("#99ffff", "#02cbff", "#0033ff", "#01004c", "#000000", "#4c0809", "#970f0f", "#ff8a44", "#ffff66"))
+# col_fun = colorRamp2(c(-2, -1, 0, 1, 2), c("#000247", "#0F418D", "#ffffff", "#F74747", "#D61616"))
+# col_fun = colorRamp2(c(-2, -1, 0, 1, 2), c("#000021", "#30304C", "#ffffff", "#EC0000", "#BB0000"))
+# col_fun3 = colorRamp2(c(-2, -1, 1, 2), c("#000247", "#000000", "#000000", "#D61616"))
+
+sub_obj <- list()
+for (sub_cohort in cohort_list) {
+  if (sub_cohort == 'all') {
+    sub_otu_df <- otu_df[rownames(meta_df)[meta_df$Stage %in% c("CTRL", "CRC")], ]
+  }else{
+    sub_otu_df <- otu_df[rownames(meta_df)[meta_df$Cohort == sub_cohort & meta_df$Stage %in% c("CTRL", "CRC")], ]
+  }
+  sub_meta_df <- meta_df[rownames(sub_otu_df), ]
+  comb_df <- cbind(sub_otu_df, sub_meta_df)
+  diff_df <- matrix(data = NA, nrow = nrow(comb_df), ncol = 0)
+  rownames(diff_df) <- rownames(comb_df)
+  p_df <- matrix(data = NA, nrow = ncol(sub_otu_df), ncol = 2, 
+                 dimnames = list(colnames(sub_otu_df), c('pvalue', 'FDR')))
+  for (species in colnames(sub_otu_df)) {
+      if (all(comb_df[, species] == mean(comb_df[, species]))) {
+        p_df[species, 'pvalue'] <- 1
+        next
+      }
+      test_res <- wilcox.test(as.formula(paste0("`", species, "` ~ Stage")), data = comb_df)
+      test_p <- test_res$p.value
+      p_df[species, 'pvalue'] <- test_p
+      if (test_p < 0.05) {
+      # if (test_p < 0.01) {
+        diff_df <- cbind(diff_df, sub_otu_df[, species])
+        colnames(diff_df)[ncol(diff_df)] <- species
+      }
+      
+    # }
+  }
+  p_df <- as.data.frame(p_df)
+  p_df$FDR <- fdrtool(p_df$pvalue,statistic="pvalue")$qval
+  p_df$FC <- ifelse(colMeans(sub_otu_df[sub_meta_df$Stage == "CRC",])/colMeans(sub_otu_df[sub_meta_df$Stage != "CRC",])>1, 'High', "Low")
+  diff_df <- as.data.frame(diff_df)
+  sub_obj[[sub_cohort]]$p_df <- p_df
+  sub_obj[[sub_cohort]]$diff_df <- diff_df
+  sub_obj[[sub_cohort]]$meta_df <- sub_meta_df
+  exist_df <- diff_df
+  for (sub_col in colnames(diff_df)) {
+    high_ratio <- ifelse(p_df[sub_col, 'FC'] == 'High', 
+                         sum(sub_meta_df$Stage == 'CRC')/nrow(sub_meta_df),
+                         sum(sub_meta_df$Stage != 'CRC')/nrow(sub_meta_df))
+    exist_df[, sub_col] <- ifelse(diff_df[, sub_col] > quantile(x = diff_df[, sub_col], 
+                                                                probs = 1 - high_ratio/8), 4,
+                                  ifelse(diff_df[, sub_col] > quantile(x = diff_df[, sub_col], 
+                                                                       probs = 1 - high_ratio/4), 3,
+                                         ifelse(diff_df[, sub_col] > quantile(x = diff_df[, sub_col], 
+                                                                              probs = 1 - high_ratio/2), 2,
+                                                ifelse(diff_df[, sub_col] > quantile(x = diff_df[, sub_col], 
+                                                                                     probs = 1 - high_ratio*3/4), 1,
+                                                       ifelse(diff_df[, sub_col] > quantile(x = diff_df[, sub_col], 
+                                                                                            probs = (1 - high_ratio)*3/4), 0,
+                                                              ifelse(diff_df[, sub_col] > quantile(x = diff_df[, sub_col], 
+                                                                                                   probs = (1 - high_ratio)/2), -1,
+                                                                     ifelse(diff_df[, sub_col] > quantile(x = diff_df[, sub_col], 
+                                                                                                          probs = (1 - high_ratio)/4), -2,
+                                                                            ifelse(diff_df[, sub_col] > quantile(x = diff_df[, sub_col], 
+                                                                                                                 probs = (1 - high_ratio)/8), -3, -4))))))))
+  }
+  sub_obj[[sub_cohort]]$exist_df <- as.data.frame(t(exist_df))
+}
+
+sub_cohort <- cohort_list[9]
+# sub_cohort <- cohort_list[2]
+# sub_cohort <- cohort_list[3]
+in2mm<-25.4
+for (sub_cohort in cohort_list) {
+  if (sub_cohort == "all") {
+    exist_df <- sub_obj[[sub_cohort]]$exist_df[colnames(core_otu), ]
+    diff_df <- sub_obj[[sub_cohort]]$diff_df[, colnames(core_otu)] 
+  }else{
+    exist_df <- sub_obj[[sub_cohort]]$exist_df
+    diff_df <- sub_obj[[sub_cohort]]$diff_df 
+  }
+  sub_meta_df <- sub_obj[[sub_cohort]]$meta_df
+
+  col_split_list <- factor(sub_meta_df$Stage, c("CTRL", "CRC"))
+  
+  col_fun2 = colorRamp2(c(-0.4, -0.2, 0, 0.2, 0.4), c("white", "white", "white", "#F74747", "#D61616"))
+  crc_list <- rownames(sub_meta_df)[sub_meta_df$Stage == 'CRC']
+  ctrl_list <- rownames(sub_meta_df)[sub_meta_df$Stage == 'CTRL']
+  
+  test_pdf <- FileCreate(DirPath = paste0("../13.Heatmap/test2"), Prefix = paste0("Heatmap_", sub_cohort), Suffix = "pdf")
+  # pdf(file = test_pdf, width = 12, height = 30)
+  sel_d <- 'pearson' 
+  sel_m <- 'ward.D2'
+  exist_df2 <- exist_df[names(sort(rowSums(exist_df[, crc_list]>0),decreasing = T)), ]
+  exist_df3 <- exist_df2
+  exist_df3[exist_df3 <0] <- 0
+  row_split_list <- sub_obj[[sub_cohort]]$p_df[rownames(exist_df2), 'FC']
+  label_list <- which(rownames(exist_df2) %in% rownames(euk_core))
+  row_label <- rowAnnotation(label = anno_mark(at = label_list, 
+                                               labels = rownames(exist_df2)[label_list], 
+                                               labels_gp = gpar(fontface = "bold.italic",
+                                                                fontsize = 13)))
+
+  # tmp_hm2 <- Heatmap(exist_df2, show_column_names = F, col = col_fun2,
+  # tmp_hm2 <- Heatmap(exist_df3, show_column_names = F, col = col_fun2,
+                    # rect_gp = gpar(lty = 1, lwd = 1),  # cell border 
+  tmp_hm2 <- Heatmap(exist_df2, show_column_names = F, col = col_fun,
+                    border = TRUE,
+                    column_gap  =  unit(3, "mm"),
+                    row_gap = unit(3, "mm"),
+                    clustering_distance_rows = sel_d, 
+                    clustering_method_rows = sel_m,
+                    clustering_distance_columns = sel_d, 
+                    clustering_method_columns = sel_m,
+                    column_split = col_split_list,
+                    row_split = row_split_list,
+                    cluster_rows = F, 
+                    cluster_columns = T, 
+                    show_column_dend = F, 
+                    cluster_row_slices = FALSE, 
+                    cluster_column_slices = FALSE,
+                    right_annotation = row_label,
+                    show_row_names = F,
+                    row_title_gp = gpar(fontsize = 15, fontface = "bold"),
+                    column_title_gp = gpar(fontsize = 15, fontface = "bold"), 
+                    name = paste(sel_d, "\n", sel_m), 
+                    width = ncol(exist_df2)*unit(0.5, "mm"), 
+                    height = nrow(exist_df2)*unit(1, "mm"))
+  
+  # just hhh
+  hhh_df <- exist_df2
+  for (row_name in rownames(hhh_df)) {
+    for (sample_name in colnames(hhh_df)) {
+      judge_criteria <- any(all(hhh_df[row_name, sample_name] > 0, 
+                                sub_obj[[sub_cohort]]$p_df[row_name, "FC"] == "High",
+                                meta_df[sample_name, "Stage"] == "CRC"),
+                            all(hhh_df[row_name, sample_name] < 0, 
+                                sub_obj[[sub_cohort]]$p_df[row_name, "FC"] == "High",
+                                meta_df[sample_name, "Stage"] == "CTRL"),
+                            all(hhh_df[row_name, sample_name] < 0, 
+                                sub_obj[[sub_cohort]]$p_df[row_name, "FC"] == "Low",
+                                meta_df[sample_name, "Stage"] == "CRC"),
+                            all(hhh_df[row_name, sample_name] > 0, 
+                                sub_obj[[sub_cohort]]$p_df[row_name, "FC"] == "Low",
+                                meta_df[sample_name, "Stage"] == "CTRL"))
+      if (!judge_criteria) {
+        hhh_df[row_name, sample_name] <- 0
+      }
+    }
+  }
+  hhh_df2 <- hhh_df[, colSums(hhh_df)!= 0]
+  col_split_list2 <- col_split_list[colSums(hhh_df)!= 0]
+  tmp_hm3 <- Heatmap(hhh_df2, show_column_names = F, col = col_fun,
+                    border = TRUE,
+                    column_gap  =  unit(3, "mm"),
+                    row_gap = unit(3, "mm"),
+                    # clustering_distance_rows = sel_d, 
+                    # clustering_method_rows = sel_m,
+                    # clustering_distance_columns = sel_d, 
+                    # clustering_method_columns = sel_m,
+                    column_split = col_split_list2,
+                    row_split = row_split_list,
+                    # cluster_rows = F, 
+                    cluster_columns = T, 
+                    show_column_dend = F, 
+                    cluster_row_slices = FALSE,
+                    cluster_column_slices = FALSE,
+                    right_annotation = row_label,
+                    show_row_names = F,
+                    row_title_gp = gpar(fontsize = 15, fontface = "bold"),
+                    column_title_gp = gpar(fontsize = 15, fontface = "bold"), 
+                    # name = paste(sel_d, "\n", sel_m), 
+                    width = ncol(exist_df2)*unit(0.2, "mm"), 
+                    height = nrow(exist_df2)*unit(2, "mm"))
+  # draw(tmp_hm3, column_title = sub_cohort,
+       # column_title_gp = gpar(fontsize = 20, fontface = "bold"))
+  
+  hhh_df3 <- hhh_df2
+  hhh_df_crc <- hhh_df3[, col_split_list2 == "CRC"]
+  hhh_df_ctrl <- hhh_df3[, col_split_list2 == "CTRL"]
+  hhh_df_crc <- hhh_df_crc[, order(colSums(hhh_df_crc))]
+  hhh_df_ctrl <- hhh_df_ctrl[, order(colSums(hhh_df_ctrl), decreasing = T)]
+  hhh_df4 <- cbind(hhh_df_crc, hhh_df_ctrl)
+  
+  tmp_hm4 <- Heatmap(hhh_df4, show_column_names = F, col = col_fun,
+                    border = TRUE,
+                    column_gap  =  unit(3, "mm"),
+                    row_gap = unit(3, "mm"),
+                    # clustering_distance_rows = sel_d, 
+                    # clustering_method_rows = sel_m,
+                    # clustering_distance_columns = sel_d, 
+                    # clustering_method_columns = sel_m,
+                    column_split = col_split_list2,
+                    row_split = row_split_list,
+                    cluster_rows = F,
+                    # cluster_columns = T, 
+                    cluster_columns = F, 
+                    show_column_dend = F, 
+                    cluster_row_slices = FALSE,
+                    cluster_column_slices = FALSE,
+                    right_annotation = row_label,
+                    show_row_names = F,
+                    row_title_gp = gpar(fontsize = 15, fontface = "bold"),
+                    column_title_gp = gpar(fontsize = 15, fontface = "bold"), 
+                    # name = paste(sel_d, "\n", sel_m), 
+                    width = ncol(exist_df2)*unit(0.2, "mm"), 
+                    height = nrow(exist_df2)*unit(2, "mm"))
+  # draw(tmp_hm4, column_title = sub_cohort,
+       # column_title_gp = gpar(fontsize = 20, fontface = "bold"))
+  
+  tmp_hm4.1 <- Heatmap(exist_df2[rownames(hhh_df4), colnames(hhh_df4)], show_column_names = F, col = col_fun,
+                    border = TRUE,
+                    column_gap  =  unit(3, "mm"),
+                    row_gap = unit(3, "mm"),
+                    # clustering_distance_rows = sel_d, 
+                    # clustering_method_rows = sel_m,
+                    # clustering_distance_columns = sel_d, 
+                    # clustering_method_columns = sel_m,
+                    column_split = col_split_list2,
+                    row_split = row_split_list,
+                    cluster_rows = F,
+                    # cluster_columns = T, 
+                    cluster_columns = F, 
+                    show_column_dend = F, 
+                    cluster_row_slices = FALSE,
+                    cluster_column_slices = FALSE,
+                    right_annotation = row_label,
+                    show_row_names = F,
+                    row_title_gp = gpar(fontsize = 15, fontface = "bold"),
+                    column_title_gp = gpar(fontsize = 15, fontface = "bold"), 
+                    # name = paste(sel_d, "\n", sel_m), 
+                    width = ncol(exist_df2)*unit(0.2, "mm"), 
+                    height = nrow(exist_df2)*unit(2, "mm"))
+  # draw(tmp_hm4.1, column_title = sub_cohort,
+       # column_title_gp = gpar(fontsize = 20, fontface = "bold"))
+  
+  
+  
+  
+  
+  
+  
+  exist_df4 <- exist_df2
+  exist_df4_crc_high <- exist_df4[row_split_list == 'High', col_split_list2 == "CRC"]
+  exist_df4_ctrl_low <- exist_df4[row_split_list == 'Low', col_split_list2 == "CTRL"]
+  exist_df4_crc_high2 <- exist_df4_crc_high[, order(colSums(exist_df4_crc_high))]
+  exist_df4_crc_high3 <- exist_df4_crc_high2[order(rowSums(exist_df4_crc_high2), decreasing = T),]
+  exist_df4_ctrl_low2 <- exist_df4_ctrl_low[, order(colSums(exist_df4_ctrl_low), decreasing = T)]
+  exist_df4_ctrl_low3 <- exist_df4_ctrl_low2[order(rowSums(exist_df4_ctrl_low2)),]
+
+  exist_df4.1 <- exist_df4[c(rownames(exist_df4_crc_high3), rownames(exist_df4_ctrl_low3)), 
+                           c( colnames(exist_df4_ctrl_low2), colnames(exist_df4_crc_high2))]
+  clabel_list <- c(1,2,978,979)
+  col_label <- columnAnnotation(label = anno_mark(at = clabel_list, 
+                                               labels = colnames(exist_df4.1)[clabel_list], 
+                                               labels_gp = gpar(fontface = "bold.italic",
+                                                                fontsize = 13)))
+  
+  tmp_hm4.2 <- Heatmap(exist_df4.1, 
+                       show_column_names = F, 
+                       col = col_fun,
+                       border = TRUE,
+                       column_gap  =  unit(3, "mm"),
+                       row_gap = unit(3, "mm"),
+                       column_split = factor(x = meta_df[colnames(exist_df4.1), "Stage"], levels = c("CTRL", "CRC")),
+                       row_split = row_split_list,
+                       cluster_rows = F,
+                       # cluster_rows = T,
+                       show_row_dend = F,
+                       cluster_columns = F, 
+                       show_column_dend = F, 
+                       cluster_row_slices = FALSE,
+                       cluster_column_slices = FALSE,
+                       right_annotation = row_label,
+                       top_annotation = col_label,
+                       show_row_names = F,
+                       row_title_gp = gpar(fontsize = 15, fontface = "bold"),
+                       column_title_gp = gpar(fontsize = 15, fontface = "bold"), 
+                       # name = paste(sel_d, "\n", sel_m), 
+                       width = ncol(exist_df2)*unit(0.2, "mm"), 
+                       height = nrow(exist_df2)*unit(2, "mm"))
+  # draw(tmp_hm4.2, column_title = sub_cohort,
+       # column_title_gp = gpar(fontsize = 20, fontface = "bold"))
+  
+
+  exist_df5 <- exist_df2
+  
+  exist_df5_high <- exist_df5[row_split_list == 'High', ]
+  exist_df5_crc_high <- exist_df5[row_split_list == 'High', col_split_list == "CRC"]
+  exist_df5_crc_high2 <- exist_df5_crc_high[, order(colSums(exist_df5_crc_high))]
+  exist_df5_high2 <- exist_df5_high[, c(colnames(exist_df5_high)[ col_split_list != "CRC"], colnames(exist_df5_crc_high2))]
+  label_list_h <- which(rownames(exist_df5_high2) %in% rownames(euk_core))
+  row_label_h <- rowAnnotation(label = anno_mark(at = label_list_h, 
+                                               labels = rownames(exist_df5_high2)[label_list_h], 
+                                               labels_gp = gpar(fontface = "bold.italic",
+                                                                fontsize = 7)))
+    
+  exist_df5_low <- exist_df5[row_split_list == 'Low', ]
+  exist_df5_ctrl_low <- exist_df5[row_split_list == 'Low', col_split_list == "CTRL"]
+  exist_df5_ctrl_low2 <- exist_df5_ctrl_low[, order(colSums(exist_df5_ctrl_low), decreasing = T)]
+  set.seed(123)  
+  exist_df5_low2 <- exist_df5_low[, c( colnames(exist_df5_ctrl_low2), sample(colnames(exist_df5_low)[ col_split_list == "CRC"], sum(col_split_list == "CRC")))]
+
+  # exist_df5_low2 <- exist_df5_low[, c(colnames(exist_df5_ctrl_low2), sample(colnames(exist_df5_low)[ col_split_list == "CRC"], sum(col_split_list == "CRC")))]
+  label_list_l <- which(rownames(exist_df5_low2) %in% rownames(euk_core))
+  row_label_l <- rowAnnotation(label = anno_mark(at = label_list_l, 
+                                               labels = rownames(exist_df5_low2)[label_list_l], 
+                                               labels_gp = gpar(fontface = "bold.italic",
+                                                                fontsize = 7)))
+  col_order <- c(colnames(exist_df5_ctrl_low2), colnames(exist_df5_crc_high2))	
+  exist_df5_low2 <- exist_df5_low2[, col_order]				   
+  exist_df5_high2 <- exist_df5_high2[, col_order]		
+
+  col_fun5 = colorRamp2(c(-4, -3, -2, -1, 0, 1, 2, 3, 4),
+                        c("#000098", "#000098", "#01004c", 
+                          "#01004c", "#000000", "#4c0809", 
+                          "#970f0f", "#ff8a44", "#ffff66"))
+  tmp_hm5_group <- meta_df[colnames(exist_df5_high2), "Stage"]
+  tmp_hm5_h <- Heatmap(exist_df5_high2, 
+                       show_column_names = F, 
+                       col = col_fun5,
+                       border = TRUE,
+                       column_gap  =  unit(3, "mm"),
+                       row_gap = unit(3, "mm"),
+                       column_split = factor(x = ifelse(tmp_hm5_group == "CTRL",
+                                                        paste0("CTRL (", sum(tmp_hm5_group== "CTRL"), ")"),
+                                                        paste0("CRC (", sum(tmp_hm5_group== "CRC"), ")")),
+                                             levels = c(paste0("CTRL (", sum(tmp_hm5_group== "CTRL"), ")"),
+                                                        paste0("CRC (", sum(tmp_hm5_group== "CRC"), ")"))),
+                       # row_split = row_split_list,
+                       # cluster_rows = F,
+                       cluster_rows = T,
+                       show_row_dend = F,
+                       cluster_columns = F, 
+                       show_column_dend = F, 
+                       cluster_row_slices = FALSE,
+                       cluster_column_slices = FALSE,
+                       # right_annotation = row_label_h,
+                       # show_row_names = F,
+                       show_row_names = T, show_heatmap_legend = F,
+                       row_names_gp = gpar(fontface = "italic", fontsize = 10),
+                       row_title_gp = gpar(fontsize = 12, fontface = "bold"),
+                       row_title = paste0("High Abundance\nin CRC (",  nrow(exist_df5_high2),")" ),
+                       column_title_gp = gpar(fontsize = 15, fontface = "bold"), 
+                       # name = paste(sel_d, "\n", sel_m), 
+                       width = ncol(exist_df5_high2)*unit(0.2, "mm"), 
+                       height = nrow(exist_df5_high2)*unit(3, "mm"))
+  # draw(tmp_hm5_h, column_title = sub_cohort,
+       # column_title_gp = gpar(fontsize = 20, fontface = "bold"))
+
+  tmp_hm5_l <- Heatmap(exist_df5_low2, 
+                       show_column_names = F, 
+                       col = col_fun5,
+                       border = TRUE,
+                       column_gap  =  unit(3, "mm"),
+                       row_gap = unit(3, "mm"),
+                       column_split = factor(x = ifelse(tmp_hm5_group == "CTRL",
+                                                        paste0("CTRL (", sum(tmp_hm5_group== "CTRL"), ")"),
+                                                        paste0("CRC (", sum(tmp_hm5_group== "CRC"), ")")),
+                                             levels = c(paste0("CTRL (", sum(tmp_hm5_group== "CTRL"), ")"),
+                                                        paste0("CRC (", sum(tmp_hm5_group== "CRC"), ")"))),
+                       # row_split = row_split_list,
+                       # cluster_rows = F,
+                       cluster_rows = T,
+                       show_row_dend = F,
+                       cluster_columns = F, 
+                       show_column_dend = F, 
+                       cluster_row_slices = FALSE,
+                       cluster_column_slices = FALSE,
+                       # right_annotation = row_label_l,
+                       # show_row_names = F,
+                       show_row_names = T, 
+                       show_heatmap_legend = T,
+                       row_names_gp = gpar(fontface = "italic", fontsize = 10),
+                       row_title = paste0("Low Abundance\nin CRC (",  nrow(exist_df5_low2),")" ),
+                       row_title_gp = gpar(fontsize = 12, fontface = "bold"),
+                       column_title_gp = gpar(fontsize = 15, fontface = "bold"), 
+                       # name = paste(sel_d, "\n", sel_m), 
+                       width = ncol(exist_df5_low2)*unit(0.2, "mm"), 
+                       height = nrow(exist_df5_low2)*unit(3, "mm"))
+  # draw(tmp_hm5_l, column_title = sub_cohort,
+       # column_title_gp = gpar(fontsize = 20, fontface = "bold"))
+  test_pdf <- FileCreate(DirPath = paste0("../13.Heatmap/test5"), Prefix = paste0("Heatmap_", sub_cohort), Suffix = "pdf")
+  pdf(file = test_pdf, width = ncol(exist_df2)*0.2/in2mm + 5, height = nrow(exist_df2)*3/in2mm + 5)
+  draw(tmp_hm5_h %v% tmp_hm5_l, ht_gap = unit(0.5, "cm"))
+  dev.off()
+  
+  
+  draw(tmp_hm5_h %v% tmp_hm5_l, ht_gap = unit(0.5, "cm"))
+  
+  
+  
+  exist_df6 <- exist_df2
+  exist_df6_high <- exist_df6[row_split_list == 'High', ]
+  # exist_df6_crc_high <- exist_df6[row_split_list == 'High', col_split_list == "CRC"]
+  # label_list_h <- which(rownames(exist_df6_high) %in% rownames(euk_core))
+  # row_label_h <- rowAnnotation(label = anno_mark(at = label_list_h, 
+  #                                              labels = rownames(exist_df6_high)[label_list_h], 
+  #                                              labels_gp = gpar(fontface = "bold.italic",
+  #                                                               fontsize = 7, col = "#C00000")))
+ 
+  exist_df6_low <- exist_df6[row_split_list == 'Low', ]
+  # exist_df6_crc_low <- exist_df6[row_split_list == 'Low', col_split_list == "CRC"]
+  # exist_df6_ctrl_low <- exist_df6[row_split_list == 'Low', col_split_list == "CTRL"]
+  # label_list_l <- which(rownames(exist_df6_low) %in% rownames(euk_core))
+  # row_label_l <- rowAnnotation(label = anno_mark(at = label_list_l, 
+  #                                              labels = rownames(exist_df6_low)[label_list_l], 
+  #                                              labels_gp = gpar(fontface = "bold.italic",
+  #                                                               fontsize = 7, col = "#002060")))
+  set.seed(123)
+  col_order6 <- sample(colnames(exist_df6), ncol(exist_df6))
+  # tmp6_dist_crc <- hclust(dist(t(exist_df6_crc_low), method = "euclidean"), method = "complete")
+  # tmp6_dist_ctrl <- hclust(dist(t(exist_df6_ctrl_low), method = "euclidean"), method = "complete")
+  # col_order6 <- c(tmp6_dist_crc$labels[tmp6_dist_crc$order], tmp6_dist_ctrl$labels[tmp6_dist_ctrl$order])
+  exist_df6_low2 <- exist_df6_low[, col_order6]				   
+  exist_df6_high2 <- exist_df6_high[, col_order6]	
+  tmp_hm6_group <- meta_df[colnames(exist_df6_high2), "Stage"]
+  
+  
+
+  tmp_hm6_h <- Heatmap(exist_df6_high2, 
+                       show_column_names = F, 
+                       col = col_fun5,
+                       border = TRUE,
+                       column_gap  =  unit(3, "mm"),
+                       row_gap = unit(3, "mm"),
+                       column_split = factor(x = ifelse(tmp_hm6_group == "CTRL",
+                                                        paste0("CTRL (", sum(tmp_hm6_group== "CTRL"), ")"),
+                                                        paste0("CRC (", sum(tmp_hm6_group== "CRC"), ")")),
+                                             levels = c(paste0("CTRL (", sum(tmp_hm6_group== "CTRL"), ")"),
+                                                        paste0("CRC (", sum(tmp_hm6_group== "CRC"), ")"))),
+                       # row_split = row_split_list,
+                       cluster_rows = F,
+                       # cluster_rows = T,
+                       show_row_dend = F,
+                       cluster_columns = F, 
+                       show_column_dend = F, 
+                       cluster_row_slices = FALSE,
+                       cluster_column_slices = FALSE,
+                       # right_annotation = row_label_h,
+                       # show_row_names = F,
+                       show_row_names = T,
+                       show_heatmap_legend = F,
+                       row_names_gp = gpar(fontface = "italic", fontsize = 10, col = "#C00000"),
+                       row_title_gp = gpar(fontsize = 12, fontface = "bold"),
+                       row_title = paste0("High Abundance\nin CRC (",  nrow(exist_df6_high2),")" ),
+                       column_title_gp = gpar(fontsize = 15, fontface = "bold"), 
+                       
+                       # name = paste(sel_d, "\n", sel_m), 
+                       width = ncol(exist_df6_high2)*unit(0.2, "mm"), 
+                       height = nrow(exist_df6_high2)*unit(3, "mm"))
+  
+  tmp_hm6_l <- Heatmap(exist_df6_low2, 
+                       show_column_names = F, 
+                       col = col_fun5,
+                       border = TRUE,
+                       column_gap  =  unit(3, "mm"),
+                       row_gap = unit(3, "mm"),
+                       column_split = factor(x = ifelse(tmp_hm6_group == "CTRL",
+                                                        paste0("CTRL (", sum(tmp_hm6_group== "CTRL"), ")"),
+                                                        paste0("CRC (", sum(tmp_hm6_group== "CRC"), ")")),
+                                             levels = c(paste0("CTRL (", sum(tmp_hm6_group== "CTRL"), ")"),
+                                                        paste0("CRC (", sum(tmp_hm6_group== "CRC"), ")"))),
+                       # row_split = row_split_list,
+                       cluster_rows = F,
+                       # cluster_rows = T,
+                       show_row_dend = F,
+                       cluster_columns = F, 
+                       show_column_dend = F, 
+                       cluster_row_slices = FALSE,
+                       cluster_column_slices = FALSE,
+                       # right_annotation = row_label_l,
+                       # show_row_names = F,
+                       show_row_names = T, 
+                       show_heatmap_legend = T,
+                       row_names_gp = gpar(fontface = "italic", fontsize = 10, col = "#002060"),
+                       row_title = paste0("Low Abundance\nin CRC (",  nrow(exist_df6_low2),")" ),
+                       row_title_gp = gpar(fontsize = 12, fontface = "bold"),
+                       column_title_gp = gpar(fontsize = 15, fontface = "bold"), 
+                       # name = paste(sel_d, "\n", sel_m), 
+                       width = ncol(exist_df6_low2)*unit(0.2, "mm"), 
+                       height = nrow(exist_df6_low2)*unit(3, "mm"))
+  # draw(tmp_hm5_l, column_title = sub_cohort,
+       # column_title_gp = gpar(fontsize = 20, fontface = "bold"))
+  test_pdf <- FileCreate(DirPath = paste0("../13.Heatmap/test6"), Prefix = paste0("Heatmap_", sub_cohort), Suffix = "pdf")
+  pdf(file = test_pdf, width = ncol(exist_df2)*0.2/in2mm + 5, height = nrow(exist_df2)*3/in2mm + 5)
+  draw(tmp_hm6_h %v% tmp_hm6_l, ht_gap = unit(0.5, "cm"))
+  dev.off()
+  
+  test_pdf7 <- FileCreate(DirPath = paste0("../13.Heatmap/test7"), Prefix = paste0("Heatmap_", sub_cohort), Suffix = "pdf")
+  pdf(file = test_pdf7, width = ncol(exist_df2)*0.2/in2mm + 5, height = nrow(exist_df2)*3/in2mm + 5)
+  # for (i in c(1:200)) {
+  for (i in c(2,3,5,17,20)) {
+    exist_df7 <- exist_df2
+    set.seed(i)
+    exist_df7 <- exist_df7[, sample(colnames(exist_df7), ncol(exist_df7))]
+    col_split_list7 <- meta_df[colnames(exist_df7), "Stage"]
+    col_split_list7 <- factor(x = ifelse(col_split_list7 == "CTRL",
+                                         paste0("CTRL (", sum(col_split_list7== "CTRL"), ")"),
+                                         paste0("CRC (", sum(col_split_list7== "CRC"), ")")),
+                              levels = c(paste0("CTRL (", sum(col_split_list7== "CTRL"), ")"),
+                                         paste0("CRC (", sum(col_split_list7== "CRC"), ")")))
+    row_split_list7 <- sub_obj[[sub_cohort]]$p_df[rownames(exist_df7), 'FC']
+    row_split_list7 <- factor(x = ifelse(row_split_list7 == "High",
+                                         paste0("High Abundance\nin CRC (", sum(row_split_list7 == "High"),")"),
+                                         paste0("Low Abundance\nin CRC (", sum(row_split_list7 == "Low"),")")),
+                              levels = c(paste0("High Abundance\nin CRC (", sum(row_split_list7 == "High"),")"),
+                                         paste0("Low Abundance\nin CRC (", sum(row_split_list7 == "Low"),")")))
+    # row_label7 <- rowAnnotation(label = anno_mark(at = c(1:nrow(exist_df7)), 
+                                                  # labels = rownames(exist_df7),
+                                                  # labels_gp = gpar(fontface = "bold.italic",
+                                                                   # fontsize = 7, col = "#002060")))
+    tmp_hm7 <- Heatmap(exist_df7, 
+                       show_column_names = F, 
+                       col = col_fun5,
+                       border = TRUE,
+                       column_gap  =  unit(3, "mm"),
+                       row_gap = unit(5, "mm"),
+                       column_split = col_split_list7,
+                       row_split = row_split_list7,
+                       cluster_rows = F,
+                       show_row_dend = F,
+                       cluster_columns = F, 
+                       show_column_dend = F, 
+                       cluster_row_slices = FALSE,
+                       cluster_column_slices = FALSE,
+                       show_row_names = T,
+                       show_heatmap_legend = T,
+                       row_names_gp = gpar(fontface = "italic", fontsize = 10),
+                       row_title_gp = gpar(fontsize = 12, fontface = "bold"),
+                       column_title_gp = gpar(fontsize = 15, fontface = "bold"),
+                       width = ncol(exist_df7)*unit(0.2, "mm"), 
+                       height = nrow(exist_df7)*unit(3, "mm"),
+                       name = "scale")
+    draw(tmp_hm7, column_title = i)
+  }
+ dev.off()
+  
+  
+  
+  diff_df2 <- as.data.frame(cbind(diff_df, Group = meta_df[rownames(diff_df),"Stage"]))
+  diff_df2$Group <- factor(x = diff_df2$Group, levels = c("CTRL", "CRC"))
+  uniq_group <- as.character(unique(diff_df2$Group))
+  Comparison_function <- function(x){
+    n <- length(x)
+    k <- 1
+    tmp_list <- list()
+    for (s1 in 1:(n-1)) {
+      for (s2 in (s1+1):n) {
+        tmp_list[[k]] <- c(x[s1], x[s2])
+        k <- k + 1
+      }
+    }
+    return(tmp_list)
+  }
+  comp_list <- Comparison_function(x = uniq_group)
+  box_pdf <- FileCreate(DirPath = paste0("../13.Heatmap/test5"), Prefix = paste0("BoxPlot-", sub_cohort), Suffix = "pdf")
+  pdf(file = box_pdf, height = 5, width = length(uniq_group) + 1)
+  for (sub_cand in colnames(diff_df)) {
+    g_boxplot <- ggplot(data = diff_df2, mapping = aes(x = Group, y = .data[[sub_cand]], col = Group))+
+      geom_boxplot() + 
+      scale_y_continuous(trans = log2_trans(),
+                         breaks = trans_breaks("log2", function(x) 2^x),
+                         labels = trans_format("log2", math_format(2^.x)))+
+      theme_bw() +
+      theme(text = element_text(size = 12, face = "bold"), 
+            title = element_text(size = 15, hjust = 0.5, vjust = 0.5),
+            plot.title = element_text(size = 12,hjust = 0.5, vjust = 0.5),
+            legend.position = 'none')+
+      ggtitle(label = sub_cand)+
+      ylab(bquote(log[2]~ (Abundance))) +
+      stat_compare_means(comparisons = comp_list)+
+      scale_color_brewer(palette = "Set1")
+    plot(g_boxplot)
+  }
+  dev.off()
+  
+  vio_pdf <- FileCreate(DirPath = paste0("../13.Heatmap/test5"), Prefix = paste0("ViolinPlot-", sub_cohort), Suffix = "pdf")
+  pdf(file = vio_pdf, height = 4, width = length(uniq_group) + 1)
+  for (sub_cand in colnames(diff_df)) {
+      g_vioplot <- ggplot(data = diff_df2,
+                          mapping = aes(x = Group, y = .data[[sub_cand]]))+
+        geom_violin(mapping = aes(fill = Group), trim = F) +
+        geom_boxplot(width = 0.3, outlier.alpha = 0) +
+        scale_y_continuous(trans = log2_trans(),
+                           breaks = trans_breaks("log2", function(x) 2^x),
+                           labels = trans_format("log2", math_format(2^.x)))+
+        geom_jitter(width = 0.3, size = 1, alpha = 0.2, shape = 4) +
+        ylab(bquote(log[2]~ (Abundance))) +
+        xlab("") +
+        theme_bw() +
+        theme(text = element_text(size = 12, face = "bold"),
+              plot.title = element_text(hjust = 0.5, vjust = 0.5),
+              legend.position = 'none')+
+        ggtitle(label = sub_cand)+
+        stat_compare_means(comparisons = comp_list)+
+        # scale_fill_brewer(palette = "Set1", direction=-1) + 
+        scale_fill_manual(values = c(CTRL = "#f5c529", CRC = "#e82546")) + 
+        stat_summary(fun=mean, geom="point", col="darkgreen", shape=13, size=3)
+      plot(g_vioplot)
+  }
+  dev.off()
+
+  
+  # tmp_df2 <- as.data.frame(t(sub_obj[[sub_cohort]]$diff_df[, colnames(core_otu)]))
+  # 
+  # tmp_df2_high <- tmp_df2[rownames(tmp_df2) %in% rownames(p_df)[p_df$FC == 'High'] , ]
+  # 
+  # quan_high_df <- matrix(NA, nrow = 0, ncol = 5)
+  # probs_high <- 0.85
+  # for (cand in rownames(tmp_df2_high)) {
+  #   cand_cutoff <- quantile(as.numeric(tmp_df2_high[cand,]), probs = probs_high)
+  #   all_counts <- sum(as.numeric(tmp_df2_high[cand,]) > cand_cutoff)
+  #   crc_counts <- sum(as.numeric(tmp_df2_high[cand,meta_df[colnames(tmp_df2_high), "Stage"] == "CRC"]) > cand_cutoff)
+  #   ctrl_counts <- sum(as.numeric(tmp_df2_high[cand,meta_df[colnames(tmp_df2_high), "Stage"] == "CTRL"]) > cand_cutoff)
+  #   quan_high_df <- rbind(quan_high_df, c(names = cand, cutoff = cand_cutoff, total_counts = all_counts, crc_ratio = crc_counts/all_counts, ctrl_ratio = ctrl_counts/all_counts))
+  #   
+  # }
+  # quan_high_df <- as.data.frame(quan_high_df)
+  # message(mean(as.numeric(quan_high_df$crc_ratio)))
+  # 
+  # tmp_df2_low <- tmp_df2[rownames(tmp_df2) %in% rownames(p_df)[p_df$FC == 'Low'] , ]
+  # 
+  # quan_low_df <- matrix(NA, nrow = 0, ncol = 5)
+  # probs_low <- 0.85
+  # for (cand in rownames(tmp_df2_low)) {
+  #   cand_cutoff <- quantile(as.numeric(tmp_df2_low[cand,]), probs = probs_low)
+  #   all_counts <- sum(as.numeric(tmp_df2_low[cand,]) > cand_cutoff)
+  #   crc_counts <- sum(as.numeric(tmp_df2_low[cand,meta_df[colnames(tmp_df2_low), "Stage"] == "CRC"]) > cand_cutoff)
+  #   ctrl_counts <- sum(as.numeric(tmp_df2_low[cand,meta_df[colnames(tmp_df2_low), "Stage"] == "CTRL"]) > cand_cutoff)
+  #   quan_low_df <- rbind(quan_low_df, c(names = cand, cutoff = cand_cutoff, total_counts = all_counts, crc_ratio = crc_counts/all_counts, ctrl_ratio = ctrl_counts/all_counts))
+  #   
+  # }
+  # quan_low_df <- as.data.frame(quan_low_df)
+  # message(mean(as.numeric(quan_low_df$ctrl_ratio)))
+  # 
+  
+  # pdf(file = test_pdf, width = ncol(exist_df2)*0.5/in2mm + 5, height = nrow(exist_df2)/in2mm + 2)
+  # draw(tmp_hm2, column_title = sub_cohort,
+  #      column_title_gp = gpar(fontsize = 20, fontface = "bold"))
+  # dev.off()
+
+}
+
+```
+
+
+## discard
+
+```{r}
+
+exist_df <- sub_obj[[sub_cohort]]$exist_df
+sub_meta_df <- sub_obj[[sub_cohort]]$meta_df
+col_split_list <- factor(sub_meta_df$Stage, c("CTRL", "CRC"))
+
+
+# # Heatmap(scale_otu,  show_column_names = F, col = col_fun,
+# tmp_hm <- Heatmap(exist_df,  show_column_names = F, col = col_fun,
+#                   column_split = col_split_list, 
+#                   cluster_row_slices = FALSE, cluster_column_slices = FALSE,
+#                   row_names_gp = gpar(fontface = "italic"),
+#                   column_names_gp = gpar(fontface = "italic"),
+#                   row_title_gp = gpar(fontsize = 30, fontface = "bold"),
+#                   column_title_gp = gpar(fontsize = 30, fontface = "bold")) 
+
+# exist_df2 <- exist_df
+# exist_df2[exist_df2< 0] <- 0
+# 
+# tmp_hm2 <- Heatmap(exist_df2,  show_column_names = F, col = col_fun,
+#                    column_split = col_split_list, 
+#                    border_gp = gpar(col = "black", lty = 1),
+#                    cluster_row_slices = FALSE, cluster_column_slices = FALSE,
+#                    row_names_gp = gpar(fontface = "italic"),
+#                    column_names_gp = gpar(fontface = "italic"),
+#                    row_title_gp = gpar(fontsize = 30, fontface = "bold"),
+#                    column_title_gp = gpar(fontsize = 30, fontface = "bold")) 
+# 
+# 
+# rcl.list <- row_order(tmp_hm2) 
+# ccl.list <- column_order(tmp_hm2) 
+# exist_df3 <- exist_df2[rcl.list, unlist(ccl.list)]
+# col_split_list3 <- factor(sub_meta_df[colnames(exist_df3), ]$Stage, c("CTRL", "CRC"))
+# tmp_hm3 <- Heatmap(exist_df3,  show_column_names = F, col = col_fun,
+#                    rect_gp = gpar(lty = 1, lwd = 1),  # cell border 
+#                    border = TRUE,
+#                    column_split = col_split_list3, 
+#                    cluster_rows = F, cluster_columns = F,
+#                    cluster_row_slices = FALSE, cluster_column_slices = FALSE,
+#                    row_names_gp = gpar(fontface = "italic"),
+#                    column_names_gp = gpar(fontface = "italic"),
+#                    row_title_gp = gpar(fontsize = 30, fontface = "bold"),
+#                    column_title_gp = gpar(fontsize = 30, fontface = "bold")) 
+# 
+# exist_df3_crc <- exist_df3[,col_split_list3 == "CRC"]
+# 
+# tmp_hm3_CRC <- Heatmap(exist_df3[,col_split_list3 == "CRC"],  
+#                        show_column_names = F, col = col_fun,
+#                        rect_gp = gpar(lty = 1, lwd = 1),  # cell border 
+#                        border = TRUE,
+#                        # column_split = col_split_list3, 
+#                        cluster_rows = T, cluster_columns = T,
+#                        cluster_row_slices = FALSE, cluster_column_slices = FALSE,
+#                        row_names_gp = gpar(fontface = "italic"),
+#                        column_names_gp = gpar(fontface = "italic"),
+#                        row_title_gp = gpar(fontsize = 30, fontface = "bold"),
+#                        column_title_gp = gpar(fontsize = 30, fontface = "bold"))
+# 
+# tmp_hm3 <- Heatmap(exist_df3, 
+#                    show_column_names = F, col = col_fun,
+#                    rect_gp = gpar(lty = 1, lwd = 1),  # cell border 
+#                    border = TRUE,
+#                    clustering_distance_rows = "euclidean", 
+#                    clustering_method_rows = "centroid",
+#                    clustering_distance_columns = "euclidean", 
+#                    clustering_method_columns = "centroid",
+#                    column_split = col_split_list3,
+#                    cluster_rows = T, cluster_columns = T,
+#                    cluster_row_slices = FALSE, cluster_column_slices = FALSE,
+#                    row_names_gp = gpar(fontface = "italic"),
+#                    column_names_gp = gpar(fontface = "italic"),
+#                    row_title_gp = gpar(fontsize = 30, fontface = "bold"),
+#                    column_title_gp = gpar(fontsize = 30, fontface = "bold")) 
+
+# method_list <- c("ward.D","ward.D2", "single", "complete", "average" , "mcquitty" , "median" ,"centroid")
+# distance_list <- c("euclidean", "maximum", "manhattan", "canberra", "minkowski", "pearson", "spearman", "kendall")
+
+col_fun2 = colorRamp2(c(-0.4, -0.2, 0, 0.2, 0.4), c("white", "white", "white", "#F74747", "#D61616"))
+crc_list <- rownames(sub_meta_df)[sub_meta_df$Stage == 'CRC']
+ctrl_list <- rownames(sub_meta_df)[sub_meta_df$Stage == 'CTRL']
+
+# test_pdf <- FileCreate(DirPath = paste0("../13.Heatmap/test_", sub_cohort), Prefix = paste0("Heatmap_", sub_cohort), Suffix = "pdf")
+# pdf(file = test_pdf, width = 12, height = 30)
+sel_d <- 'pearson' 
+sel_m <- 'ward.D2'
+exist_df2 <- exist_df[names(sort(rowSums(exist_df[, crc_list]>0),decreasing = T)), ]
+tmp_hm2 <- Heatmap(exist_df2, show_column_names = F, col = col_fun,
+                  rect_gp = gpar(lty = 1, lwd = 1),  # cell border 
+                  border = TRUE,
+                  clustering_distance_rows = sel_d, 
+                  clustering_method_rows = sel_m,
+                  clustering_distance_columns = sel_d, 
+                  clustering_method_columns = sel_m,
+                  column_split = col_split_list,
+                  cluster_rows = F, 
+                  cluster_columns = T, 
+                  show_column_dend = F, 
+                  cluster_row_slices = FALSE, 
+                  cluster_column_slices = FALSE,
+                  row_names_gp = gpar(fontface = "italic"),
+                  column_names_gp = gpar(fontface = "italic"),
+                  row_title_gp = gpar(fontsize = 20, fontface = "bold"),
+                  column_title_gp = gpar(fontsize = 20, fontface = "bold"), 
+                  name = paste(sel_d, "\n", sel_m))
+
+# draw(tmp_hm2)
+  
+
+# dev.off()
+
+
+
+
+
+
+scale_otu <- scale(core_otu)
+
+row_split_list <- meta_df$Stage
+
+ggplot(as.data.frame(scale_otu), aes(x=`Debaryomyces hansenii`)) +
+    geom_line(stat = "density") +  xlim(-1,1)
+
+ggplot(as.data.frame(scale_otu), aes(x=`Aspergillus rambellii`)) +
+    geom_line(stat = "density") +  xlim(-1,10)
+
+col_fun = colorRamp2(c(-2, -1, 1, 2), c("#000247", "#0F418D", "#F74747", "#D61616"))
+
+
+sub_otu <- core_otu[rownames(meta_df)[meta_df$Cohort == '2014_ZellerG'], ]
+scale_sub_otu <- scale(sub_otu)
+sub_row_split_list <- meta_df[meta_df$Cohort == '2014_ZellerG', "Stage"]
+
+Heatmap(scale_sub_otu, cluster_columns = T, show_row_names = F, col = col_fun,
+        row_split = sub_row_split_list, cluster_row_slices = FALSE,
+        row_names_gp = gpar(fontface = "italic"),
+        column_names_gp = gpar(fontface = "italic"),
+        row_title_gp = gpar(fontsize = 30, fontface = "bold"),
+        column_title_gp = gpar(fontsize = 30, fontface = "bold")) 
+
+
+Heatmap(scale_otu, cluster_columns = T, show_row_names = F, col = col_fun,
+        row_split = row_split_list, cluster_row_slices = FALSE,
+        row_names_gp = gpar(fontface = "italic"),
+        column_names_gp = gpar(fontface = "italic"),
+        row_title_gp = gpar(fontsize = 30, fontface = "bold"),
+        column_title_gp = gpar(fontsize = 30, fontface = "bold")) 
+
+
+
+
+Heatmap(icorr_crc, cluster_rows = F, cluster_columns = F, 
+        col = col_fun, width = unit(ncol(icorr_crc)*4, "mm"), 
+        height = unit(nrow(icorr_crc)*4, "mm"), border = TRUE) + 
+  Heatmap(icorr_ade, cluster_rows = F, cluster_columns = F, 
+        col = col_fun, width = unit(ncol(icorr_crc)*5, "mm"), 
+        height = unit(nrow(icorr_crc)*4, "mm"), border = TRUE) + 
+  Heatmap(icorr_ctrl, cluster_rows = F, cluster_columns = F, 
+        col = col_fun, width = unit(ncol(icorr_crc)*4, "mm"), 
+        height = unit(nrow(icorr_crc)*4, "mm"), border = TRUE)
+
+enrich_df <- icorr_crc > icorr_ade & icorr_ade > icorr_ctrl
+deplete_df <- icorr_crc < icorr_ade & icorr_ade < icorr_ctrl
+
+icorr_crc_enrich <- icorr_crc; icorr_crc_enrich[!enrich_df] <- 0
+icorr_ade_enrich <- icorr_ade; icorr_ade_enrich[!enrich_df] <- 0
+icorr_ctrl_enrich <- icorr_ctrl; icorr_ctrl_enrich[!enrich_df] <- 0
+
+
+Heatmap(icorr_crc_enrich, cluster_rows = F, cluster_columns = F, 
+        col = col_fun, width = unit(ncol(icorr_crc)*4, "mm"), 
+        height = unit(nrow(icorr_crc)*4, "mm"), border = TRUE, column_title = "CRC") + 
+  Heatmap(icorr_ade_enrich, cluster_rows = F, cluster_columns = F, 
+        col = col_fun, width = unit(ncol(icorr_crc)*4, "mm"), 
+        height = unit(nrow(icorr_crc)*4, "mm"), border = TRUE, column_title = "Adenoma") + 
+  Heatmap(icorr_ctrl_enrich, cluster_rows = F, cluster_columns = F, 
+        col = col_fun, width = unit(ncol(icorr_crc)*4, "mm"), 
+        height = unit(nrow(icorr_crc)*4, "mm"), border = TRUE, column_title = "Control")
+
+
+icorr_crc_deplete <- icorr_crc; icorr_crc_deplete[!deplete_df] <- 0
+icorr_ade_deplete <- icorr_ade; icorr_ade_deplete[!deplete_df] <- 0
+icorr_ctrl_deplete <- icorr_ctrl; icorr_ctrl_deplete[!deplete_df] <- 0
+
+
+Heatmap(icorr_crc_deplete, cluster_rows = F, cluster_columns = F, 
+        col = col_fun, width = unit(ncol(icorr_crc)*4, "mm"), 
+        height = unit(nrow(icorr_crc)*4, "mm"), border = TRUE, column_title = "CRC") + 
+  Heatmap(icorr_ade_deplete, cluster_rows = F, cluster_columns = F, 
+        col = col_fun, width = unit(ncol(icorr_crc)*4, "mm"), 
+        height = unit(nrow(icorr_crc)*4, "mm"), border = TRUE, column_title = "Adenoma") + 
+  Heatmap(icorr_ctrl_deplete, cluster_rows = F, cluster_columns = F, 
+        col = col_fun, width = unit(ncol(icorr_crc)*4, "mm"), 
+        height = unit(nrow(icorr_crc)*4, "mm"), border = TRUE, column_title = "Control")
+
+icorr_crc_merge <- rbind(icorr_crc_enrich, icorr_crc_deplete)
+icorr_ade_merge <- rbind(icorr_ade_enrich, icorr_ade_deplete)
+icorr_ctrl_merge <- rbind(icorr_ctrl_enrich, icorr_ctrl_deplete)
+
+icorr_all_merge <- cbind(cbind(icorr_crc_merge, icorr_ade_merge), icorr_ctrl_merge)
+
+# col_fun = colorRamp2(c(-0.4, -0.15, 0, 0.15, 0.4), c("#000247", "#0F418D", "white", "#F74747", "#D61616"))
+col_fun = colorRamp2(c(-0.4, -0.2, 0, 0.2, 0.4), c("#000247", "#0F418D", "white", "#F74747", "#D61616"))
+in2mm <-25.4
+
+interect_cor_pdf <- FileCreate(DirPath = "../08.correlation/DGCA/heatmap",Prefix = "Heatmap-AllStages-Enhance_Reduce", Suffix = "pdf")
+pdf(file = interect_cor_pdf, height = ((nrow(icorr_all_merge)*8 + 20)/in2mm),
+    width = ((nrow(icorr_all_merge)*12 + 50)/in2mm))
+Heatmap(icorr_all_merge, cluster_rows = F, cluster_columns = F, 
+        col = col_fun, width = unit(ncol(icorr_all_merge)*4, "mm"), 
+        height = unit(nrow(icorr_all_merge)*4, "mm"), border = TRUE, 
+        column_split = factor(rep(c("CRC", "Adenoma", "Conrtol"), each = ncol(icorr_crc)), 
+                              levels = c("CRC", "Adenoma", "Conrtol")),
+        row_split = factor(rep(c("Increasing Trend", "Decreasing Trend"), each = nrow(icorr_crc)), 
+                           levels = c("Increasing Trend", "Decreasing Trend")),
+        row_gap = unit(10, "mm"), column_gap = unit(4, "mm"),
+        row_names_gp = gpar(fontface = "italic"),
+        column_names_gp = gpar(fontface = "italic"),
+        row_title_gp = gpar(fontsize = 30, fontface = "bold"),
+        column_title_gp = gpar(fontsize = 30, fontface = "bold")) 
+dev.off()
+
+```
+
+
+
+
+## TEST
+```{r}
+test_pdf <- FileCreate(DirPath = paste0("../13.Heatmap/test3"), Prefix = paste0("Heatmap_", sub_cohort), Suffix = "pdf")
+pdf(file = test_pdf, width = ncol(exist_df2)*0.5/in2mm + 5, height = nrow(exist_df2)/in2mm*2 + 2)
+
+method_list <- c("ward.D","ward.D2", "single", "complete", "average" , "mcquitty" , "median" ,"centroid")
+distance_list <- c("euclidean", "maximum", "manhattan", "canberra", "minkowski", "pearson", "spearman", "kendall")
+for (sel_d in distance_list) {
+  for (sel_m in method_list) {
+      # tmp_hm2 <- Heatmap(exist_df3, show_column_names = F, col = col_fun2,
+      tmp_hm2 <- Heatmap(exist_df, show_column_names = F, col = col_fun,
+                    border = TRUE,
+                    column_gap  =  unit(3, "mm"),
+                    row_gap = unit(3, "mm"),
+                    clustering_distance_rows = sel_d, 
+                    clustering_method_rows = sel_m,
+                    clustering_distance_columns = sel_d, 
+                    clustering_method_columns = sel_m,
+                    column_split = col_split_list,
+                    row_split = row_split_list,
+                    cluster_rows = T, 
+                    cluster_columns = T, 
+                    show_column_dend = F, 
+                    cluster_row_slices = FALSE, 
+                    cluster_column_slices = FALSE,
+                    right_annotation = row_label,
+                    show_row_names = F,
+                    # row_names_gp = gpar(col = ifelse(rownames(exist_df2) %in% rownames(euk_core),
+                    #                                  # "goldenrod", "snow4"),
+                    #                                  "purple", "snow4"),
+                    #                     fontface = ifelse(rownames(exist_df2) %in% rownames(euk_core),
+                    #                                  "bold.italic", "italic")),
+                    row_title_gp = gpar(fontsize = 15, fontface = "bold"),
+                    column_title_gp = gpar(fontsize = 15, fontface = "bold"), 
+                    name = paste(sel_d, "\n", sel_m), 
+                    width = ncol(exist_df2)*unit(0.2, "mm"), 
+                    height = nrow(exist_df2)*unit(1.5, "mm"))
+  
+  draw(tmp_hm2, column_title = sub_cohort, column_title_gp = gpar(fontsize = 20, fontface = "bold"))
+  }
+}
+
+dev.off()
+ 
+```
