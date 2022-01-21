@@ -84,19 +84,25 @@ meta_df$Cohort <- ifelse(meta_df$Cohort == "2014_ZellerG", "2014_ZellerG",
 ```{r , message = F, warning = F}
 otu_df <- ImportTable('../07.FeatureSelection/02.RelMedianAbundance/2021-07-30-normalized-0.1%-RelMedianAbundance-matrix-v1.0.0.csv')
 # otu_df <- ImportTable('../05.Normalized/Rarefy_1329_fungi/2021-07-26-RelativeAbundance_matrix-v1.0.csv') %>% t() %>% as.data.frame()
-# euk_sel <- ImportTable(file = '../07.FeatureSelection/01.SSTF/2021-07-30-wilcoxon-all-v1.0.0.csv')
-# euk_sel <- euk_sel[order(euk_sel$adj_pvalue),]
-# euk_core <- euk_sel[euk_sel$adj_pvalue < 0.01, ]
+euk_sel <- ImportTable(file = '../07.FeatureSelection/01.SSTF/2021-07-30-wilcoxon-all-v1.0.0.csv')
+euk_sel <- euk_sel[order(euk_sel$adj_pvalue),]
+euk_core <- euk_sel[euk_sel$adj_pvalue < 0.01, ]
 
-# core_otu <- otu_df[, rownames(euk_core)]
+core_otu <- otu_df[, rownames(euk_core)]
 ```
 
 ## Beta Diversity
 
 ```{r, message = F, warning = F}
-# otu_dist <- vegdist(core_otu, method="bray", binary=F)
-otu_dist <- vegdist(otu_df, method="bray", binary=F)
+otu_dist <- vegdist(core_otu, method="bray", binary=F)
+# meta_df$TumorLocation <- ifelse(is.na(meta_df$TumorLocation) | meta_df$TumorLocation == "TODO", NA,
+#                       ifelse(meta_df$TumorLocation == "LC" | meta_df$TumorLocation == 'left' | meta_df$TumorLocation == 'Left colon' |meta_df$TumorLocation == 'rectum' | meta_df$TumorLocation == 'Sigma', 'left colon',
+#                              ifelse(meta_df$TumorLocation == "RC" | meta_df$TumorLocation == 'right' | meta_df$TumorLocation == "Right colon", "right colon", NA)))
+# otu_df2 <- otu_df[rownames(meta_df)[!is.na(meta_df$TumorLocation)], ]
+# otu_dist <- vegdist(otu_df2, method="bray", binary=F)
+# otu_dist <- vegdist(otu_df, method="bray", binary=F)
 otu_pcoa <- cmdscale(otu_dist, k=3, eig=T)
+
 
 otu_pcoa_points <- as.data.frame(otu_pcoa$points)
 sum_eig <- sum(otu_pcoa$eig)
@@ -120,23 +126,41 @@ otu_pcoa_melt$Value <- factor(x = otu_pcoa_melt$Value, levels = c("2014_ZellerG"
                                                                   "2019_ThomasAM", "2019_WirbelJ", "2019_YachidaS", 
                                                                   "2017_YuJ", "2021_YuJ",
                                                                   "CTRL", "adenoma", "CRC",
-                                                                  "Asian", "European", "North", "Occeanian", 
+                                                                  "Asian", "European", "North American", "Occeanian", 
                                                                   "F", "M"))
 my_color <- c(ochre_palettes$namatjira_qual,
               '#006f3c', '#f9a73e', '#bf212f',
               ochre_palettes$lorikeet[c(1:4)],
               ochre_palettes$williams_pilbara[c(1, 7)])
 names(my_color) <-  c("2014_ZellerG", "2015_FengQ", "2016_VogtmannE", 
-                      "2019_ThomasA", "2019_WirbelJ", "2019_YachidaS", 
+                      "2019_ThomasAM", "2019_WirbelJ", "2019_YachidaS", 
                       "2017_YuJ", "2021_YuJ",
                       "CTRL", "adenoma", "CRC",
-                      "Asian", "European", "North", "Occeanian", 
+                      "Asian", "European", "North American", "Occeanian", 
                       "F", "M")
 
 p1_min <- min(otu_pcoa_result$PCoA1)
 p1_max <- max(otu_pcoa_result$PCoA1)
 p2_min <- min(otu_pcoa_result$PCoA2)
 p2_max <- max(otu_pcoa_result$PCoA2)
+
+# otu_pcoa_result2 <- otu_pcoa_result
+# # otu_pcoa_result2$TumorLocation <- ifelse(is.na(otu_pcoa_result2$TumorLocation) | otu_pcoa_result2$TumorLocation == "TODO", 'unknown',
+# #                       ifelse(otu_pcoa_result2$TumorLocation == "LC" | otu_pcoa_result2$TumorLocation == 'left' | otu_pcoa_result2$TumorLocation == 'Left colon' |otu_pcoa_result2$TumorLocation == 'rectum' | otu_pcoa_result2$TumorLocation == 'Sigma', 'left colon',
+# #                              ifelse(otu_pcoa_result2$TumorLocation == "RC" | otu_pcoa_result2$TumorLocation == 'right' | otu_pcoa_result2$TumorLocation == "Right colon", "right colon", NA)))
+# TL_color <- c(ochre_palettes$lorikeet[1:5], "gray", 'white')
+# names(TL_color) <- c('left colon', 'multi-location', 'rectum', 'right colon', 'sigma', 'unknown', 'CTRL')
+# g2 <- ggplot(otu_pcoa_result2, aes(x=PCoA1, y=PCoA2)) +
+#   labs(x=paste("PCoA 1 (", eig_percent[1], "%)", sep=""),
+#        y=paste("PCoA 2 (", eig_percent[2], "%)", sep="")) +
+#   geom_point(size=1, shape = 1, aes(color=TumorLocation)) + 
+#   # stat_ellipse(level=0.8) +
+#   # scale_color_ochre(palette = "namatjira_qual")+
+#   # scale_color_manual(values = TL_color)+
+#   theme_bw()+
+#   xlim(p1_min-(p1_max-p1_min)/3, p1_max+(p1_max-p1_min)/10)+
+#   ylim(p2_min-(p2_max-p2_min)/10, p2_max+(p2_max-p2_min)/10)
+
 
 g <- ggplot(otu_pcoa_result, aes(x=PCoA1, y=PCoA2)) +
   labs(x=paste("PCoA 1 (", eig_percent[1], "%)", sep=""),
@@ -161,7 +185,7 @@ g_pcoa2 <- ggplot(otu_pcoa_melt, aes(x=Value, y=PCoA2, fill=Value)) +
         axis.title = element_blank()) +
   ylim(p2_min-(p2_max-p2_min)/10, p2_max+(p2_max-p2_min)/10)
 
-g_pcoa1 <- ggplot(otu_pcoa_melt, aes(x=Value, y=PCoA2, fill=Value)) +
+g_pcoa1 <- ggplot(otu_pcoa_melt, aes(x=Value, y=PCoA1, fill=Value)) +
   facet_grid(rows = vars(Group), scales = "free_y", space='free_y')+
   # facet_wrap(. ~ Group, ncol = 1, scales = "free_y", strip.position="right", space='free') +
   geom_boxplot(outlier.alpha = 0) +
@@ -200,7 +224,7 @@ dev.off()
 # adon_res_cohort <- adonis(otu_dist ~ Cohort, data = otu_pcoa_result, perm = 999)
 # adon_res_continent <- adonis(otu_dist ~ Continent, data = otu_pcoa_result, perm = 999)
 # adon_res_stage <- adonis(otu_dist ~ Stage, data = otu_pcoa_result, perm = 999)
-# adon_res_gender <- adonis(otu_dist ~ Gender, data = otu_pcoa_result, perm = 999)
+adon_res_gender <- adonis(otu_dist ~ Gender, data = otu_pcoa_result, perm = 999)
 # # adon_res_age <- adonis(otu_dist ~ Age, data = otu_pcoa_result[!is.na(otu_pcoa_result$Age),], perm = 999)
 # 
 # adon_res <- adonis2(otu_df ~ Cohort + Continent, data=otu_pcoa_result, permutations=999, by="margin")
