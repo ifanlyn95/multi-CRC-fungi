@@ -18,6 +18,7 @@ require(DT) # for databale
 require(reshape2) # for dcast
 require(ggplot2)
 require(ggthemes)
+require(ggrepel) # geom_text_repel
 ```
 
 ### Import table
@@ -206,7 +207,7 @@ modify_Comb <- modify_Comb_all[, colnames(main_df)]
 Utilize Relative Median Abundance instead of raw or relative abundance. Only focus on the fungi with mean abundance \> 0.1% in each group
 
 ```{r}
-calculate_or_not <- T
+calculate_or_not <- F
 if (calculate_or_not) {
   # Relative Median Abundance
   comb_cohort <- matrix(NA, ncol = ncol(modify_Comb)); comb_cohort <- comb_cohort[-1, ]

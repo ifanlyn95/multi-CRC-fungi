@@ -48,15 +48,15 @@ Show_table <- function(df, rownames = T, filter="top", options = list(pageLength
 ### FileCreate
 
 ```{r}
-FileCreate <- function(DirPath = "./",Prefix = "ExampleTest", Suffix = "pdf", version = "0.0.0"){
+FileCreate <- function(DirPath = "./",Prefix = "ExampleTest", Suffix = "pdf", version = "0.0"){
   date=as.character(Sys.Date())
   DirPath = gsub("/$","",DirPath)
   Suffix = gsub('^[.]',"",Suffix)
   if(! dir.exists(DirPath)){
     dir.create(DirPath,recursive =TRUE)
   }
-  if (version == "0.0.0") {
-    version=100
+  if (version == "0.0") {
+    version=10
     while(TRUE){
       version_=paste(unlist(strsplit(as.character(version),"")),collapse=".")
       DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version_,".",Suffix)
@@ -249,6 +249,33 @@ dev.off()
 for (cf in custom_feature) {
   plot(g_list[[cf]])
 }
+
+boxplot_pdf2 <- FileCreate(DirPath = '../10.SelFeatureAnalysi', 
+                          Prefix = 'Boxplot-median_norm',
+                          Suffix = 'pdf')
+pdf(file = boxplot_pdf2, width = 5, height = 5)
+g_list2 <- list()
+for (cf in custom_feature) {
+  g_bar2 <- ggplot(data = combine_df, mapping = aes(x = Stage, y = .data[[cf]])) +
+    geom_violin(aes(fill = Stage), scale = 'width', trim = F)+
+    geom_boxplot(outlier.colour = NA, width = 0.2)+
+    # geom_boxplot(aes(col = Stage), outlier.colour = NA)+
+    theme_calc()+
+    geom_jitter(alpha = 0.5, shape = 4) +
+    scale_fill_manual(values = c(CTRL = '#f5c529',
+    # scale_color_manual(values = c(CTRL = '#006f3c', 
+                                  # adenoma = '#f9a73e', 
+                                  CRC = '#bf212f'))+
+    scale_y_log10()+
+    # scale_y_log10(limits = c(min(combine_df[[cf]])/10, max(combine_df[[cf]])*500))+
+    stat_compare_means(comparisons = list(c('CTRL', 'CRC')
+                                        # , c('adenoma', 'CRC')
+                                          ))+
+     theme(axis.text.x=element_text(angle=90, hjust=1))
+  plot(g_bar2)
+  g_list2[[cf]] <- g_bar2
+}
+dev.off()
 ```
 
 

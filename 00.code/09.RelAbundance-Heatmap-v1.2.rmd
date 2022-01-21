@@ -22,6 +22,8 @@ require(qvalue)
 require(fdrtool) # fdrtool
 require(ggpubr) # stat_compare_means
 require(scales) # trans_breaks
+require(ochRe) # for scale_fill_ochre
+
 ```
 
 ### FileCreate
@@ -588,7 +590,8 @@ for (sub_cohort in cohort_list) {
   # for (i in c(1:200)) {
   for (i in c(2,3,5,17,20)) {
     exist_df7 <- exist_df2
-    set.seed(i)
+    # set.seed(i)
+    set.seed(5)
     exist_df7 <- exist_df7[, sample(colnames(exist_df7), ncol(exist_df7))]
     col_split_list7 <- meta_df[colnames(exist_df7), "Stage"]
     col_split_list7 <- factor(x = ifelse(col_split_list7 == "CTRL",
@@ -602,6 +605,53 @@ for (sub_cohort in cohort_list) {
                                          paste0("Low Abundance\nin CRC (", sum(row_split_list7 == "Low"),")")),
                               levels = c(paste0("High Abundance\nin CRC (", sum(row_split_list7 == "High"),")"),
                                          paste0("Low Abundance\nin CRC (", sum(row_split_list7 == "Low"),")")))
+    
+    anno_cohort <- meta_df[colnames(exist_df7), "Cohort"]
+    cohort_color <- c(ochre_palettes$namatjira_qual)
+    names(cohort_color) <-  c("2014_ZellerG", "2015_FengQ", "2016_VogtmannE", 
+                      "2019_ThomasAM", "2019_WirbelJ", "2019_YachidaS", 
+                      "2017_YuJ", "2021_YuJ")
+    lgd_cohort <- Legend(at = names(cohort_color), legend_gp = gpar(fill = cohort_color), title = "Cohort", nrow = 3, border = T)
+    
+    anno_gender <- meta_df[colnames(exist_df7), "Gender"]
+    gender_color <- c(ochre_palettes$williams_pilbara[c(1, 7)])
+    names(gender_color) <-  c("F", "M")
+    lgd_gender <- Legend(at = names(gender_color), legend_gp = gpar(fill = gender_color), title = "Gender", nrow = 3, border = T)
+    
+    anno_age <- meta_df[colnames(exist_df7), "Age"]
+    anno_age <- ifelse(is.na(anno_age), "unknown", ifelse(anno_age >60, 'old', 'adult'))
+    age_color <- c(old = "darkblue", adult = 'darkgreen', unknown = 'gray')
+    lgd_age <- Legend(at = names(age_color), legend_gp = gpar(fill = age_color), title = "Age", nrow = 3, border = T)
+    
+    anno_BMI <- meta_df[colnames(exist_df7), "BMI"]
+    anno_BMI <- ifelse(is.na(anno_BMI), "unknown", ifelse(anno_BMI >25, 'obesity', 'normal'))
+    BMI_color <- c(normal = "lightgreen", obesity = 'pink', unknown = 'gray')
+    lgd_BMI <- Legend(at = names(BMI_color), legend_gp = gpar(fill = BMI_color), title = "BMI", nrow = 3, border = T)
+    
+    anno_TL <- meta_df[colnames(exist_df7), "TumorLocation"]
+    anno_TL[meta_df[colnames(exist_df7), "Stage"] == 'CTRL'] <- "CTRL"
+    anno_TL <- ifelse(is.na(anno_TL) | anno_TL == "TODO", 'unknown',
+                      ifelse(anno_TL == "LC" | anno_TL == 'left' | anno_TL == 'Left colon', 'left colon',
+                             ifelse(anno_TL == "RC" | anno_TL == 'right' | anno_TL == "Right colon", "right colon",
+                                    ifelse(anno_TL == 'rectum' | anno_TL == "Rectum", "rectum", 
+                                           ifelse(anno_TL == 'Sigma', "sigma", 
+                                                  ifelse(anno_TL == 'CTRL','CTRL','multi-location'))))))
+    TL_color <- c(ochre_palettes$lorikeet[1:5], "gray", 'white')
+    names(TL_color) <- c('left colon', 'multi-location', 'rectum', 'right colon', 'sigma', 'unknown', 'CTRL')
+    lgd_TL <- Legend(at = names(TL_color), legend_gp = gpar(fill = TL_color), title = "Tumor location", nrow = 3, border = T)
+    
+  
+    
+    top_anno <- HeatmapAnnotation(Cohort = anno_simple(anno_cohort, height = unit(5, 'mm'), col = cohort_color, border = T),
+                                 Gender = anno_simple(anno_gender, height = unit(2, 'mm'), col = gender_color, border = T),
+                                 Age = anno_simple(anno_age, height = unit(2, 'mm'), col = age_color, border = T),
+                                 `Tumor Location` = anno_simple(anno_TL, height = unit(2, 'mm'), col = TL_color, border = T),
+                                 BMI = anno_simple(anno_BMI, height = unit(2, 'mm'), col = BMI_color, border = T))
+    
+    lgd_hm <- Legend(col_fun = col_fun5, title = "scale", direction = "horizontal")
+    
+    pd <- packLegend(lgd_cohort, lgd_gender, lgd_age, lgd_TL, lgd_BMI, lgd_hm, direction = "horizontal")
+    
     # row_label7 <- rowAnnotation(label = anno_mark(at = c(1:nrow(exist_df7)), 
                                                   # labels = rownames(exist_df7),
                                                   # labels_gp = gpar(fontface = "bold.italic",
@@ -627,10 +677,12 @@ for (sub_cohort in cohort_list) {
                        column_title_gp = gpar(fontsize = 15, fontface = "bold"),
                        width = ncol(exist_df7)*unit(0.2, "mm"), 
                        height = nrow(exist_df7)*unit(3, "mm"),
-                       name = "scale")
+                       name = "scale", 
+                       top_annotation = top_anno)
     draw(tmp_hm7, column_title = i)
   }
- dev.off()
+  draw(pd)
+  dev.off()
   
   
   

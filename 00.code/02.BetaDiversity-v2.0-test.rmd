@@ -1,0 +1,218 @@
+---
+title: "02.BetaDiversity"
+author: "ifanlyn@outlook.com"
+date: "2022/1/14"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Loading packages and subroutines {.tabset}
+
+### Packages
+
+```{r packages, message=FALSE, warning=FALSE}
+require(vegan)
+require(ggplot2)
+require(ochRe)
+require(patchwork) # area
+require(ochRe) # for scale_fill_ochre
+```
+
+### FileCreate
+
+```{r}
+FileCreate <- function(DirPath = "./",Prefix = "ExampleTest", Suffix = "pdf", version = "0.0"){
+  date=as.character(Sys.Date())
+  DirPath = gsub("/$","",DirPath)
+  Suffix = gsub('^[.]',"",Suffix)
+  if(! dir.exists(DirPath)){
+    dir.create(DirPath,recursive =TRUE)
+  }
+  if (version == "0.0") {
+    version=10
+    while(TRUE){
+      version_=paste(unlist(strsplit(as.character(version),"")),collapse=".")
+      DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version_,".",Suffix)
+      if(! file.exists(DirPathName)){
+        return(DirPathName)
+        break
+      }
+      version = version + 1
+    }
+  }else{
+    DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version,".",Suffix)
+    if(! dir.exists(DirPathName)){
+      return(DirPathName)
+    }
+    return(DirPathName)
+  }
+}
+  
+```
+
+### ImportTable
+
+```{r ImportTable }
+ImportTable <- function(file, header = T, row.names = 1, sep = ',', check.names = FALSE, ...){
+  data <- read.csv(file = file, header = header, row.names = row.names, sep = sep, check.names = check.names, ...)
+  return(data)
+}
+```
+
+## Import data {.tabset}
+
+### Import metadata
+
+```{r , message = F, warning = F}
+meta_df <- ImportTable(file = '../00.RawData/metaData/2021-07-26-metaInfo-subgroup_1329-v6.0.csv')
+meta_df <- meta_df[order(meta_df$Stage), ]
+meta_df$Cohort <- ifelse(meta_df$Cohort == "2014_ZellerG", "2014_ZellerG", 
+                        ifelse(meta_df$Cohort == "2015_FengQ", "2015_FengQ", 
+                               ifelse(meta_df$Cohort == "2016_VogtmannE", "2016_VogtmannE", 
+                                      ifelse(meta_df$Cohort == "2019_Thom", "2019_ThomasAM", 
+                                             ifelse(meta_df$Cohort == "2019_WirbelJ", "2019_WirbelJ", 
+                                                    ifelse(meta_df$Cohort == "2019_Yachida", "2019_YachidaS", 
+                                                           ifelse(meta_df$Cohort == "2021_JunY_1", "2017_YuJ","2021_YuJ")))))))
+# meta_df$Stage <- factor(meta_df$Stage, c("CRC", "adenoma", "CTRL"))
+```
+
+### Import otu
+
+```{r , message = F, warning = F}
+otu_df <- ImportTable('../07.FeatureSelection/02.RelMedianAbundance/2021-07-30-normalized-0.1%-RelMedianAbundance-matrix-v1.0.0.csv')
+# otu_df <- ImportTable('../05.Normalized/Rarefy_1329_fungi/2021-07-26-RelativeAbundance_matrix-v1.0.csv') %>% t() %>% as.data.frame()
+# euk_sel <- ImportTable(file = '../07.FeatureSelection/01.SSTF/2021-07-30-wilcoxon-all-v1.0.0.csv')
+# euk_sel <- euk_sel[order(euk_sel$adj_pvalue),]
+# euk_core <- euk_sel[euk_sel$adj_pvalue < 0.01, ]
+
+# core_otu <- otu_df[, rownames(euk_core)]
+```
+
+## Beta Diversity
+
+```{r, message = F, warning = F}
+# otu_dist <- vegdist(core_otu, method="bray", binary=F)
+otu_dist <- vegdist(otu_df, method="bray", binary=F)
+otu_pcoa <- cmdscale(otu_dist, k=3, eig=T)
+
+otu_pcoa_points <- as.data.frame(otu_pcoa$points)
+sum_eig <- sum(otu_pcoa$eig)
+eig_percent <- round(otu_pcoa$eig/sum_eig*100,1)
+colnames(otu_pcoa_points) <- paste0("PCoA", 1:3)
+otu_pcoa_result <- cbind(otu_pcoa_points, meta_df[rownames(otu_pcoa_points), ])
+
+otu_pcoa_melt <- matrix(data = NA, nrow = 0, ncol = 3)
+
+otu_pcoa_melt <- rbind(otu_pcoa_melt, otu_pcoa_result[, c("PCoA1", "PCoA2", "Cohort")])
+colnames(otu_pcoa_melt)[3] <- "Continent"
+otu_pcoa_melt <- rbind(otu_pcoa_melt, otu_pcoa_result[, c("PCoA1", "PCoA2", "Continent")])
+colnames(otu_pcoa_melt)[3] <- "Gender"
+otu_pcoa_melt <- rbind(otu_pcoa_melt, otu_pcoa_result[, c("PCoA1", "PCoA2", "Gender")])
+colnames(otu_pcoa_melt)[3] <- "Stage"
+otu_pcoa_melt <- rbind(otu_pcoa_melt, otu_pcoa_result[, c("PCoA1", "PCoA2", "Stage")])
+colnames(otu_pcoa_melt)[3] <- "Value"
+otu_pcoa_melt <- cbind(otu_pcoa_melt, Group = rep(c("Cohort", "Continent", "Gender", "Stage"), each = nrow(otu_pcoa_result)))
+otu_pcoa_melt <- na.omit(otu_pcoa_melt)
+otu_pcoa_melt$Value <- factor(x = otu_pcoa_melt$Value, levels = c("2014_ZellerG", "2015_FengQ", "2016_VogtmannE", 
+                                                                  "2019_ThomasAM", "2019_WirbelJ", "2019_YachidaS", 
+                                                                  "2017_YuJ", "2021_YuJ",
+                                                                  "CTRL", "adenoma", "CRC",
+                                                                  "Asian", "European", "North", "Occeanian", 
+                                                                  "F", "M"))
+my_color <- c(ochre_palettes$namatjira_qual,
+              '#006f3c', '#f9a73e', '#bf212f',
+              ochre_palettes$lorikeet[c(1:4)],
+              ochre_palettes$williams_pilbara[c(1, 7)])
+names(my_color) <-  c("2014_ZellerG", "2015_FengQ", "2016_VogtmannE", 
+                      "2019_ThomasA", "2019_WirbelJ", "2019_YachidaS", 
+                      "2017_YuJ", "2021_YuJ",
+                      "CTRL", "adenoma", "CRC",
+                      "Asian", "European", "North", "Occeanian", 
+                      "F", "M")
+
+p1_min <- min(otu_pcoa_result$PCoA1)
+p1_max <- max(otu_pcoa_result$PCoA1)
+p2_min <- min(otu_pcoa_result$PCoA2)
+p2_max <- max(otu_pcoa_result$PCoA2)
+
+g <- ggplot(otu_pcoa_result, aes(x=PCoA1, y=PCoA2)) +
+  labs(x=paste("PCoA 1 (", eig_percent[1], "%)", sep=""),
+       y=paste("PCoA 2 (", eig_percent[2], "%)", sep="")) +
+  geom_point(size=1, shape = 1, aes(color=Cohort)) + 
+  # stat_ellipse(level=0.8) +
+  # scale_color_ochre(palette = "namatjira_qual")+
+  scale_color_manual(values = my_color)+
+  theme_bw()+
+  xlim(p1_min-(p1_max-p1_min)/3, p1_max+(p1_max-p1_min)/10)+
+  ylim(p2_min-(p2_max-p2_min)/10, p2_max+(p2_max-p2_min)/10)
+
+g_pcoa2 <- ggplot(otu_pcoa_melt, aes(x=Value, y=PCoA2, fill=Value)) +
+  facet_grid(cols = vars(Group), scales = "free_x", space='free_x') +
+  geom_boxplot(outlier.alpha = 0) +
+  # geom_jitter(size=1, alpha = 0.5) + 
+  # scale_fill_ochre(palette = "namatjira_qual")+
+  scale_fill_manual(values = my_color)+
+  theme_bw()+
+  theme(legend.position = "none", 
+        axis.text = element_blank(),
+        axis.title = element_blank()) +
+  ylim(p2_min-(p2_max-p2_min)/10, p2_max+(p2_max-p2_min)/10)
+
+g_pcoa1 <- ggplot(otu_pcoa_melt, aes(x=Value, y=PCoA2, fill=Value)) +
+  facet_grid(rows = vars(Group), scales = "free_y", space='free_y')+
+  # facet_wrap(. ~ Group, ncol = 1, scales = "free_y", strip.position="right", space='free') +
+  geom_boxplot(outlier.alpha = 0) +
+  # geom_jitter(size=1, alpha = 0.5) + 
+  # scale_fill_ochre(palette = "namatjira_qual")+  
+  scale_fill_manual(values = my_color)+
+  theme_bw()+
+  theme(legend.position = "none",
+        axis.text = element_blank(),
+        axis.title = element_blank()) + 
+  coord_flip()+
+  ylim(p1_min-(p1_max-p1_min)/3, p1_max+(p1_max-p1_min)/10)
+
+
+layout <- c( # c(top, left, bottom, right)
+  patchwork::area(1, 1, 3, 3),
+  patchwork::area(1, 4, 3, 5),
+  patchwork::area(4, 1, 5, 3)
+)
+
+pca_pdf <- FileCreate(DirPath = "../06.BetaDiversity", Prefix = "PCoA-Bray", Suffix = 'pdf')
+pdf(file = pca_pdf, width = 10, height = 10)
+plot(g + theme(legend.position = "none", axis.text = element_blank(), axis.title = element_blank()) + g_pcoa2 + g_pcoa1 + plot_layout(design = layout))
+plot(g)
+dev.off()
+
+
+
+# g2 <- ggplot(otu_pcoa_result, aes(x=PCoA1, y=PCoA2, color=Continent)) +
+#   labs(x=paste("PCoA 1 (", eig_percent[1], "%)", sep=""),
+#        y=paste("PCoA 2 (", eig_percent[2], "%)", sep="")) +
+#   geom_point(size=2) + stat_ellipse(level=0.8) +
+#   theme_classic() +
+#   scale_color_ochre(palette = "lorikeet")
+
+# adon_res_cohort <- adonis(otu_dist ~ Cohort, data = otu_pcoa_result, perm = 999)
+# adon_res_continent <- adonis(otu_dist ~ Continent, data = otu_pcoa_result, perm = 999)
+# adon_res_stage <- adonis(otu_dist ~ Stage, data = otu_pcoa_result, perm = 999)
+# adon_res_gender <- adonis(otu_dist ~ Gender, data = otu_pcoa_result, perm = 999)
+# # adon_res_age <- adonis(otu_dist ~ Age, data = otu_pcoa_result[!is.na(otu_pcoa_result$Age),], perm = 999)
+# 
+# adon_res <- adonis2(otu_df ~ Cohort + Continent, data=otu_pcoa_result, permutations=999, by="margin")
+# 
+# adon_res2 <- adonis2(otu_df ~ Continent + Cohort, data=otu_pcoa_result, permutations=999, by="margin")
+
+
+```
+
+
+
+
+
+
+
