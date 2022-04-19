@@ -1,0 +1,485 @@
+---
+title: "filter-samples"
+author: "ifanlyn@outlook.com"
+date: "2021/7/19"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Loading packages and subroutines {.tabset}
+
+### Packages
+
+```{r packages, message=FALSE, warning=FALSE}
+require(DT) # for datatable
+require(dplyr) # for %>%
+```
+
+### FileCreate
+
+```{r}
+FileCreate <- function(DirPath = "./",Prefix = "ExampleTest", Suffix = "pdf", version = "0.0"){
+  date=as.character(Sys.Date())
+  DirPath = gsub("/$","",DirPath)
+  Suffix = gsub('^[.]',"",Suffix)
+  if(! dir.exists(DirPath)){
+    dir.create(DirPath,recursive =TRUE)
+  }
+  if (version == "0.0") {
+    version=10
+    while(TRUE){
+      version_=paste(unlist(strsplit(as.character(version),"")),collapse=".")
+      DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version_,".",Suffix)
+      if(! file.exists(DirPathName)){
+        return(DirPathName)
+        break
+      }
+      version = version + 1
+    }
+  }else{
+    DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version,".",Suffix)
+    if(! dir.exists(DirPathName)){
+      return(DirPathName)
+    }
+    return(DirPathName)
+  }
+}
+  
+```
+
+### ImportTable
+
+```{r ImportTable }
+ImportTable <- function(file, header = T, row.names = 1, sep = ',', check.names = FALSE, ...){
+  data <- read.csv(file = file, header = header, row.names = row.names, sep = sep, check.names = check.names, ...)
+  return(data)
+}
+```
+
+### Show_table
+
+```{r show_table}
+Show_table <- function(df, rownames = T, filter="top", options = list(pageLength = 10, scrollX=T), ...){
+  if (ncol(df) > 50) {
+    df <- df[, 1:50]
+    message('Due to the column dim is > 50, it only shows the ')
+  }
+  datatable(df, rownames = rownames, 
+            filter=filter, options = options, ... )
+
+}
+```
+
+### Separate_taxonomy
+
+Separate taxonomy matrix from kraken2 result
+
+```{r}
+Separate_taxonomy <- function(data, tax_list = 'default'){
+  if (tax_list == 'default') {
+    tax_list <- c("k__", "p__", "c__", "o__", "f__", "g__", "s__")
+    names(tax_list) <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+  }
+  tmp_mt <- matrix(data = NA, nrow = 1, ncol = ncol(data)); tmp_mt <- tmp_mt[-1, ]
+  for (i in names(tax_list)) {
+    df_list[[i]] <- tmp_mt
+  }
+  tax_df <- matrix(data = NA, nrow = nrow(data), ncol = length(tax_list))
+  dimnames(tax_df) <- list(rownames(data), names(tax_list))
+
+  for (i in 1:nrow(data)) {
+    tax_name <- as.character(unlist(strsplit(x = rownames(data)[i], split = '\\|')))
+    tax_level <- paste0(unlist(strsplit(tax_name[length(tax_name)], split = ''))[1], "__")
+    tmp_tax_df <- df_list[[names(tax_list)[tax_list == tax_level]]]
+    tmp_tax_df <- rbind(tmp_tax_df, data[i, ])
+    rownames(tmp_tax_df)[nrow(tmp_tax_df)] <- paste(tax_name[grep(pattern = tax_level, x = tax_name)], collapse = '|')
+    df_list[[names(tax_list)[tax_list == tax_level]]] <- tmp_tax_df
+    
+    for (k in 1:7) {
+      tax_df[i, k] <- ifelse(any(grepl(pattern = tax_list[k], x = tax_name)), 
+                             paste(tax_name[grep(pattern = tax_list[k], x = tax_name)],
+                                   collapse = '|'), NA) %>% 
+        gsub(paste(tax_list, collapse = '|'), '', .) %>%
+        gsub('_+', ' ',.)
+    }
+    
+  }
+  return(list(tax_list = df_list, tax_df = tax_df))
+}
+```
+
+## Import meta data
+
+```{r}
+raw_meta_df <- ImportTable(file = '../00.RawData/metaData/metaInfo-subgroup-v4.1.csv', sep = ',')
+dim(raw_meta_df)
+meta_df <- raw_meta_df[complete.cases(raw_meta_df$Stage),]
+dim(meta_df)
+meta_df <- meta_df[meta_df$Stage != 'HS', ]
+dim(meta_df)
+Show_table(meta_df)
+```
+
+## Pro-process kraken2 results
++ Import Kraken2_mpa table
++ Convert the feature names
++ Separate the table by various taxonomy levels
+
+```{r taxonomy name, warning = FALSE}
+calculate_or_not <- F
+
+krn_mt <- ImportTable(file = '../00.RawData/kraken2/Combine_bac_fungi_addfungi_mpa.tsv', sep = '\t')
+
+krn_mt <- krn_mt[-1, ]   # ignore the useless row
+
+if (calculate_or_not) {
+  # separate the taxonomy 
+  spl_res <- Separate_taxonomy(data = krn_mt, tax_list = 'default')
+  # save the separated matrix by the taxonomy name (kingdom, phylum, class, order, family, genus, species)
+  for (n in names(spl_res$tax_list)) {
+    write.csv(x = spl_res$tax_list[[n]], file = FileCreate(DirPath = '../00.RawData/kraken2/kraken2-separate', 
+                                                           Prefix = paste0("RawData-", n), Suffix = 'csv'))
+  }
+  # save the taxonomy name 
+  write.csv(x = spl_res$tax_df, file = FileCreate(DirPath = '../00.RawData/kraken2/', Prefix = 'taxonomy_name', Suffix = 'csv'))
+  # save the list, if caluclate_or_not = F, it would be imported.
+  saveRDS(object = spl_res, file = FileCreate(DirPath = '../00.RawData/kraken2/', Prefix = 'Result-separate_taxonomy', Suffix = 'rds'))
+}else{
+  spl_res <- readRDS(file = '../00.RawData/kraken2/2021-07-19-Result-separate_taxonomy-v1.0.rds')
+}
+
+Show_table(spl_res$tax_df)
+```
+
+## Data Profile by histogram in Kingdom level
+```{r histogarm plot}
+plot_or_not <- F
+add_line <- F
+
+bac_abd <- log10(as.numeric(spl_res$tax_list$Kingdom['k__Bacteria', rownames(meta_df)]))
+euk_abd <- log10(as.numeric(spl_res$tax_list$Kingdom['k__Eukaryota', rownames(meta_df)]))
+E_B_ratio <- log10(as.numeric(spl_res$tax_list$Kingdom['k__Eukaryota', rownames(meta_df)])/as.numeric(spl_res$tax_list$Kingdom['k__Bacteria', rownames(meta_df)]))
+if (plot_or_not) {
+  # Bacteria samples distribution
+  xlab_1 <- expression(log[10](Bacteria))
+  main_1 <- expression(paste('Histogram for ', log[10], ' Bacteria'))
+  EB_pdf <- FileCreate(DirPath = '../01.Histogram_data_profile', Prefix = 'Histogram_Bacteria', Suffix = 'pdf')
+  
+  hist_info <- hist(bac_abd, breaks = 80, plot = F)
+  hist_info$density <- hist_info$counts/sum(hist_info$counts) * 100
+  min_ratio <- min(bac_abd)
+  max_ratio <- max(bac_abd)
+  
+  nc_bac_abd <- bac_abd[meta_df$Stage == 'CTRL']
+  nc_line <-  density(x = nc_bac_abd, n = length(hist_info$density), from = min_ratio, to = max_ratio)
+  nc_line$y <- nc_line$y*(nc_line$x[2]-nc_line$x[1])*100
+  
+  ad_bac_abd <- bac_abd[meta_df$Stage == 'adenoma']
+  ad_line <-  density(x = ad_bac_abd, n = length(hist_info$density), from = min_ratio, to = max_ratio)
+  ad_line$y <- ad_line$y*(ad_line$x[2]-ad_line$x[1])*100
+  
+  crc_bac_abd <- bac_abd[meta_df$Stage == 'CRC']
+  crc_line <-  density(x = crc_bac_abd, n = length(hist_info$density), from = min_ratio, to = max_ratio)
+  crc_line$y <- crc_line$y*(crc_line$x[2]-crc_line$x[1])*100
+  
+  pdf(EB_pdf, height = 7, width = 10)
+  plot(hist_info, 
+       freq = FALSE,
+       main = main_1, 
+       xlab = xlab_1,
+       ylab = 'Percentage',
+       col = 'lightgray',
+       border= "darkblue")
+  if (add_line) {
+    lines(x = nc_line, lwd = 2, col = "springgreen")
+    lines(x = ad_line, lwd = 2, col = "olivedrab1")
+    lines(x = crc_line, lwd = 2, col = "orangered")
+  }
+  abline(v = median(bac_abd),
+         col = "yellow",
+         lwd = 4,
+         lty=2)
+  text(median(bac_abd)*0.9, 8 , paste('median = ', sprintf("%0.2f",  median(bac_abd))))
+  dev.off()
+  
+  # Eukaryota samples distribution
+  xlab_2 <- expression(log[10](Eukaryota))
+  main_2 <- expression(paste('Histogram for ', log[10], ' Eukaryota'))
+  EB_pdf <- FileCreate(DirPath = '../01.Histogram_data_profile', Prefix = 'Histogram_Eukaryota', Suffix = 'pdf')
+  
+  hist_info <- hist(euk_abd,breaks = 80, plot = F)
+  hist_info$density <- hist_info$counts/sum(hist_info$counts) * 100
+  min_ratio <- min(euk_abd)
+  max_ratio <- max(euk_abd)
+  
+  nc_euk_abd <- euk_abd[meta_df$Stage == 'CTRL']
+  nc_line <-  density(x = nc_euk_abd, n = length(hist_info$density), from = min_ratio, to = max_ratio)
+  nc_line$y <- nc_line$y*(nc_line$x[2]-nc_line$x[1])*100
+  
+  ad_euk_abd <- euk_abd[meta_df$Stage == 'adenoma']
+  ad_line <-  density(x = ad_euk_abd, n = length(hist_info$density), from = min_ratio, to = max_ratio)
+  ad_line$y <- ad_line$y*(ad_line$x[2]-ad_line$x[1])*100
+  
+  crc_euk_abd <- euk_abd[meta_df$Stage == 'CRC']
+  crc_line <-  density(x = crc_euk_abd, n = length(hist_info$density), from = min_ratio, to = max_ratio)
+  crc_line$y <- crc_line$y*(crc_line$x[2]-crc_line$x[1])*100
+  
+  
+  pdf(EB_pdf, height = 7, width = 10)
+  plot(hist_info, 
+       freq = FALSE,
+       main = main_2, 
+       xlab = xlab_2,
+       ylab = 'Percentage',
+       col = 'lightgray',
+       border= "darkred")
+  abline(v = median(euk_abd),
+         col = "yellow",
+         lwd = 4,
+         lty=2)
+  if (add_line) {
+    lines(x = nc_line, lwd = 2, col = "springgreen")
+    lines(x = ad_line, lwd = 2, col = "olivedrab1")
+    lines(x = crc_line, lwd = 2, col = "orangered")
+  }
+  text(median(euk_abd)*0.8, 10, paste('median = ', sprintf("%0.2f",  median(euk_abd))))
+  dev.off()
+  
+  # ratio Eukaryota and Bacteria distribution
+  xlab_3 <- expression(paste(log[10], frac(' Eukaryota', 'Bacteria')))
+  main_3 <- expression(paste('Histogram for ', log[10], frac(' Eukaryota', 'Bacteria')))
+  EB_pdf <- FileCreate(DirPath = '../01.Histogram_data_profile', Prefix = 'Histogram_Euk.Bac', Suffix = 'pdf')
+  
+  hist_info <- hist(E_B_ratio,breaks = 50, plot = F)
+  hist_info$density <- hist_info$counts/sum(hist_info$counts) * 100
+  min_ratio <- min(E_B_ratio)
+  max_ratio <- max(E_B_ratio)
+  
+  nc_E_B_ratio <- E_B_ratio[meta_df$Stage == 'CTRL']
+  nc_line <-  density(x = nc_E_B_ratio, n = length(hist_info$density), from = min_ratio, to = max_ratio)
+  nc_line$y <- nc_line$y*(nc_line$x[2]-nc_line$x[1])*100
+  
+  ad_E_B_ratio <- E_B_ratio[meta_df$Stage == 'adenoma']
+  ad_line <-  density(x = ad_E_B_ratio, n = length(hist_info$density), from = min_ratio, to = max_ratio)
+  ad_line$y <- ad_line$y*(ad_line$x[2]-ad_line$x[1])*100
+  
+  crc_E_B_ratio <- E_B_ratio[meta_df$Stage == 'CRC']
+  crc_line <-  density(x = crc_E_B_ratio, n = length(hist_info$density), from = min_ratio, to = max_ratio)
+  crc_line$y <- crc_line$y*(crc_line$x[2]-crc_line$x[1])*100
+  
+  
+  pdf(EB_pdf, height = 14, width = 20)
+  plot(hist_info, 
+       freq = FALSE,
+       main = main_3, 
+       xlab = xlab_3,
+       ylab = 'Percentage',
+       col = 'lightgray',
+       border= "purple")
+  # lines(x = density(x = E_B_ratio), col = "red")
+  if (add_line) {
+    lines(x = nc_line, lwd = 2, col = "springgreen")
+    lines(x = ad_line, lwd = 2, col = "olivedrab1")
+    lines(x = crc_line, lwd = 2, col = "orangered")
+  }
+  abline(v = median(E_B_ratio),
+         col = "yellow",
+         lwd = 4,
+         lty=2)
+  text(median(E_B_ratio)*1.4, 5.5, paste('median = ', sprintf("%0.2f",  median(E_B_ratio))))
+  dev.off()
+
+}
+```
+
+
+
+
+## Filtering the samples {.tabset}
+
+### Filter non-PCR-free cohort
+Due to the HanniganGD_2018 cohort performed the 12 cycle PCR before the Sequencing library building, we intend to exclude it.   
+In addition, this cohort's total sequence reads depth is almost 10 fold lower than other cohorts.
+
+```{r}
+exclude_sample <- colnames(spl_res$tax_list$Kingdom)
+exclude_sample <- exclude_sample[exclude_sample %in% rownames(meta_df)[meta_df$Cohort != "2018_HanniganGD"]]
+for (taxCand in names(spl_res$tax_list)) {
+  spl_res$tax_list[[taxCand]] <- spl_res$tax_list[[taxCand]][, exclude_sample]
+}
+meta_df <- meta_df[exclude_sample, ]
+
+nrow(meta_df)
+table(meta_df$Stage)
+```
+### In Kingdom level
++ filter the low-alignment-reads samples. ( < 1,000,000 reads)
++ filter the low-Eukaryota and high-Eukaryota ratio sample. (< 0.01% or > 1% ), [reference](https://www.hindawi.com/journals/mi/2020/9560684/)
+```{r}
+all_reads <- log10(as.numeric(spl_res$tax_list$Kingdom['k__Eukaryota', rownames(meta_df)]) + as.numeric(spl_res$tax_list$Kingdom['k__Bacteria', rownames(meta_df)]))
+Euk_all_ratio <- log10(as.numeric(spl_res$tax_list$Kingdom['k__Eukaryota', rownames(meta_df)]) / (as.numeric(spl_res$tax_list$Kingdom['k__Eukaryota', rownames(meta_df)]) + as.numeric(spl_res$tax_list$Kingdom['k__Bacteria', rownames(meta_df)])))
+
+sum(all_reads < 6) # 1
+table(meta_df[all_reads >= 6, "Stage"])
+
+sum(Euk_all_ratio < -4 & all_reads >=  6)  # 19
+table(meta_df[all_reads >= 6 & Euk_all_ratio >= -4, "Stage"])
+
+
+sum(all_reads >= 6 & Euk_all_ratio >= -4 & Euk_all_ratio > -2)  # 78
+table(meta_df[all_reads >= 6 & Euk_all_ratio >= -4 & Euk_all_ratio <= -2, "Stage"])
+
+
+leave_sample <- rownames(meta_df)[all_reads >= 6 & Euk_all_ratio <= -2 & Euk_all_ratio >= -4]
+
+length(leave_sample)
+
+
+```
+
+### In species level
++ filter the sample which own dominant fungi or bacteria samples ( > 50%)
++ filter the cohort with low samples counts leave  (> 50 samples)
+
+```{r}
+bac_list <- unlist(spl_res$tax_df[grep('Bacteria',spl_res$tax_df[, 1]), 7])
+bac_list <- bac_list[!is.na(bac_list)]
+
+euk_list <- unlist(spl_res$tax_df[grep('Eukaryota',spl_res$tax_df[, 1]), 7])
+euk_list <- euk_list[!is.na(euk_list)]
+
+species_df <- spl_res$tax_list$Species[,leave_sample]
+rownames(species_df) <- gsub('s__', '', rownames(species_df)) %>% gsub('_', ' ', .)
+bac_df <- species_df[bac_list, ]
+euk_df <- species_df[euk_list, ]
+
+bac_ReAb_df <- bac_df; bac_ReAb_df[] <- apply(bac_ReAb_df,2,function(x){as.numeric(x)/sum(as.numeric(x))*100})
+euk_ReAb_df <- euk_df; euk_ReAb_df[] <- apply(euk_ReAb_df,2,function(x){as.numeric(x)/sum(as.numeric(x))*100}) 
+
+
+
+sel_bac_df <- bac_ReAb_df[, colSums(bac_ReAb_df > 50) == 0]
+table(meta_df[colnames(sel_bac_df), "Stage"])
+sum(bac_ReAb_df > 50) # 69
+
+sel_euk_df <- euk_df[, colnames(sel_bac_df)]
+sel_euk_df <- sel_euk_df[, colSums(euk_ReAb_df[, colnames(sel_bac_df)] > 50) == 0]
+table(meta_df[colnames(sel_euk_df), "Stage"])
+sum(euk_ReAb_df[, colnames(sel_bac_df)] > 50)  # 45
+
+
+leave_sample3 <-intersect(colnames(sel_bac_df), colnames(sel_euk_df))
+table(meta_df[leave_sample3,]$Cohort)
+length(leave_sample3)
+
+
+```
+
+### Plot
+```{r}
+```
+
+## Save files {.tabset}
+Only save 1,636 selected-samples by prevrious filter
+
+### Save the RawData and Relative abudance matrix
+```{r}
+save_or_not <- F
+if (save_or_not) {
+  sel_spl_res <- spl_res
+  sel_spl_ReAbun <- spl_res
+  for (n in names(sel_spl_res$tax_list)) {
+    sel_spl_res$tax_list[[n]] <- sel_spl_res$tax_list[[n]][, leave_sample3]
+    write.csv(x = sel_spl_res$tax_list[[n]], file = FileCreate(DirPath = '../02.Filter_samples/RawData-1625', 
+                                                               Prefix = paste0("Selected-RawData-", n), Suffix = 'csv'))
+    if (n == "Kingdom") {
+      sel_spl_ReAbun$tax_list[[n]][] <- apply(sel_spl_ReAbun$tax_list[[n]],2,function(x){as.numeric(x)/sum(as.numeric(x)[c(1,2)])*100})
+      sel_spl_ReAbun$tax_list[[n]] <- sel_spl_ReAbun$tax_list[[n]][, leave_sample3]
+    }else{
+      sel_spl_ReAbun$tax_list[[n]][] <- apply(sel_spl_ReAbun$tax_list[[n]],2,function(x){as.numeric(x)/sum(as.numeric(x))*100})
+    }
+    write.csv(x = sel_spl_ReAbun$tax_list[[n]], file = FileCreate(DirPath = '../02.Filter_samples/RelativeAbundance-1625', 
+                                                                  Prefix = paste0("Selected-RelAbundance-", n), Suffix = 'csv'))
+  }
+  saveRDS(object = sel_spl_ReAbun, file = FileCreate(DirPath = '../02.Filter_samples/RelativeAbundance-1625',
+                                                  Prefix = 'sel_spl_ReAbun', Suffix = 'rds'))
+  saveRDS(object = sel_spl_res, file = FileCreate(DirPath = '../02.Filter_samples/RawData-1625',
+                                                  Prefix = 'sel_spl_res', Suffix = 'rds'))
+}else{
+  sel_spl_ReAbun <- readRDS(file = '../02.Filter_samples/RelativeAbundance-1625/2021-08-03-sel_spl_ReAbun-v1.0.rds')
+  sel_spl_res <- readRDS(file = '../02.Filter_samples/RawData-1625/2021-08-03-sel_spl_res-v1.0.rds')
+}
+```
+
+### Save the meta Info matrix
+
+```{r}
+save_or_not <- F
+if (save_or_not) {
+  new_meta_df <- meta_df[leave_sample3, ]
+  write.csv(x = new_meta_df, file = FileCreate(DirPath = '../00.RawData/metaData/', 
+                                               Prefix = "metaInfo-subgroup_1625", Suffix = 'csv', version = '5.1'))
+}
+```
+
+### Separate the Bacteria and Eukaryota
+
+```{r}
+calculate_or_not <- F
+if (calculate_or_not) {
+  bac_raw_res <- sel_spl_res
+  euk_raw_res <- sel_spl_res
+  bac_RelAbun_res <- sel_spl_res
+  euk_RelAbun_res <- sel_spl_res
+  for (n in names(sel_spl_res$tax_list)) {
+    tax_name <- as.data.frame(sel_spl_res$tax_df)
+    tmp_otu <- sel_spl_res$tax_list[[n]]
+    rownames(tmp_otu) <- gsub(".+__", '', rownames(tmp_otu)) %>% gsub('_', ' ', .)
+    # for bacteria
+    bac_name <- tax_name[grep('Bacteria', tax_name$Kingdom), n]
+    bac_name <- unique(bac_name[!is.na(bac_name)])
+    bac_otu <- tmp_otu[rownames(tmp_otu) %in% bac_name, ]
+    bac_raw_res$tax_list[[n]] <- bac_otu
+    bac_RelAbun_res$tax_list[[n]] <- bac_otu
+    bac_RelAbun_res$tax_list[[n]][] <- apply(bac_RelAbun_res$tax_list[[n]], 2, function(x){as.numeric(x)/sum(as.numeric(x))*100})
+    write.csv(x = bac_raw_res$tax_list[[n]], file = FileCreate(DirPath = '../02.Filter_samples/Bacteria_RawData_1625',
+                                                               Prefix = paste0("Selected-Bac_RawData-", n), Suffix = 'csv'))
+    write.csv(x = bac_RelAbun_res$tax_list[[n]], file = FileCreate(DirPath = '../02.Filter_samples/Bacteria_RelAbun_1625',
+                                                                   Prefix = paste0("Selected-Bac_RelAbun-", n), Suffix = 'csv'))
+    
+    # for Eukaryota
+    euk_name <- tax_name[grep('Eukaryota', tax_name$Kingdom), n]
+    euk_name <- unique(euk_name[!is.na(euk_name)])
+    euk_otu <- tmp_otu[rownames(tmp_otu) %in% euk_name, ]
+    euk_raw_res$tax_list[[n]] <- euk_otu
+    euk_RelAbun_res$tax_list[[n]] <- euk_otu
+    euk_RelAbun_res$tax_list[[n]][] <- apply(euk_RelAbun_res$tax_list[[n]], 2, function(x){as.numeric(x)/sum(as.numeric(x))*100})
+    write.csv(x = euk_raw_res$tax_list[[n]], file = FileCreate(DirPath = '../02.Filter_samples/Eukaryota_RawData_1625',
+                                                               Prefix = paste0("Selected-Euk_RawData-", n), Suffix = 'csv'))
+    write.csv(x = euk_RelAbun_res$tax_list[[n]], file = FileCreate(DirPath = '../02.Filter_samples/Eukaryota_RelAbun_1625',
+                                                                   Prefix = paste0("Selected-Euk_RelAbun-", n), Suffix = 'csv'))
+  }
+  saveRDS(object = bac_raw_res, file = FileCreate(DirPath = '../02.Filter_samples/Bacteria_RawData_1625',
+                                                    Prefix = 'bac_raw_res', Suffix = 'rds'))
+  saveRDS(object = euk_raw_res, file = FileCreate(DirPath = '../02.Filter_samples/Eukaryota_RawData_1625',
+                                                  Prefix = 'euk_raw_res', Suffix = 'rds'))
+  saveRDS(object = bac_RelAbun_res, file = FileCreate(DirPath = '../02.Filter_samples/Bacteria_RelAbun_1625',
+                                                    Prefix = 'bac_RelAbun_res', Suffix = 'rds'))
+  saveRDS(object = euk_RelAbun_res, file = FileCreate(DirPath = '../02.Filter_samples/Eukaryota_RelAbun_1625',
+                                                  Prefix = 'euk_RelAbun_res', Suffix = 'rds'))
+}else{
+  bac_raw_res <- readRDS(file = '../02.Filter_samples/Bacteria_RawData_1625/2021-08-03-bac_raw_res-v1.0.rds')
+  euk_raw_res <- readRDS(file = '../02.Filter_samples/Eukaryota_RawData_1625/2021-08-03-euk_raw_res-v1.0.rds')
+  bac_RelAbun_res <- readRDS(file = '../02.Filter_samples/Bacteria_RelAbun_1625/2021-08-03-bac_RelAbun_res-v1.0.rds')
+  euk_RelAbun_res <- readRDS(file = '../02.Filter_samples/Eukaryota_RelAbun_1625/2021-08-03-euk_RelAbun_res-v1.0.rds')
+}
+
+```
+
+
+
+
+

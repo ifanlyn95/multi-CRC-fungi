@@ -1,0 +1,202 @@
+---
+title: "11.err-bar-crc-ade-nc"
+author: "ifanlyn@outlook.com"
+date: "2022/1/31"
+output: html_document
+---
+## Loading packages and subroutines {.tabset}
+
+### Packages
+
+```{r packages, message=FALSE, warning=FALSE}
+require(dplyr) # for %>%
+require(ComplexHeatmap)
+require(reshape2) # cast
+require(circlize) # colorRamp2
+require(qvalue)
+require(fdrtool) # fdrtool
+require(ggpubr) # stat_compare_means
+require(scales) # trans_breaks
+require(ochRe) # for scale_fill_ochre
+require(ggplot2)
+
+```
+
+### FileCreate
+
+```{r}
+FileCreate <- function(DirPath = "./",Prefix = "ExampleTest", Suffix = "pdf", version = "0.0"){
+  date=as.character(Sys.Date())
+  DirPath = gsub("/$","",DirPath)
+  Suffix = gsub('^[.]',"",Suffix)
+  if(! dir.exists(DirPath)){
+    dir.create(DirPath,recursive =TRUE)
+  }
+  if (version == "0.0") {
+    version=10
+    while(TRUE){
+      version_=paste(unlist(strsplit(as.character(version),"")),collapse=".")
+      DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version_,".",Suffix)
+      if(! file.exists(DirPathName)){
+        return(DirPathName)
+        break
+      }
+      version = version + 1
+    }
+  }else{
+    DirPathName = paste0(DirPath,"/",date,'-',Prefix,'-v',version,".",Suffix)
+    if(! dir.exists(DirPathName)){
+      return(DirPathName)
+    }
+    return(DirPathName)
+  }
+}
+  
+```
+
+### ImportTable
+
+```{r ImportTable }
+ImportTable <- function(file, header = T, row.names = 1, sep = ',', check.names = FALSE, ...){
+  data <- read.csv(file = file, header = header, row.names = row.names, sep = sep, check.names = check.names, ...)
+  return(data)
+}
+```
+
+### Data_Summary
+```{r Data_Summary}
+#+++++++++++++++++++++++++
+# Function to calculate the mean and the standard deviation
+  # for each group
+#+++++++++++++++++++++++++
+# data : a data frame
+# varname : the name of a column containing the variable
+  #to be summariezed
+# groupnames : vector of column names to be used as
+  # grouping variables
+Data_Summary <- function(data, varname, groupnames){
+  require(plyr)
+  summary_func <- function(x, col){
+    c(mean = mean(x[[col]], na.rm=TRUE),
+      median = median(x[[col]], na.rm=TRUE),
+      sd = sd(x[[col]], na.rm=TRUE))
+  }
+  data_sum<-ddply(data, groupnames, .fun=summary_func,
+                  varname)
+  # data_sum <- rename(data_sum, c("mean" = varname))
+  data_sum$mean_low_sd <- ifelse(data_sum$mean - data_sum$sd > 0, data_sum$mean - data_sum$sd, 0)
+  data_sum$mean_high_sd <- data_sum$mean + data_sum$sd 
+  data_sum$median_low_sd <- ifelse(data_sum$median - data_sum$sd > 0, data_sum$median - data_sum$sd, 0)
+  data_sum$median_high_sd <- data_sum$median + data_sum$sd 
+  
+ return(data_sum)
+}
+```
+
+## Import data {.tabset}
+
+### Import metadata
+
+```{r , message = F, warning = F}
+meta_df <- ImportTable(file = '../00.RawData/metaData/2021-07-26-metaInfo-subgroup_1329-v6.0.csv')
+meta_df <- meta_df[order(meta_df$Stage), ]
+meta_df$Cohort <- ifelse(meta_df$Cohort == "2014_ZellerG", "2014_ZellerG", 
+                        ifelse(meta_df$Cohort == "2015_FengQ", "2015_FengQ", 
+                               ifelse(meta_df$Cohort == "2016_VogtmannE", "2016_VogtmannE", 
+                                      ifelse(meta_df$Cohort == "2019_Thom", "2019_ThomasAM", 
+                                             ifelse(meta_df$Cohort == "2019_WirbelJ", "2019_WirbelJ", 
+                                                    ifelse(meta_df$Cohort == "2019_Yachida", "2019_YachidaS", 
+                                                           ifelse(meta_df$Cohort == "2021_JunY_1", "2017_YuJ","2021_YuJ")))))))
+meta_df$Stage <- factor(meta_df$Stage, c("CTRL", "adenoma", "CRC"))
+```
+
+### Import Eukaryota matrix
+
+```{r , message = F, warning = F}
+otu_df <- ImportTable('../07.FeatureSelection/02.RelMedianAbundance/2021-07-30-normalized-0.1%-RelMedianAbundance-matrix-v1.0.0.csv')
+
+# otu_df <- ImportTable(file = '../07.FeatureSelection/01.SSTF/2021-07-29-modify_martix_norm-ALL-v1.0.0.csv')
+euk_sel <- ImportTable(file = '../07.FeatureSelection/01.SSTF/2021-07-30-wilcoxon-all-v1.0.0.csv')
+euk_sel <- euk_sel[order(euk_sel$adj_pvalue),]
+euk_core <- euk_sel[euk_sel$adj_pvalue < 0.01, ]
+
+my_list <- c("Aspergillus rambellii", "Aspergillus kawachii", "Cordyceps sp. RAO-2017", 
+             "Erysiphe pulchra", "Moniliophthora perniciosa", "Sphaerulina musiva", "Phytophthora capsici")
+
+my_df <- otu_df[, my_list]
+
+my_df$Stage <- meta_df[rownames(my_df), 'Stage']
+```
+
+### Convert the data 
+
+```{r, message=F, warning=F}
+my_melt <- melt(data = my_df, id = "Stage")
+colnames(my_melt) <- c("Stage", "Fungi", "MedAbun")
+
+my_melt2 <- Data_Summary(data = my_melt, varname = "MedAbun", groupnames = c("Stage", "Fungi"))
+
+p<- ggplot(my_melt2, aes(x=Stage, y=mean, fill=Stage)) + 
+  geom_errorbar(aes(ymin=mean, ymax=mean_high_sd), width=.2,
+                 position=position_dodge(.9)) +
+  geom_bar(stat="identity", color="black", 
+           position=position_dodge()) +
+  facet_wrap(. ~ Fungi,  scales='free_y', nrow = 2) +
+  scale_y_log10() +
+  theme_bw() +
+  theme(text = element_text(face = 2), 
+        strip.text = element_text(face = 4), legend.position = "none")+
+  scale_fill_manual(values = c(CTRL = 'darkblue', 
+                               adenoma = '#f9a73e', 
+                               CRC = '#bf212f'))
+err_bar_pdf <- FileCreate(DirPath = "../14.Err_bar_3Stages", 
+                          Prefix = "Selected7_overlap_crc-ade_crc-nc",
+                          Suffix = "pdf")
+pdf(file = err_bar_pdf, width = 8, height = 7)
+print(p)
+dev.off()
+
+
+
+
+p2 <- ggplot(my_melt, aes(x=Stage, y=MedAbun, color=Stage)) + 
+  geom_boxplot(outlier.colour = NA, width = 0.4) +
+  geom_jitter(size = 0.5, alpha = 0.2) +
+  facet_wrap(. ~ Fungi,  scales='free_y', nrow = 2) +
+  scale_y_log10() +
+  theme_bw() +
+  theme(text = element_text(face = 2), 
+        axis.text =  element_text(face = 2, size = 11),
+        axis.title = element_blank(),
+        strip.text = element_text(face = 4, size = 10), legend.position = "none")+
+  scale_color_manual(values = c(CTRL = 'darkblue', 
+                               adenoma = '#f9a73e', 
+                               CRC = '#bf212f'))+
+  stat_compare_means(comparisons = list(c('CTRL', "CRC"), c('adenoma', "CRC")))
+
+p2
+
+boxplot_pdf <- FileCreate(DirPath = "../15.Revision/box_3Stages", 
+                          Prefix = "Selected7_overlap_crc-ade_crc-nc",
+                          Suffix = "pdf")
+pdf(file = boxplot_pdf, width = 8*1.3, height = 7*1.3)
+print(p2)
+dev.off()
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

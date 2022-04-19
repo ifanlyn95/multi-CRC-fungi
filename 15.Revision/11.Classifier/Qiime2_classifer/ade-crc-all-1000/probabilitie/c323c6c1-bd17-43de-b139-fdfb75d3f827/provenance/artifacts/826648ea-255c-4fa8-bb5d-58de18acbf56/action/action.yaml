@@ -1,0 +1,227 @@
+execution:
+    uuid: 77f33285-d67d-4a24-ae21-e8c1d0d0ff39
+    runtime:
+        start: 2022-04-11T15:19:15.038613+08:00
+        end: 2022-04-11T15:19:15.466151+08:00
+        duration: 427538 microseconds
+
+action:
+    type: method
+    plugin: !ref 'environment:plugins:sample-classifier'
+    action: predict_classification
+    inputs:
+    -   table: fb1d3729-f8cc-4818-af2b-10e22c5c1ea2
+    -   sample_estimator: 6c3e6046-4767-4dda-a246-bbb8cb6695ef
+    parameters:
+    -   n_jobs: 1
+    output-name: probabilities
+
+transformers:
+    inputs:
+        table:
+        -   from: BIOMV210DirFmt
+            to: biom.table:Table
+            plugin: !ref 'environment:plugins:types'
+            citations:
+            - !cite 'view|types:2021.8.0|BIOMV210DirFmt|0'
+            - !cite 'view|types:2021.8.0|biom.table:Table|0'
+        sample_estimator:
+        -   from: SampleEstimatorDirFmt
+            to: sklearn.pipeline:Pipeline
+            plugin: !ref 'environment:plugins:sample-classifier'
+    output:
+    -   from: pandas.core.frame:DataFrame
+        to: ProbabilitiesDirectoryFormat
+        plugin: !ref 'environment:plugins:sample-classifier'
+        citations:
+        - !cite 'view|types:2021.8.0|pandas.core.frame:DataFrame|0'
+
+environment:
+    platform: linux-x86_64
+    python: |-
+        3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05)
+        [GCC 9.3.0]
+    framework:
+        version: 2021.8.0
+        website: https://qiime2.org
+        citations:
+        - !cite 'framework|qiime2:2021.8.0|0'
+    plugins:
+        types:
+            version: 2021.8.0
+            website: https://github.com/qiime2/q2-types
+        sample-classifier:
+            version: 2021.8.0
+            website: https://github.com/qiime2/q2-sample-classifier
+            citations:
+            - !cite 'plugin|sample-classifier:2021.8.0|0'
+            - !cite 'plugin|sample-classifier:2021.8.0|1'
+    python-packages:
+        zipp: 3.5.0
+        yq: 2.12.2
+        xopen: 1.1.0
+        xmltodict: 0.12.0
+        widgetsnbextension: 3.5.1
+        wheel: 0.37.0
+        webencodings: 0.5.1
+        wcwidth: 0.2.5
+        urllib3: 1.26.6
+        unifrac: 0.20.2
+        tzlocal: '2.1'
+        typing-extensions: 3.10.0.0
+        traitlets: 5.1.0
+        tornado: '6.1'
+        toml: 0.10.2
+        threadpoolctl: 2.2.0
+        testpath: 0.5.0
+        terminado: 0.12.1
+        statsmodels: 0.12.2
+        spectra: 0.0.11
+        six: 1.16.0
+        simplejson: 3.17.5
+        setuptools: 58.0.4
+        sepp: 4.3.10
+        Send2Trash: 1.8.0
+        seaborn: 0.11.2
+        scipy: 1.7.1
+        scikit-learn: 0.24.1
+        scikit-bio: 0.5.6
+        rich: 10.9.0
+        requests: 2.25.1
+        qiime2: 2021.8.0
+        q2templates: 2021.8.0
+        q2galaxy: 2021.8.0
+        q2cli: 2021.8.0
+        q2-vsearch: 2021.8.0
+        q2-types: 2021.8.0
+        q2-taxa: 2021.8.0
+        q2-sample-classifier: 2021.8.0
+        q2-quality-filter: 2021.8.0
+        q2-quality-control: 2021.8.0
+        q2-phylogeny: 2021.8.0
+        q2-mystery-stew: 2021.8.0
+        q2-metadata: 2021.8.0
+        q2-longitudinal: 2021.8.0
+        q2-gneiss: 2021.8.0
+        q2-fragment-insertion: 2021.8.0
+        q2-feature-table: 2021.8.0
+        q2-feature-classifier: 2021.8.0
+        q2-emperor: 2021.8.0
+        q2-diversity: 2021.8.0
+        q2-diversity-lib: 2021.8.0
+        q2-demux: 2021.8.0
+        q2-deblur: 2021.8.0
+        q2-dada2: 2021.8.0
+        q2-cutadapt: 2021.8.0
+        q2-composition: 2021.8.0
+        q2-alignment: 2021.8.0
+        pyzmq: 22.2.1
+        PyYAML: 5.4.1
+        pytz: '2021.1'
+        python-dateutil: 2.8.2
+        pytest: 6.2.5
+        PySocks: 1.7.1
+        pyrsistent: 0.17.3
+        PyQtWebEngine: 5.12.1
+        PyQtChart: '5.12'
+        PyQt5: 5.12.3
+        PyQt5-sip: 4.19.18
+        pyparsing: 2.4.7
+        pyOpenSSL: 20.0.1
+        Pygments: 2.10.0
+        pycparser: '2.20'
+        py: 1.10.0
+        ptyprocess: 0.7.0
+        psutil: 5.8.0
+        prompt-toolkit: 3.0.20
+        prometheus-client: 0.11.0
+        pluggy: 0.13.1
+        pip: 21.2.4
+        Pillow: 8.3.2
+        pickleshare: 0.7.5
+        pexpect: 4.8.0
+        patsy: 0.5.1
+        parso: 0.8.2
+        pandocfilters: 1.4.2
+        pandas: 1.2.5
+        packaging: '21.0'
+        olefile: '0.46'
+        numpy: 1.21.2
+        notebook: 6.4.3
+        nose: 1.3.7
+        networkx: 2.6.2
+        nest-asyncio: 1.5.1
+        nbformat: 5.1.3
+        nbconvert: 6.1.0
+        nbclient: 0.5.4
+        natsort: 7.1.1
+        multiqc: '1.11'
+        msgpack: 1.0.2
+        more-itertools: 8.9.0
+        mistune: 0.8.4
+        matplotlib: 3.4.3
+        matplotlib-inline: 0.1.3
+        MarkupSafe: 2.0.1
+        Markdown: 3.3.4
+        lzstring: 1.0.4
+        lz4: 3.1.3
+        lxml: 4.6.3
+        lockfile: 0.12.2
+        kiwisolver: 1.3.2
+        jupyterlab-widgets: 1.0.1
+        jupyterlab-pygments: 0.1.2
+        jupyter-core: 4.7.1
+        jupyter-client: 7.0.2
+        jsonschema: 3.2.0
+        joblib: 1.0.1
+        Jinja2: 3.0.1
+        jedi: 0.18.0
+        isal: 0.11.1
+        ipywidgets: 7.6.4
+        ipython: 7.27.0
+        ipython-genutils: 0.2.0
+        ipykernel: 6.4.0
+        iniconfig: 1.1.1
+        importlib-metadata: 4.8.1
+        ijson: 3.1.3
+        idna: '2.10'
+        humanfriendly: '9.2'
+        hdmedians: 0.14.2
+        h5py: 3.3.0
+        gneiss: 0.4.6
+        future: 0.18.2
+        fastcluster: 1.1.26
+        entrypoints: '0.3'
+        emperor: 1.0.3
+        dnaio: 0.5.2
+        dill: 0.3.4
+        DendroPy: 4.5.2
+        defusedxml: 0.7.1
+        decorator: 4.4.2
+        debugpy: 1.4.1
+        deblur: 1.1.0
+        Cython: 0.29.24
+        cycler: 0.10.0
+        cutadapt: '3.4'
+        cryptography: 3.4.7
+        commonmark: 0.9.1
+        colormath: 3.0.0
+        coloredlogs: 15.0.1
+        colorama: 0.4.4
+        click: 7.1.2
+        chardet: 4.0.0
+        cffi: 1.14.6
+        certifi: 2021.5.30
+        cached-property: 1.5.2
+        CacheControl: 0.12.6
+        brotlipy: 0.7.0
+        bokeh: 2.3.3
+        bleach: 4.1.0
+        biom-format: 2.1.10
+        bibtexparser: 1.1.0
+        backports.functools-lru-cache: 1.6.4
+        backcall: 0.2.0
+        attrs: 21.2.0
+        async-generator: '1.10'
+        argon2-cffi: 20.1.0
+        argcomplete: 1.12.3
