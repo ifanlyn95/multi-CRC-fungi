@@ -1,0 +1,1330 @@
+﻿Sample,Study,Stage,Country,Continent,Age,Gender,BMI,TumorLocationDetail,TumorLocation,TNM,AJCC,AJCC_simple,Labeling
+CCIS11019776ST-4-0,2014_ZellerG,adenoma,France,European,58,M,22,LC/RC,Multiple,NA,NA,NA,Downstream
+CCIS22275061ST-4-0,2014_ZellerG,adenoma,France,European,62,M,29,Rectum,Rectum,NA,NA,NA,Downstream
+CCIS22906510ST-20-0,2014_ZellerG,adenoma,France,European,77,M,23,Sigma,LC,NA,NA,NA,Downstream
+CCIS25399172ST-4-0,2014_ZellerG,adenoma,France,European,60,M,27,LC,LC,NA,NA,NA,Downstream
+CCIS28384594ST-4-0,2014_ZellerG,adenoma,France,European,89,M,24,LC,LC,NA,NA,NA,Downstream
+CCIS32105356ST-4-0,2014_ZellerG,adenoma,France,European,53,M,30,LC/RC,Multiple,NA,NA,NA,Downstream
+CCIS35092938ST-4-0,2014_ZellerG,adenoma,France,European,62,F,21,RC,RC,NA,NA,NA,Downstream
+CCIS37250421ST-4-0,2014_ZellerG,adenoma,France,European,59,F,21,Rectum,Rectum,NA,NA,NA,Downstream
+CCIS44676181ST-4-0,2014_ZellerG,adenoma,France,European,48,F,21,Rectum,Rectum,NA,NA,NA,Downstream
+CCIS47745468ST-4-0,2014_ZellerG,adenoma,France,European,63,M,27,LC,LC,NA,NA,NA,Downstream
+CCIS48579360ST-4-0,2014_ZellerG,adenoma,France,European,52,F,23,Rectum,Rectum,NA,NA,NA,Downstream
+CCIS50561855ST-4-0,2014_ZellerG,adenoma,France,European,60,F,26,LC/RC,Multiple,NA,NA,NA,Downstream
+CCIS51667829ST-4-0,2014_ZellerG,adenoma,France,European,63,M,26,RC,RC,NA,NA,NA,Downstream
+CCIS52234160ST-4-0,2014_ZellerG,adenoma,France,European,64,M,28,RC,RC,NA,NA,NA,Downstream
+CCIS54027808ST-4-0,2014_ZellerG,adenoma,France,European,52,M,33,LC,LC,NA,NA,NA,Downstream
+CCIS56503244ST-3-0,2014_ZellerG,adenoma,France,European,68,M,21,RC,RC,NA,NA,NA,Downstream
+CCIS59903910ST-4-0,2014_ZellerG,adenoma,France,European,76,F,34,RC,RC,NA,NA,NA,Downstream
+CCIS70398272ST-4-0,2014_ZellerG,adenoma,France,European,55,M,24,RC,RC,NA,NA,NA,Downstream
+CCIS74726977ST-3-0,2014_ZellerG,adenoma,France,European,66,M,24,LC/RC,Multiple,NA,NA,NA,Downstream
+CCIS76563044ST-4-0,2014_ZellerG,adenoma,France,European,68,M,36,RC,RC,NA,NA,NA,Downstream
+CCIS77100899ST-4-0,2014_ZellerG,adenoma,France,European,73,M,26,LC,LC,NA,NA,NA,Downstream
+CCIS81710917ST-20-0,2014_ZellerG,adenoma,France,European,49,M,20,Rectum,Rectum,NA,NA,NA,Downstream
+CCIS81735969ST-20-0,2014_ZellerG,adenoma,France,European,68,M,26,RC,RC,NA,NA,NA,Downstream
+CCIS83445808ST-4-0,2014_ZellerG,adenoma,France,European,66,M,29,Sigma,LC,NA,NA,NA,Downstream
+CCIS83574003ST-4-0,2014_ZellerG,adenoma,France,European,60,M,24,LC,LC,NA,NA,NA,Downstream
+CCIS87290971ST-4-0,2014_ZellerG,adenoma,France,European,71,M,29,RC,RC,NA,NA,NA,Downstream
+CCIS90166425ST-4-0,2014_ZellerG,adenoma,France,European,78,F,23,LC,LC,NA,NA,NA,Downstream
+CCIS90443472ST-4-0,2014_ZellerG,adenoma,France,European,63,M,30,LC,LC,NA,NA,NA,Downstream
+CCIS90903952ST-3-0,2014_ZellerG,adenoma,France,European,71,F,22,LC/RC,Multiple,NA,NA,NA,Downstream
+CCIS94496512ST-4-0,2014_ZellerG,adenoma,France,European,64,M,28,Rectum,Rectum,NA,NA,NA,Downstream
+CCIS96387239ST-4-0,2014_ZellerG,adenoma,France,European,66,M,20,LC,LC,NA,NA,NA,Downstream
+CCIS06260551ST-3-0,2014_ZellerG,CRC,France,European,58,M,24,LC,LC,T3N1M1,IV,IV,Downstream
+CCIS11015875ST-4-0,2014_ZellerG,CRC,France,European,62,M,26,Rectum,Rectum,T3N1M0,III,III,Downstream
+CCIS12656533ST-4-0,2014_ZellerG,CRC,France,European,51,M,30,Rectum,Rectum,T2N1M1,IV,IV,Downstream
+CCIS14449628ST-4-0,2014_ZellerG,CRC,France,European,59,F,20,RC,RC,T4N1M0,III,III,Downstream
+CCIS17669415ST-4-0,2014_ZellerG,CRC,France,European,72,F,37,LC,LC,T1N0M0,I,I,Downstream
+CCIS21278152ST-4-0,2014_ZellerG,CRC,France,European,63,M,25,Sigma,LC,T3N0M0,II,II,Downstream
+CCIS22416007ST-4-0,2014_ZellerG,CRC,France,European,82,M,24.49,LC,LC,T4N1M1,IV,IV,Downstream
+CCIS22958137ST-20-0,2014_ZellerG,CRC,France,European,60,M,26,RC,RC,T4N1M1,IV,IV,Downstream
+CCIS24254057ST-4-0,2014_ZellerG,CRC,France,European,69,F,24,RC,RC,T4N1M1,IV,IV,Downstream
+CCIS33816588ST-4-0,2014_ZellerG,CRC,France,European,64,M,21,LC,LC,T3N1M0,III,III,Downstream
+CCIS35100175ST-4-0,2014_ZellerG,CRC,France,European,73,M,40,LC,LC,T1N0M0,I,I,Downstream
+CCIS38765456ST-20-0,2014_ZellerG,CRC,France,European,79,F,22,LC,LC,T4N1M1,IV,IV,Downstream
+CCIS40244499ST-3-0,2014_ZellerG,CRC,France,European,87,F,32.42,RC,RC,T4N0M0,II,II,Downstream
+CCIS41222843ST-4-0,2014_ZellerG,CRC,France,European,73,F,24,LC,LC,T3N1M0,III,III,Downstream
+CCIS41548810ST-4-0,2014_ZellerG,CRC,France,European,78,M,19,LC,LC,T3N0M1,IV,IV,Downstream
+CCIS44757994ST-4-0,2014_ZellerG,CRC,France,European,75,M,37,LC,LC,T3N1M0,III,III,Downstream
+CCIS53043478ST-4-0,2014_ZellerG,CRC,France,European,72,M,22,LC,LC,T3N1M1,IV,IV,Downstream
+CCIS53355328ST-4-0,2014_ZellerG,CRC,France,European,76,M,NA,LC,LC,T2N0M0,I,I,Downstream
+CCIS55230578ST-4-0,2014_ZellerG,CRC,France,European,64,M,30,RC,RC,T3N1M1,IV,IV,Downstream
+CCIS58234805ST-4-0,2014_ZellerG,CRC,France,European,70,F,26,LC,LC,T3N1M0,III,III,Downstream
+CCIS59132091ST-4-0,2014_ZellerG,CRC,France,European,80,F,23.19,LC,LC,T1N0M0,I,I,Downstream
+CCIS61287323ST-4-0,2014_ZellerG,CRC,France,European,76,M,25,Rectum,Rectum,T3N0M0,II,II,Downstream
+CCIS62605362ST-3-0,2014_ZellerG,CRC,France,European,56,F,23,RC,RC,T3N0M0,II,II,Downstream
+CCIS71301801ST-4-0,2014_ZellerG,CRC,France,European,50,F,24,Rectum,Rectum,T1N0M0,I,I,Downstream
+CCIS76845094ST-20-0,2014_ZellerG,CRC,France,European,44,M,20,RC,RC,T3N1M1,IV,IV,Downstream
+CCIS77252613ST-4-0,2014_ZellerG,CRC,France,European,65,M,26,LC,LC,T1N0M0,I,I,Downstream
+CCIS78318719ST-4-0,2014_ZellerG,CRC,France,European,69,F,30,RC,RC,T3N0M0,II,II,Downstream
+CCIS81887263ST-4-0,2014_ZellerG,CRC,France,European,59,M,27,Rectum,Rectum,T2N0M0,I,I,Downstream
+CCIS82146115ST-4-0,2014_ZellerG,CRC,France,European,51,M,24,RC,RC,T3N1M1,IV,IV,Downstream
+CCIS83870198ST-4-0,2014_ZellerG,CRC,France,European,48,F,24,LC,LC,T1N0M0,I,I,Downstream
+CCIS84543192ST-4-0,2014_ZellerG,CRC,France,European,45,F,28,Rectum,Rectum,T2N0M0,I,I,Downstream
+CCIS87167916ST-4-0,2014_ZellerG,CRC,France,European,79,M,30,Rectum,Rectum,T4N1M1,IV,IV,Downstream
+CCIS87605453ST-4-0,2014_ZellerG,CRC,France,European,73,F,26,RC,RC,T3N0M0,II,II,Downstream
+CCIS91228662ST-4-0,2014_ZellerG,CRC,France,European,63,M,31,LC,LC,T1N0M0,I,I,Downstream
+CCIS98832363ST-4-0,2014_ZellerG,CRC,France,European,55,F,25,LC,LC,T3N1M0,III,III,Downstream
+CCMD11006829ST-21-0,2014_ZellerG,CRC,Germany,European,42,F,34.8,Sigma,LC,T3N0M0,II,II,Downstream
+CCMD12232071ST-21-0,2014_ZellerG,CRC,Germany,European,75,M,27.8,RC,RC,T3N2M0,III,III,Downstream
+CCMD13071240ST-21-0,2014_ZellerG,CRC,Germany,European,66,F,23,RC,RC,T3N0M0,II,II,Downstream
+CCMD13934959ST-21-0,2014_ZellerG,CRC,Germany,European,56,M,26.8,Sigma,LC,T3N0M0,II,II,Downstream
+CCMD14479708ST-21-0,2014_ZellerG,CRC,Germany,European,74,M,25.5,RC,RC,T3N0M1,IV,IV,Downstream
+CCMD18872694ST-21-0,2014_ZellerG,CRC,Germany,European,63,M,25.3,Rectum,Rectum,T3N1M0,III,III,Downstream
+CCMD19497912ST-21-0,2014_ZellerG,CRC,Germany,European,53,F,32,Sigma,LC,T3N0M0,II,II,Downstream
+CCMD23101338ST-21-0,2014_ZellerG,CRC,Germany,European,69,M,27.8,Rectum,Rectum,T1N0M0,I,I,Downstream
+CCMD25511638ST-21-0,2014_ZellerG,CRC,Germany,European,72,F,24.3,RC,RC,T1N0M0,I,I,Downstream
+CCMD25963797ST-21-0,2014_ZellerG,CRC,Germany,European,62,M,21.7,Rectum,Rectum,T3N0M0,II,II,Downstream
+CCMD34381688ST-21-0,2014_ZellerG,CRC,Germany,European,41,M,21.9,Sigma,LC,T2N1M0,III,III,Downstream
+CCMD35802077ST-21-0,2014_ZellerG,CRC,Germany,European,71,M,29.7,RC,RC,T3N0M0,II,II,Downstream
+CCMD40701343ST-21-0,2014_ZellerG,CRC,Germany,European,65,M,27.7,Sigma,LC,T3N0M0,II,II,Downstream
+CCMD42428553ST-21-0,2014_ZellerG,CRC,Germany,European,87,M,22,Sigma,LC,T2N0M1,IV,IV,Downstream
+CCMD45988061ST-21-0,2014_ZellerG,CRC,Germany,European,62,F,26.6,Rectum,Rectum,T2N0M0,I,I,Downstream
+CCMD46222674ST-21-0,2014_ZellerG,CRC,Germany,European,59,M,23.7,Rectum,Rectum,T3N0M1,IV,IV,Downstream
+CCMD46947453ST-21-0,2014_ZellerG,CRC,Germany,European,69,M,24.30724356,Rectum,Rectum,T1N0M0,I,I,Downstream
+CCMD50071957ST-21-0,2014_ZellerG,CRC,Germany,European,35,F,22.3,Sigma,LC,T4N0M0,II,II,Downstream
+CCMD51864103ST-21-0,2014_ZellerG,CRC,Germany,European,58,M,25.2,Rectum,Rectum,T3N0M0,II,II,Downstream
+CCMD60079086ST-21-0,2014_ZellerG,CRC,Germany,European,73,F,22.4,Sigma,LC,T2N0M0,I,I,Downstream
+CCMD63399960ST-21-0,2014_ZellerG,CRC,Germany,European,51,M,27.7488727,Rectum,Rectum,T3N1M1,IV,IV,Downstream
+CCMD64503764ST-21-0,2014_ZellerG,CRC,Germany,European,66,M,31.1,Rectum,Rectum,T2N0M0,I,I,Downstream
+CCMD64776337ST-21-0,2014_ZellerG,CRC,Germany,European,79,F,26.4,Rectum,Rectum,T1N0M0,I,I,Downstream
+CCMD72895164ST-21-0,2014_ZellerG,CRC,Germany,European,34,M,26.8,Sigma,LC,T4N2M1,IV,IV,Downstream
+CCMD82866709ST-21-0,2014_ZellerG,CRC,Germany,European,77,F,26.2,LC,LC,T3N0M0,II,II,Downstream
+CCMD86114146ST-21-0,2014_ZellerG,CRC,Germany,European,68,M,22.7,Rectum,Rectum,T3N2M1,IV,IV,Downstream
+CCMD86707194ST-21-0,2014_ZellerG,CRC,Germany,European,53,F,30.5,RC,RC,T1N0M0,I,I,Downstream
+CCMD87156761ST-21-0,2014_ZellerG,CRC,Germany,European,55,M,27.5,LC,LC,T2N0M0,I,I,Downstream
+CCMD88272491ST-21-0,2014_ZellerG,CRC,Germany,European,72,M,27.7,Rectum,Rectum,pTis,0,NA,Downstream
+CCMD90311071ST-21-0,2014_ZellerG,CRC,Germany,European,43,F,22.1,RC,RC,T4N2M1,IV,IV,Downstream
+CCMD93344354ST-21-0,2014_ZellerG,CRC,Germany,European,51,M,29.7,Sigma,LC,T3N2M1,IV,IV,Downstream
+CCMD95433940ST-21-0,2014_ZellerG,CRC,Germany,European,49,F,30.3,RC,RC,pTis,0,NA,Downstream
+CCMD96553385ST-21-0,2014_ZellerG,CRC,Germany,European,90,M,27.7,RC,RC,T3N2M0,III,III,Downstream
+CCIS00146684ST-4-0,2014_ZellerG,CTRL,France,European,72,F,25,NA,NA,NA,NA,NA,Downstream
+CCIS00281083ST-3-0,2014_ZellerG,CTRL,France,European,53,M,32,NA,NA,NA,NA,NA,Downstream
+CCIS02124300ST-4-0,2014_ZellerG,CTRL,France,European,35,M,23,NA,NA,NA,NA,NA,Downstream
+CCIS02856720ST-4-0,2014_ZellerG,CTRL,France,European,74,M,27,NA,NA,NA,NA,NA,Downstream
+CCIS03473770ST-4-0,2014_ZellerG,CTRL,France,European,29,M,24.49,NA,NA,NA,NA,NA,Downstream
+CCIS03857607ST-4-0,2014_ZellerG,CTRL,France,European,61,M,23,NA,NA,NA,NA,NA,Downstream
+CCIS05314658ST-4-0,2014_ZellerG,CTRL,France,European,65,F,24,NA,NA,NA,NA,NA,Downstream
+CCIS07277498ST-4-0,2014_ZellerG,CTRL,France,European,63,M,NA,NA,NA,NA,NA,NA,Downstream
+CCIS07539127ST-4-0,2014_ZellerG,CTRL,France,European,77,F,22,NA,NA,NA,NA,NA,Downstream
+CCIS07648107ST-4-0,2014_ZellerG,CTRL,France,European,62,F,21,NA,NA,NA,NA,NA,Downstream
+CCIS09568613ST-4-0,2014_ZellerG,CTRL,France,European,67,M,21,NA,NA,NA,NA,NA,Downstream
+CCIS10706551ST-3-0,2014_ZellerG,CTRL,France,European,25,M,24.15,NA,NA,NA,NA,NA,Downstream
+CCIS11354283ST-4-0,2014_ZellerG,CTRL,France,European,67,M,27,NA,NA,NA,NA,NA,Downstream
+CCIS11362406ST-4-0,2014_ZellerG,CTRL,France,European,44,F,26,NA,NA,NA,NA,NA,Downstream
+CCIS11558985ST-4-0,2014_ZellerG,CTRL,France,European,56,F,NA,NA,NA,NA,NA,NA,Downstream
+CCIS13047523ST-4-0,2014_ZellerG,CTRL,France,European,70,M,22,NA,NA,NA,NA,NA,Downstream
+CCIS15794887ST-4-0,2014_ZellerG,CTRL,France,European,37,F,18,NA,NA,NA,NA,NA,Downstream
+CCIS16326685ST-4-0,2014_ZellerG,CTRL,France,European,46,F,29,NA,NA,NA,NA,NA,Downstream
+CCIS16383318ST-4-0,2014_ZellerG,CTRL,France,European,61,F,24,NA,NA,NA,NA,NA,Downstream
+CCIS16561622ST-4-0,2014_ZellerG,CTRL,France,European,54,M,26,NA,NA,NA,NA,NA,Downstream
+CCIS20795251ST-4-0,2014_ZellerG,CTRL,France,European,71,F,23,NA,NA,NA,NA,NA,Downstream
+CCIS21126322ST-4-0,2014_ZellerG,CTRL,France,European,59,M,25,NA,NA,NA,NA,NA,Downstream
+CCIS23164343ST-4-0,2014_ZellerG,CTRL,France,European,62,M,23,NA,NA,NA,NA,NA,Downstream
+CCIS27304052ST-3-0,2014_ZellerG,CTRL,France,European,52,F,20,NA,NA,NA,NA,NA,Downstream
+CCIS29688262ST-20-0,2014_ZellerG,CTRL,France,European,50,M,25,NA,NA,NA,NA,NA,Downstream
+CCIS32452666ST-4-0,2014_ZellerG,CTRL,France,European,68,M,26,NA,NA,NA,NA,NA,Downstream
+CCIS34604008ST-4-0,2014_ZellerG,CTRL,France,European,63,F,27,NA,NA,NA,NA,NA,Downstream
+CCIS36699628ST-4-0,2014_ZellerG,CTRL,France,European,68,F,25,NA,NA,NA,NA,NA,Downstream
+CCIS36797902ST-4-0,2014_ZellerG,CTRL,France,European,63,M,25,NA,NA,NA,NA,NA,Downstream
+CCIS41692898ST-4-0,2014_ZellerG,CTRL,France,European,67,F,28,NA,NA,NA,NA,NA,Downstream
+CCIS45793747ST-4-0,2014_ZellerG,CTRL,France,European,67,M,25,NA,NA,NA,NA,NA,Downstream
+CCIS48174381ST-4-0,2014_ZellerG,CTRL,France,European,66,M,25,NA,NA,NA,NA,NA,Downstream
+CCIS50003399ST-4-0,2014_ZellerG,CTRL,France,European,66,F,28,NA,NA,NA,NA,NA,Downstream
+CCIS50471204ST-4-0,2014_ZellerG,CTRL,France,European,61,F,23,NA,NA,NA,NA,NA,Downstream
+CCIS51595129ST-4-0,2014_ZellerG,CTRL,France,European,63,F,22,NA,NA,NA,NA,NA,Downstream
+CCIS63468405ST-4-0,2014_ZellerG,CTRL,France,European,69,F,25,NA,NA,NA,NA,NA,Downstream
+CCIS64773582ST-4-0,2014_ZellerG,CTRL,France,European,63,F,23,NA,NA,NA,NA,NA,Downstream
+CCIS71578391ST-4-0,2014_ZellerG,CTRL,France,European,70,M,25,NA,NA,NA,NA,NA,Downstream
+CCIS74239020ST-4-0,2014_ZellerG,CTRL,France,European,62,M,24,NA,NA,NA,NA,NA,Downstream
+CCIS78100604ST-4-0,2014_ZellerG,CTRL,France,European,64,F,30,NA,NA,NA,NA,NA,Downstream
+CCIS80834637ST-4-0,2014_ZellerG,CTRL,France,European,60,F,28,NA,NA,NA,NA,NA,Downstream
+CCIS81139242ST-4-0,2014_ZellerG,CTRL,France,European,64,F,20,NA,NA,NA,NA,NA,Downstream
+CCIS88317640ST-4-0,2014_ZellerG,CTRL,France,European,74,M,27,NA,NA,NA,NA,NA,Downstream
+CCIS90164298ST-4-0,2014_ZellerG,CTRL,France,European,84,M,23,NA,NA,NA,NA,NA,Downstream
+CCIS94417875ST-3-0,2014_ZellerG,CTRL,France,European,59,F,25,NA,NA,NA,NA,NA,Downstream
+CCIS94603952ST-4-0,2014_ZellerG,CTRL,France,European,80,F,21,NA,NA,NA,NA,NA,Downstream
+CCIS95097901ST-4-0,2014_ZellerG,CTRL,France,European,52,M,24,NA,NA,NA,NA,NA,Downstream
+CCIS95409808ST-4-0,2014_ZellerG,CTRL,France,European,63,F,21,NA,NA,NA,NA,NA,Downstream
+CCIS98482370ST-3-0,2014_ZellerG,CTRL,France,European,53,F,30,NA,NA,NA,NA,NA,Downstream
+SID31137,2015_FengQ,adenoma,AUT,Oceanian,67,M,27.14,right,RC,NA,NA,NA,Downstream
+SID31233,2015_FengQ,adenoma,AUT,Oceanian,62,M,26.88,left,LC,NA,NA,NA,Downstream
+SID31256,2015_FengQ,adenoma,AUT,Oceanian,69,F,24.13,left,LC,NA,NA,NA,Downstream
+SID31275,2015_FengQ,adenoma,AUT,Oceanian,62,M,30.1,right,RC,NA,NA,NA,Downstream
+SID31282,2015_FengQ,adenoma,AUT,Oceanian,63,M,34.08,rectum,Rectum,NA,NA,NA,Downstream
+SID31398,2015_FengQ,adenoma,AUT,Oceanian,68,F,34.01,right,RC,NA,NA,NA,Downstream
+SID31431,2015_FengQ,adenoma,AUT,Oceanian,71,M,27.04,left,LC,NA,NA,NA,Downstream
+SID31449,2015_FengQ,adenoma,AUT,Oceanian,63,M,30.77,left,LC,NA,NA,NA,Downstream
+SID31455,2015_FengQ,adenoma,AUT,Oceanian,72,F,27.43,rectum,Rectum,NA,NA,NA,Downstream
+SID31477,2015_FengQ,adenoma,AUT,Oceanian,78,F,31.24,rectum,Rectum,NA,NA,NA,Downstream
+SID31501,2015_FengQ,adenoma,AUT,Oceanian,69,F,24.4,right,RC,NA,NA,NA,Downstream
+SID31582,2015_FengQ,adenoma,AUT,Oceanian,77,M,25.7,rectum,Rectum,NA,NA,NA,Downstream
+SID530002,2015_FengQ,adenoma,AUT,Oceanian,60,F,30,right,RC,NA,NA,NA,Downstream
+SID530018,2015_FengQ,adenoma,AUT,Oceanian,56,M,29.41,right,RC,NA,NA,NA,Downstream
+SID530026,2015_FengQ,adenoma,AUT,Oceanian,83,F,21.94,left,LC,NA,NA,NA,Downstream
+SID530028,2015_FengQ,adenoma,AUT,Oceanian,67,M,33.23,right,RC,NA,NA,NA,Downstream
+SID530039,2015_FengQ,adenoma,AUT,Oceanian,67,M,28.34,left,LC,NA,NA,NA,Downstream
+SID530041,2015_FengQ,adenoma,AUT,Oceanian,69,M,21.46,left,LC,NA,NA,NA,Downstream
+SID530054,2015_FengQ,adenoma,AUT,Oceanian,64,F,20.52,left,LC,NA,NA,NA,Downstream
+SID530142,2015_FengQ,adenoma,AUT,Oceanian,61,F,22.8,left,LC,NA,NA,NA,Downstream
+SID530168,2015_FengQ,adenoma,AUT,Oceanian,62,F,32.8,right,RC,NA,NA,NA,Downstream
+SID530172,2015_FengQ,adenoma,AUT,Oceanian,63,M,27.4,rectum,Rectum,NA,NA,NA,Downstream
+SID530185,2015_FengQ,adenoma,AUT,Oceanian,52,F,32.8,right,RC,NA,NA,NA,Downstream
+SID530262,2015_FengQ,adenoma,AUT,Oceanian,64,M,29.3,left,LC,NA,NA,NA,Downstream
+SID530297,2015_FengQ,adenoma,AUT,Oceanian,78,F,24,rectum,Rectum,NA,NA,NA,Downstream
+SID530348,2015_FengQ,adenoma,AUT,Oceanian,58,M,21.7,rectum,Rectum,NA,NA,NA,Downstream
+SID530398,2015_FengQ,adenoma,AUT,Oceanian,80,M,26.47,left,LC,NA,NA,NA,Downstream
+SID530450,2015_FengQ,adenoma,AUT,Oceanian,48,M,25.61,rectum,Rectum,NA,NA,NA,Downstream
+SID530558,2015_FengQ,adenoma,AUT,Oceanian,56,F,22.8,rectum,Rectum,NA,NA,NA,Downstream
+SID530600,2015_FengQ,adenoma,AUT,Oceanian,70,F,25.2,right,RC,NA,NA,NA,Downstream
+SID530623,2015_FengQ,adenoma,AUT,Oceanian,62,M,24.3,rectum,Rectum,NA,NA,NA,Downstream
+SID530697,2015_FengQ,adenoma,AUT,Oceanian,63,F,30.47,left,LC,NA,NA,NA,Downstream
+SID530743,2015_FengQ,adenoma,AUT,Oceanian,66,F,22.65,rectum,Rectum,NA,NA,NA,Downstream
+SID530867,2015_FengQ,adenoma,AUT,Oceanian,58,M,27.02,right,RC,NA,NA,NA,Downstream
+SID531663,2015_FengQ,adenoma,AUT,Oceanian,63,M,25.64891762,NA,NA,NA,NA,NA,Downstream
+SID532832,2015_FengQ,adenoma,AUT,Oceanian,68,F,27.54820937,NA,NA,NA,NA,NA,Downstream
+SID31004,2015_FengQ,CRC,AUT,Oceanian,64,M,29.3523545,rectum,Rectum,T1N0M0,I,I,Downstream
+SID31188,2015_FengQ,CRC,AUT,Oceanian,65,M,28.02768166,rectum,Rectum,NA,NA,NA,Downstream
+SID31223,2015_FengQ,CRC,AUT,Oceanian,65,F,23.30668005,rectum,Rectum,T4N0M0,II,II,Downstream
+SID31237,2015_FengQ,CRC,AUT,Oceanian,67,M,29.40292024,right,RC,T3N0M0,II,II,Downstream
+SID31276,2015_FengQ,CRC,AUT,Oceanian,82,M,30.47052154,right,RC,pTis,0,NA,Downstream
+SID31285,2015_FengQ,CRC,AUT,Oceanian,84,M,27.28174603,rectum,Rectum,T3N0M0,II,II,Downstream
+SID31489,2015_FengQ,CRC,AUT,Oceanian,60,M,26.64359862,rectum,Rectum,T2N0M0,I,I,Downstream
+SID31549,2015_FengQ,CRC,AUT,Oceanian,84,F,27.76709812,left,LC,T1N0M0,I,I,Downstream
+SID31685,2015_FengQ,CRC,AUT,Oceanian,74,M,26.36560303,left,LC,T1N0M0,I,I,Downstream
+SID31865,2015_FengQ,CRC,AUT,Oceanian,55,F,23.33546614,rectum,Rectum,T2N0M0,I,I,Downstream
+SID31866,2015_FengQ,CRC,AUT,Oceanian,73,F,29.75206612,left,LC,T3N0M0,II,II,Downstream
+SID31870,2015_FengQ,CRC,AUT,Oceanian,63,M,25.88057064,left,LC,T1N0M0,I,I,Downstream
+SID31871,2015_FengQ,CRC,AUT,Oceanian,72,M,28.40816327,left,LC,T2N0M0,I,I,Downstream
+SID31872,2015_FengQ,CRC,AUT,Oceanian,46,M,30.86419753,left,LC,pTis,0,NA,Downstream
+SID31873,2015_FengQ,CRC,AUT,Oceanian,73,M,24.81632653,rectum,Rectum,T3N0M0,II,II,Downstream
+SID31874,2015_FengQ,CRC,AUT,Oceanian,74,F,29.17488494,left,LC,T4N1M1,IV,IV,Downstream
+SID31875,2015_FengQ,CRC,AUT,Oceanian,58,M,27.75748722,rectum,Rectum,T2N0M0,I,I,Downstream
+SID31877,2015_FengQ,CRC,AUT,Oceanian,72,F,26.6727633,rectum,Rectum,T3N1M0,III,III,Downstream
+SID31878,2015_FengQ,CRC,AUT,Oceanian,52,F,27.14158239,rectum,Rectum,T3N1M0,III,III,Downstream
+SID31880,2015_FengQ,CRC,AUT,Oceanian,74,M,24.33747972,right,RC,T4N2M0,III,III,Downstream
+SID31881,2015_FengQ,CRC,AUT,Oceanian,60,F,30.078125,rectum,Rectum,T4N1M0,III,III,Downstream
+SID31883,2015_FengQ,CRC,AUT,Oceanian,43,M,22.67995241,rectum,Rectum,T3N0M0,II,II,Downstream
+SID530373,2015_FengQ,CRC,AUT,Oceanian,47,F,25.78125,rectum,Rectum,T2N0M0,I,I,Downstream
+SID530890,2015_FengQ,CRC,AUT,Oceanian,77,M,29.41176471,rectum,Rectum,pTis,0,NA,Downstream
+SID531128,2015_FengQ,CRC,AUT,Oceanian,52,M,25.72755521,rectum,Rectum,T3N1M0,III,III,Downstream
+SID531248,2015_FengQ,CRC,AUT,Oceanian,79,M,26.29757785,left,LC,T3N1M0,III,III,Downstream
+SID531277,2015_FengQ,CRC,AUT,Oceanian,64,M,29.0687733,rectum,Rectum,T1N0M0,I,I,Downstream
+SID531281,2015_FengQ,CRC,AUT,Oceanian,72,F,27.12031558,left,LC,pTis,0,NA,Downstream
+SID531333,2015_FengQ,CRC,AUT,Oceanian,69,M,29.9382716,left,LC,T3N1M0,III,III,Downstream
+SID531352,2015_FengQ,CRC,AUT,Oceanian,66,M,22.5981405,left,LC,T1N0M0,I,I,Downstream
+SID531361,2015_FengQ,CRC,AUT,Oceanian,72,F,23.828125,rectum,Rectum,T4N1M0,III,III,Downstream
+SID531416,2015_FengQ,CRC,AUT,Oceanian,63,M,33.56401384,rectum,Rectum,T2N0M0,I,I,Downstream
+SID531469,2015_FengQ,CRC,AUT,Oceanian,45,F,22.14532872,rectum,Rectum,T2N0M0,I,I,Downstream
+SID531775,2015_FengQ,CRC,AUT,Oceanian,77,F,23.49523687,right,RC,T3N0M0,II,II,Downstream
+SID31009,2015_FengQ,CTRL,AUT,Oceanian,68,M,32,NA,NA,NA,NA,NA,Downstream
+SID31021,2015_FengQ,CTRL,AUT,Oceanian,60,F,22.1,NA,NA,NA,NA,NA,Downstream
+SID31071,2015_FengQ,CTRL,AUT,Oceanian,68,M,23.45,NA,NA,NA,NA,NA,Downstream
+SID31129,2015_FengQ,CTRL,AUT,Oceanian,73,M,29.7,NA,NA,NA,NA,NA,Downstream
+SID31160,2015_FengQ,CTRL,AUT,Oceanian,67,F,30,NA,NA,NA,NA,NA,Downstream
+SID31219,2015_FengQ,CTRL,AUT,Oceanian,74,F,28.3,NA,NA,NA,NA,NA,Downstream
+SID31232,2015_FengQ,CTRL,AUT,Oceanian,70,M,22.64,NA,NA,NA,NA,NA,Downstream
+SID31236,2015_FengQ,CTRL,AUT,Oceanian,65,M,29.06,NA,NA,NA,NA,NA,Downstream
+SID31267,2015_FengQ,CTRL,AUT,Oceanian,67,M,22.79,NA,NA,NA,NA,NA,Downstream
+SID31300,2015_FengQ,CTRL,AUT,Oceanian,68,F,21.7,NA,NA,NA,NA,NA,Downstream
+SID31328,2015_FengQ,CTRL,AUT,Oceanian,63,M,30.9,NA,NA,NA,NA,NA,Downstream
+SID31360,2015_FengQ,CTRL,AUT,Oceanian,71,M,29.04,NA,NA,NA,NA,NA,Downstream
+SID31379,2015_FengQ,CTRL,AUT,Oceanian,63,M,30.4,NA,NA,NA,NA,NA,Downstream
+SID31416,2015_FengQ,CTRL,AUT,Oceanian,72,M,31.8,NA,NA,NA,NA,NA,Downstream
+SID31452,2015_FengQ,CTRL,AUT,Oceanian,66,F,21.7,NA,NA,NA,NA,NA,Downstream
+SID31512,2015_FengQ,CTRL,AUT,Oceanian,64,M,29.3,NA,NA,NA,NA,NA,Downstream
+SID31519,2015_FengQ,CTRL,AUT,Oceanian,65,M,28.9,NA,NA,NA,NA,NA,Downstream
+SID31537,2015_FengQ,CTRL,AUT,Oceanian,70,F,31,NA,NA,NA,NA,NA,Downstream
+SID31600,2015_FengQ,CTRL,AUT,Oceanian,70,F,30,NA,NA,NA,NA,NA,Downstream
+SID31700,2015_FengQ,CTRL,AUT,Oceanian,72,F,28.7,NA,NA,NA,NA,NA,Downstream
+SID31749,2015_FengQ,CTRL,AUT,Oceanian,70,M,31.25,NA,NA,NA,NA,NA,Downstream
+SID31750,2015_FengQ,CTRL,AUT,Oceanian,66,M,34.04,NA,NA,NA,NA,NA,Downstream
+SID31766,2015_FengQ,CTRL,AUT,Oceanian,73,F,32,NA,NA,NA,NA,NA,Downstream
+SID530055,2015_FengQ,CTRL,AUT,Oceanian,64,M,22.78,NA,NA,NA,NA,NA,Downstream
+SID530119,2015_FengQ,CTRL,AUT,Oceanian,70,M,31.6,NA,NA,NA,NA,NA,Downstream
+SID530154,2015_FengQ,CTRL,AUT,Oceanian,74,F,28.5,NA,NA,NA,NA,NA,Downstream
+SID530163,2015_FengQ,CTRL,AUT,Oceanian,63,M,30.4,NA,NA,NA,NA,NA,Downstream
+SID530167,2015_FengQ,CTRL,AUT,Oceanian,72,F,30,NA,NA,NA,NA,NA,Downstream
+SID530177,2015_FengQ,CTRL,AUT,Oceanian,71,F,29,NA,NA,NA,NA,NA,Downstream
+SID530215,2015_FengQ,CTRL,AUT,Oceanian,65,M,31.22,NA,NA,NA,NA,NA,Downstream
+SID530251,2015_FengQ,CTRL,AUT,Oceanian,72,M,31.8,NA,NA,NA,NA,NA,Downstream
+SID530258,2015_FengQ,CTRL,AUT,Oceanian,65,M,22.03,NA,NA,NA,NA,NA,Downstream
+SID530295,2015_FengQ,CTRL,AUT,Oceanian,70,F,22.67,NA,NA,NA,NA,NA,Downstream
+SID530331,2015_FengQ,CTRL,AUT,Oceanian,70,M,23.67,NA,NA,NA,NA,NA,Downstream
+SID530364,2015_FengQ,CTRL,AUT,Oceanian,63,M,31.17,NA,NA,NA,NA,NA,Downstream
+SID530368,2015_FengQ,CTRL,AUT,Oceanian,70,F,22.8,NA,NA,NA,NA,NA,Downstream
+SID530394,2015_FengQ,CTRL,AUT,Oceanian,67,F,22.58,NA,NA,NA,NA,NA,Downstream
+SID530444,2015_FengQ,CTRL,AUT,Oceanian,62,F,22.1,NA,NA,NA,NA,NA,Downstream
+SID530451,2015_FengQ,CTRL,AUT,Oceanian,68,M,29.8,NA,NA,NA,NA,NA,Downstream
+SID532749,2015_FengQ,CTRL,AUT,Oceanian,55,M,27.76342975,NA,NA,NA,NA,NA,Downstream
+SID532779,2015_FengQ,CTRL,AUT,Oceanian,70,M,28.71972318,NA,NA,NA,NA,NA,Downstream
+SID532796,2015_FengQ,CTRL,AUT,Oceanian,73,F,26.5625,NA,NA,NA,NA,NA,Downstream
+SID532802,2015_FengQ,CTRL,AUT,Oceanian,68,M,23.52941176,NA,NA,NA,NA,NA,Downstream
+SID532826,2015_FengQ,CTRL,AUT,Oceanian,78,M,31.22130395,NA,NA,NA,NA,NA,Downstream
+SID532915,2015_FengQ,CTRL,AUT,Oceanian,43,F,22.64737696,NA,NA,NA,NA,NA,Downstream
+MMRS12272136ST,2016_VogtmannE,CRC,USA,North American,51,M,25.82185491,NA,NA,NA,NA,NA,Downstream
+MMRS14602194ST,2016_VogtmannE,CRC,USA,North American,84,F,NA,NA,NA,NA,NA,NA,Downstream
+MMRS15137911ST,2016_VogtmannE,CRC,USA,North American,64,F,35.69921875,NA,NA,NA,NA,NA,Downstream
+MMRS16644320ST,2016_VogtmannE,CRC,USA,North American,53,M,27.89129141,NA,NA,NA,NA,NA,Downstream
+MMRS18295921ST,2016_VogtmannE,CRC,USA,North American,42,M,22.03412021,NA,NA,NA,NA,NA,Downstream
+MMRS25641480ST,2016_VogtmannE,CRC,USA,North American,54,F,23.49075518,NA,NA,NA,NA,NA,Downstream
+MMRS34525504ST,2016_VogtmannE,CRC,USA,North American,71,M,24.74359546,NA,NA,NA,NA,NA,Downstream
+MMRS42780924ST,2016_VogtmannE,CRC,USA,North American,65,M,31.37770284,NA,NA,NA,NA,NA,Downstream
+MMRS43563715ST,2016_VogtmannE,CRC,USA,North American,71,M,22.59168242,NA,NA,NA,NA,NA,Downstream
+MMRS43939546ST,2016_VogtmannE,CRC,USA,North American,63,F,25.68279164,NA,NA,NA,NA,NA,Downstream
+MMRS44587603ST,2016_VogtmannE,CRC,USA,North American,66,F,31.47038567,NA,NA,NA,NA,NA,Downstream
+MMRS51410669ST,2016_VogtmannE,CRC,USA,North American,65,M,21.14167966,NA,NA,NA,NA,NA,Downstream
+MMRS54316675ST,2016_VogtmannE,CRC,USA,North American,55,M,29.64641003,NA,NA,NA,NA,NA,Downstream
+MMRS55294627ST,2016_VogtmannE,CRC,USA,North American,43,M,32.02555556,NA,NA,NA,NA,NA,Downstream
+MMRS62376181ST,2016_VogtmannE,CRC,USA,North American,69,F,20.79881657,NA,NA,NA,NA,NA,Downstream
+MMRS65205033ST,2016_VogtmannE,CRC,USA,North American,89,F,22.67170572,NA,NA,NA,NA,NA,Downstream
+MMRS65945127ST,2016_VogtmannE,CRC,USA,North American,65,M,32.07498512,NA,NA,NA,NA,NA,Downstream
+MMRS67247116ST,2016_VogtmannE,CRC,USA,North American,53,M,25.39408163,NA,NA,NA,NA,NA,Downstream
+MMRS71762412ST,2016_VogtmannE,CRC,USA,North American,44,M,23.36486486,NA,NA,NA,NA,NA,Downstream
+MMRS72802364ST,2016_VogtmannE,CRC,USA,North American,74,M,NA,NA,NA,NA,NA,NA,Downstream
+MMRS72980899ST,2016_VogtmannE,CRC,USA,North American,63,M,21.25472411,NA,NA,NA,NA,NA,Downstream
+MMRS77018926ST,2016_VogtmannE,CRC,USA,North American,40,M,23.73444192,NA,NA,NA,NA,NA,Downstream
+MMRS77321055ST,2016_VogtmannE,CRC,USA,North American,31,M,19.64189189,NA,NA,NA,NA,NA,Downstream
+MMRS77487595ST,2016_VogtmannE,CRC,USA,North American,78,M,22.55112497,NA,NA,NA,NA,NA,Downstream
+MMRS78791111ST,2016_VogtmannE,CRC,USA,North American,65,M,24.32525952,NA,NA,NA,NA,NA,Downstream
+MMRS81194191ST,2016_VogtmannE,CRC,USA,North American,54,M,18.55945822,NA,NA,NA,NA,NA,Downstream
+MMRS81671217ST,2016_VogtmannE,CRC,USA,North American,57,M,26.38393695,NA,NA,NA,NA,NA,Downstream
+MMRS84954772ST,2016_VogtmannE,CRC,USA,North American,56,M,25.82185491,NA,NA,NA,NA,NA,Downstream
+MMRS85382779ST,2016_VogtmannE,CRC,USA,North American,66,M,21.56756757,NA,NA,NA,NA,NA,Downstream
+MMRS86178473ST,2016_VogtmannE,CRC,USA,North American,65,M,25.10216227,NA,NA,NA,NA,NA,Downstream
+MMRS90191266ST,2016_VogtmannE,CRC,USA,North American,37,M,22.50086505,NA,NA,NA,NA,NA,Downstream
+MMRS93508324ST,2016_VogtmannE,CRC,USA,North American,71,F,NA,NA,NA,NA,NA,NA,Downstream
+MMRS97052561ST,2016_VogtmannE,CRC,USA,North American,69,F,27.75971435,NA,NA,NA,NA,NA,Downstream
+MMRS97327636ST,2016_VogtmannE,CRC,USA,North American,84,M,23.47763075,NA,NA,NA,NA,NA,Downstream
+MMRS11288076ST,2016_VogtmannE,CTRL,USA,North American,65,M,23.49075518,NA,NA,NA,NA,NA,Downstream
+MMRS20257302ST,2016_VogtmannE,CTRL,USA,North American,62,F,20.6657128,NA,NA,NA,NA,NA,Downstream
+MMRS21365932ST,2016_VogtmannE,CTRL,USA,North American,56,M,22.95510204,NA,NA,NA,NA,NA,Downstream
+MMRS29805707ST,2016_VogtmannE,CTRL,USA,North American,49,M,33.37837838,NA,NA,NA,NA,NA,Downstream
+MMRS32573774ST,2016_VogtmannE,CTRL,USA,North American,82,M,20.52443772,NA,NA,NA,NA,NA,Downstream
+MMRS33294861ST,2016_VogtmannE,CTRL,USA,North American,48,M,23.08594483,NA,NA,NA,NA,NA,Downstream
+MMRS34569532ST,2016_VogtmannE,CTRL,USA,North American,72,M,23.14977187,NA,NA,NA,NA,NA,Downstream
+MMRS35808664ST,2016_VogtmannE,CTRL,USA,North American,63,M,31.58108108,NA,NA,NA,NA,NA,Downstream
+MMRS38861560ST,2016_VogtmannE,CTRL,USA,North American,76,F,22.14870825,NA,NA,NA,NA,NA,Downstream
+MMRS38954404ST,2016_VogtmannE,CTRL,USA,North American,55,F,23.80489116,NA,NA,NA,NA,NA,Downstream
+MMRS39582183ST,2016_VogtmannE,CTRL,USA,North American,39,M,23.46045525,NA,NA,NA,NA,NA,Downstream
+MMRS51307502ST,2016_VogtmannE,CTRL,USA,North American,45,F,22.6187877,NA,NA,NA,NA,NA,Downstream
+MMRS51737257ST,2016_VogtmannE,CTRL,USA,North American,63,M,25.38107518,NA,NA,NA,NA,NA,Downstream
+MMRS54246132ST,2016_VogtmannE,CTRL,USA,North American,63,M,23.96057028,NA,NA,NA,NA,NA,Downstream
+MMRS57276462ST,2016_VogtmannE,CTRL,USA,North American,67,M,30.50206612,NA,NA,NA,NA,NA,Downstream
+MMRS61683006ST,2016_VogtmannE,CTRL,USA,North American,62,F,25.82185491,NA,NA,NA,NA,NA,Downstream
+MMRS62666492ST,2016_VogtmannE,CTRL,USA,North American,60,M,33.42836735,NA,NA,NA,NA,NA,Downstream
+MMRS64281551ST,2016_VogtmannE,CTRL,USA,North American,63,F,28.3190918,NA,NA,NA,NA,NA,Downstream
+MMRS65742083ST,2016_VogtmannE,CTRL,USA,North American,63,M,24.77702703,NA,NA,NA,NA,NA,Downstream
+MMRS65862658ST,2016_VogtmannE,CTRL,USA,North American,72,M,23.6252888,NA,NA,NA,NA,NA,Downstream
+MMRS66868025ST,2016_VogtmannE,CTRL,USA,North American,58,M,26.77563975,NA,NA,NA,NA,NA,Downstream
+MMRS73787048ST,2016_VogtmannE,CTRL,USA,North American,47,M,24.40487998,NA,NA,NA,NA,NA,Downstream
+MMRS79893829ST,2016_VogtmannE,CTRL,USA,North American,66,M,28.20679012,NA,NA,NA,NA,NA,Downstream
+MMRS81135225ST,2016_VogtmannE,CTRL,USA,North American,57,M,25.10714286,NA,NA,NA,NA,NA,Downstream
+MMRS84159866ST,2016_VogtmannE,CTRL,USA,North American,67,F,18.63573964,NA,NA,NA,NA,NA,Downstream
+MMRS86168210ST,2016_VogtmannE,CTRL,USA,North American,79,M,21.28460208,NA,NA,NA,NA,NA,Downstream
+MMRS88581325ST,2016_VogtmannE,CTRL,USA,North American,73,F,23.92060491,NA,NA,NA,NA,NA,Downstream
+MMRS91297590ST,2016_VogtmannE,CTRL,USA,North American,36,M,21.33683793,NA,NA,NA,NA,NA,Downstream
+MMRS93621581ST,2016_VogtmannE,CTRL,USA,North American,60,M,23.12088889,NA,NA,NA,NA,NA,Downstream
+MMRS94549160ST,2016_VogtmannE,CTRL,USA,North American,76,M,23.81591837,NA,NA,NA,NA,NA,Downstream
+MMRS95277876ST,2016_VogtmannE,CTRL,USA,North American,48,M,21.52040816,NA,NA,NA,NA,NA,Downstream
+MMRS95479054ST,2016_VogtmannE,CTRL,USA,North American,45,M,24.36357908,NA,NA,NA,NA,NA,Downstream
+MMRS97307143ST,2016_VogtmannE,CTRL,USA,North American,56,M,22.70773001,NA,NA,NA,NA,NA,Downstream
+GF16,2019_ThomasAM,adenoma,ITA,European,77,F,20,NA,NA,NA,NA,NA,Downstream
+VF02,2019_ThomasAM,adenoma,ITA,European,73,F,31,NA,NA,NA,NA,NA,Downstream
+VF07,2019_ThomasAM,adenoma,ITA,European,64,F,25,NA,NA,NA,NA,NA,Downstream
+VF172,2019_ThomasAM,adenoma,ITA,European,67,M,26,NA,NA,NA,NA,NA,Downstream
+VF30,2019_ThomasAM,adenoma,ITA,European,53,F,21,NA,NA,NA,NA,NA,Downstream
+VF37,2019_ThomasAM,adenoma,ITA,European,57,M,29,NA,NA,NA,NA,NA,Downstream
+VF69,2019_ThomasAM,adenoma,ITA,European,49,M,21,NA,NA,NA,NA,NA,Downstream
+VF70,2019_ThomasAM,adenoma,ITA,European,61,M,29,NA,NA,NA,NA,NA,Downstream
+GF15,2019_ThomasAM,CRC,ITA,European,75,M,NA,NA,NA,NA,NA,NA,Downstream
+SBJ01C,2019_ThomasAM,CRC,ITA,European,51,M,20.86111966,NA,NA,NA,NA,NA,Downstream
+SBJ02C,2019_ThomasAM,CRC,ITA,European,51,M,31.56167151,NA,NA,NA,NA,NA,Downstream
+SBJ04C,2019_ThomasAM,CRC,ITA,European,69,M,28.982007,NA,NA,NA,NA,NA,Downstream
+SBJ06C,2019_ThomasAM,CRC,ITA,European,57,M,27.77692989,NA,NA,NA,NA,NA,Downstream
+SBJ07C,2019_ThomasAM,CRC,ITA,European,38,M,27.04164413,NA,NA,NA,NA,NA,Downstream
+SBJ10C,2019_ThomasAM,CRC,ITA,European,68,M,24.30248706,NA,NA,NA,NA,NA,Downstream
+SBJ12C,2019_ThomasAM,CRC,ITA,European,65,M,29.56194571,NA,NA,NA,NA,NA,Downstream
+SBJ25C,2019_ThomasAM,CRC,ITA,European,70,M,28.37370242,NA,NA,NA,NA,NA,Downstream
+SBJ27C,2019_ThomasAM,CRC,ITA,European,61,M,27.44059917,NA,NA,NA,NA,NA,Downstream
+SBJ33C,2019_ThomasAM,CRC,ITA,European,63,M,29.96161169,NA,NA,NA,NA,NA,Downstream
+SBJ35C,2019_ThomasAM,CRC,ITA,European,59,M,27.58020032,NA,NA,NA,NA,NA,Downstream
+SBJ36C,2019_ThomasAM,CRC,ITA,European,51,F,19.43301326,NA,NA,NA,NA,NA,Downstream
+SBJ40C,2019_ThomasAM,CRC,ITA,European,59,M,38.53061224,NA,NA,NA,NA,NA,Downstream
+SBJ42C,2019_ThomasAM,CRC,ITA,European,64,M,24.93372049,NA,NA,NA,NA,NA,Downstream
+SBJ49C,2019_ThomasAM,CRC,ITA,European,69,M,22.64219297,NA,NA,NA,NA,NA,Downstream
+SBJ50C,2019_ThomasAM,CRC,ITA,European,56,M,25.18078512,NA,NA,NA,NA,NA,Downstream
+SBJ53C,2019_ThomasAM,CRC,ITA,European,55,M,29.36576335,NA,NA,NA,NA,NA,Downstream
+SBJ55C,2019_ThomasAM,CRC,ITA,European,67,M,29.06976744,NA,NA,NA,NA,NA,Downstream
+SBJ61C,2019_ThomasAM,CRC,ITA,European,56,F,25.390625,NA,NA,NA,NA,NA,Downstream
+SBJ64C,2019_ThomasAM,CRC,ITA,European,48,M,25.2675737,NA,NA,NA,NA,NA,Downstream
+VF100,2019_ThomasAM,CRC,ITA,European,64,M,30,NA,NA,NA,NA,NA,Downstream
+VF264,2019_ThomasAM,CRC,ITA,European,78,M,24,NA,NA,NA,NA,NA,Downstream
+VF270,2019_ThomasAM,CRC,ITA,European,60,M,22,NA,NA,NA,NA,NA,Downstream
+VF29,2019_ThomasAM,CRC,ITA,European,74,M,25,NA,NA,NA,NA,NA,Downstream
+VF300,2019_ThomasAM,CRC,ITA,European,57,M,30,NA,NA,NA,NA,NA,Downstream
+VF77,2019_ThomasAM,CRC,ITA,European,70,M,24,NA,NA,NA,NA,NA,Downstream
+GF06,2019_ThomasAM,CTRL,ITA,European,77,F,25,NA,NA,NA,NA,NA,Downstream
+SBJ03H,2019_ThomasAM,CTRL,ITA,European,52,M,23.72281065,NA,NA,NA,NA,NA,Downstream
+SBJ34H,2019_ThomasAM,CTRL,ITA,European,58,F,20.3125,NA,NA,NA,NA,NA,Downstream
+SBJ45H,2019_ThomasAM,CTRL,ITA,European,54,M,24.48979592,NA,NA,NA,NA,NA,Downstream
+SBJ46H,2019_ThomasAM,CTRL,ITA,European,66,M,21.70512943,NA,NA,NA,NA,NA,Downstream
+SBJ57H,2019_ThomasAM,CTRL,ITA,European,66,F,21.09375,NA,NA,NA,NA,NA,Downstream
+SBJ60H,2019_ThomasAM,CTRL,ITA,European,56,M,23.45091822,NA,NA,NA,NA,NA,Downstream
+SBJ63H,2019_ThomasAM,CTRL,ITA,European,NA,F,NA,NA,NA,NA,NA,NA,Downstream
+SBJ65H,2019_ThomasAM,CTRL,ITA,European,53,M,32.44997296,NA,NA,NA,NA,NA,Downstream
+SBJ67H,2019_ThomasAM,CTRL,ITA,European,46,M,34.52708907,NA,NA,NA,NA,NA,Downstream
+VF00TL,2019_ThomasAM,CTRL,ITA,European,71,M,25,NA,NA,NA,NA,NA,Downstream
+VF18,2019_ThomasAM,CTRL,ITA,European,64,M,26,NA,NA,NA,NA,NA,Downstream
+VF189,2019_ThomasAM,CTRL,ITA,European,66,M,34,NA,NA,NA,NA,NA,Downstream
+VF261,2019_ThomasAM,CTRL,ITA,European,69,M,24,NA,NA,NA,NA,NA,Downstream
+VF263,2019_ThomasAM,CTRL,ITA,European,81,F,28,NA,NA,NA,NA,NA,Downstream
+VF28,2019_ThomasAM,CTRL,ITA,European,63,F,28,NA,NA,NA,NA,NA,Downstream
+VF31,2019_ThomasAM,CTRL,ITA,European,59,M,26,NA,NA,NA,NA,NA,Downstream
+VF40,2019_ThomasAM,CTRL,ITA,European,68,F,22,NA,NA,NA,NA,NA,Downstream
+VF43,2019_ThomasAM,CTRL,ITA,European,60,M,22,NA,NA,NA,NA,NA,Downstream
+VF82,2019_ThomasAM,CTRL,ITA,European,61,F,NA,NA,NA,NA,NA,NA,Downstream
+CCMD19168690ST,2019_WirbelJ,CRC,GER,European,63,F,25.8,TODO,NA,T3N0M0,II,II,Downstream
+CCMD21703880ST,2019_WirbelJ,CRC,GER,European,80,M,28.4,RC,RC,T3N1aM0,III,III,Downstream
+CCMD27463710ST,2019_WirbelJ,CRC,GER,European,81,M,26.1,RC,RC,T3N0M0,II,II,Downstream
+CCMD35633353ST,2019_WirbelJ,CRC,GER,European,61,M,25.2,Rectum,Rectum,T4aN2bM1b,IV,IV,Downstream
+CCMD49461418ST,2019_WirbelJ,CRC,GER,European,61,M,21.6,Rectum,Rectum,T3N1M0,III,III,Downstream
+CCMD52117727ST,2019_WirbelJ,CRC,GER,European,79,M,22.4,RC,RC,T3N0M0,II,II,Downstream
+CCMD65406197ST,2019_WirbelJ,CRC,GER,European,50,F,32.1,TODO,NA,pTis,0,NA,Downstream
+CCMD71242853ST,2019_WirbelJ,CRC,GER,European,56,F,30,Rectum,Rectum,T2N0M0,I,I,Downstream
+CCMD72690923ST,2019_WirbelJ,CRC,GER,European,60,M,19.7,Rectum,Rectum,T3N0M0,II,II,Downstream
+CCMD79349503ST,2019_WirbelJ,CRC,GER,European,60,F,21.9,Rectum,Rectum,T1N0M0,I,I,Downstream
+CCMD98531134ST,2019_WirbelJ,CRC,GER,European,59,M,26.5,Rectum,Rectum,T3N1aM1,IV,IV,Downstream
+CCMD10032470ST,2019_WirbelJ,CTRL,GER,European,45,M,30.7,NA,NA,NA,NA,NA,Downstream
+CCMD10191450ST,2019_WirbelJ,CTRL,GER,European,62,F,28.5,NA,NA,NA,NA,NA,Downstream
+CCMD15562448ST,2019_WirbelJ,CTRL,GER,European,74,M,22.9,NA,NA,NA,NA,NA,Downstream
+CCMD17410933ST,2019_WirbelJ,CTRL,GER,European,59,F,22.5,NA,NA,NA,NA,NA,Downstream
+CCMD18579000ST,2019_WirbelJ,CTRL,GER,European,59,F,22.7,NA,NA,NA,NA,NA,Downstream
+CCMD18829815ST,2019_WirbelJ,CTRL,GER,European,62,F,27,NA,NA,NA,NA,NA,Downstream
+CCMD23541216ST,2019_WirbelJ,CTRL,GER,European,61,M,29.9,NA,NA,NA,NA,NA,Downstream
+CCMD25475945ST,2019_WirbelJ,CTRL,GER,European,59,F,22.1,NA,NA,NA,NA,NA,Downstream
+CCMD26625622ST,2019_WirbelJ,CTRL,GER,European,50,M,21.6,NA,NA,NA,NA,NA,Downstream
+CCMD27867141ST,2019_WirbelJ,CTRL,GER,European,55,F,18,NA,NA,NA,NA,NA,Downstream
+CCMD29706695ST,2019_WirbelJ,CTRL,GER,European,45,M,22.1,NA,NA,NA,NA,NA,Downstream
+CCMD30626189ST,2019_WirbelJ,CTRL,GER,European,51,M,26.3,NA,NA,NA,NA,NA,Downstream
+CCMD30627121ST,2019_WirbelJ,CTRL,GER,European,48,F,25.4,NA,NA,NA,NA,NA,Downstream
+CCMD31009081ST,2019_WirbelJ,CTRL,GER,European,64,M,26.8,NA,NA,NA,NA,NA,Downstream
+CCMD31134579ST,2019_WirbelJ,CTRL,GER,European,75,M,21.5,NA,NA,NA,NA,NA,Downstream
+CCMD32288175ST,2019_WirbelJ,CTRL,GER,European,57,F,22.2,NA,NA,NA,NA,NA,Downstream
+CCMD32965613ST,2019_WirbelJ,CTRL,GER,European,64,M,27.6,NA,NA,NA,NA,NA,Downstream
+CCMD35081859ST,2019_WirbelJ,CTRL,GER,European,60,F,25.8,NA,NA,NA,NA,NA,Downstream
+CCMD37575804ST,2019_WirbelJ,CTRL,GER,European,44,M,25.1,NA,NA,NA,NA,NA,Downstream
+CCMD39157124ST,2019_WirbelJ,CTRL,GER,European,56,M,25,NA,NA,NA,NA,NA,Downstream
+CCMD41202658ST,2019_WirbelJ,CTRL,GER,European,61,F,25.4,NA,NA,NA,NA,NA,Downstream
+CCMD41521570ST,2019_WirbelJ,CTRL,GER,European,67,M,24.4,NA,NA,NA,NA,NA,Downstream
+CCMD45004878ST,2019_WirbelJ,CTRL,GER,European,53,M,26.2,NA,NA,NA,NA,NA,Downstream
+CCMD45812507ST,2019_WirbelJ,CTRL,GER,European,75,M,30.1,NA,NA,NA,NA,NA,Downstream
+CCMD46727384ST,2019_WirbelJ,CTRL,GER,European,53,F,24.1,NA,NA,NA,NA,NA,Downstream
+CCMD49025643ST,2019_WirbelJ,CTRL,GER,European,41,M,23.8,NA,NA,NA,NA,NA,Downstream
+CCMD50300306ST,2019_WirbelJ,CTRL,GER,European,64,M,24.6,NA,NA,NA,NA,NA,Downstream
+CCMD50529145ST,2019_WirbelJ,CTRL,GER,European,63,F,20.2,NA,NA,NA,NA,NA,Downstream
+CCMD51154251ST,2019_WirbelJ,CTRL,GER,European,50,M,22.6,NA,NA,NA,NA,NA,Downstream
+CCMD51228890ST,2019_WirbelJ,CTRL,GER,European,65,M,32.7,NA,NA,NA,NA,NA,Downstream
+CCMD53508245ST,2019_WirbelJ,CTRL,GER,European,61,M,27,NA,NA,NA,NA,NA,Downstream
+CCMD53522274ST,2019_WirbelJ,CTRL,GER,European,75,F,19.3,NA,NA,NA,NA,NA,Downstream
+CCMD54057834ST,2019_WirbelJ,CTRL,GER,European,57,F,21.2,NA,NA,NA,NA,NA,Downstream
+CCMD56948710ST,2019_WirbelJ,CTRL,GER,European,66,M,30.3,NA,NA,NA,NA,NA,Downstream
+CCMD59540613ST,2019_WirbelJ,CTRL,GER,European,64,M,25.4,NA,NA,NA,NA,NA,Downstream
+CCMD66848156ST,2019_WirbelJ,CTRL,GER,European,64,F,21.1,NA,NA,NA,NA,NA,Downstream
+CCMD67373733ST,2019_WirbelJ,CTRL,GER,European,73,M,24.5,NA,NA,NA,NA,NA,Downstream
+CCMD68973846ST,2019_WirbelJ,CTRL,GER,European,64,F,22.8,NA,NA,NA,NA,NA,Downstream
+CCMD72666896ST,2019_WirbelJ,CTRL,GER,European,58,F,23.8,NA,NA,NA,NA,NA,Downstream
+CCMD73128545ST,2019_WirbelJ,CTRL,GER,European,57,F,22.2,NA,NA,NA,NA,NA,Downstream
+CCMD74592084ST,2019_WirbelJ,CTRL,GER,European,48,M,23,NA,NA,NA,NA,NA,Downstream
+CCMD75147712ST,2019_WirbelJ,CTRL,GER,European,53,F,23,NA,NA,NA,NA,NA,Downstream
+CCMD76409700ST,2019_WirbelJ,CTRL,GER,European,60,F,23,NA,NA,NA,NA,NA,Downstream
+CCMD85661207ST,2019_WirbelJ,CTRL,GER,European,28,M,24.6,NA,NA,NA,NA,NA,Downstream
+CCMD89107682ST,2019_WirbelJ,CTRL,GER,European,54,F,24.6,NA,NA,NA,NA,NA,Downstream
+CCMD89643949ST,2019_WirbelJ,CTRL,GER,European,51,F,25.6,NA,NA,NA,NA,NA,Downstream
+CCMD89967135ST,2019_WirbelJ,CTRL,GER,European,58,F,27,NA,NA,NA,NA,NA,Downstream
+CCMD93755960ST,2019_WirbelJ,CTRL,GER,European,45,F,27.2,NA,NA,NA,NA,NA,Downstream
+CCMD98702133ST,2019_WirbelJ,CTRL,GER,European,37,M,24.5,NA,NA,NA,NA,NA,Downstream
+CCMD99440714ST,2019_WirbelJ,CTRL,GER,European,39,M,24.9,NA,NA,NA,NA,NA,Downstream
+CCMD99929634ST,2019_WirbelJ,CTRL,GER,European,70,M,26.7,NA,NA,NA,NA,NA,Downstream
+HmFeces_10033,2019_YachidaS,adenoma,JAP,Asian,54,F,24.74745426,Rectum,Rectum,NA,0,NA,Downstream
+HmFeces_10047,2019_YachidaS,adenoma,JAP,Asian,73,M,22.32142857,Left colon,LC,NA,0,NA,Downstream
+HmFeces_10055,2019_YachidaS,adenoma,JAP,Asian,56,F,17.4817898,Left colon,LC,NA,0,NA,Downstream
+HmFeces_10061,2019_YachidaS,adenoma,JAP,Asian,41,F,19.921875,NA,NA,NA,NA,NA,Downstream
+HmFeces_10081,2019_YachidaS,adenoma,JAP,Asian,65,M,21.8299522,Right colon,RC,NA,0,NA,Downstream
+HmFeces_10089,2019_YachidaS,adenoma,JAP,Asian,54,M,22.40817899,NA,NA,NA,NA,NA,Downstream
+HmFeces_10111,2019_YachidaS,adenoma,JAP,Asian,67,F,22.0603538,NA,NA,NA,NA,NA,Downstream
+HmFeces_10134,2019_YachidaS,adenoma,JAP,Asian,63,F,36.5230095,Rectum,Rectum,NA,0,NA,Downstream
+HmFeces_10138,2019_YachidaS,adenoma,JAP,Asian,72,M,23.66524436,NA,NA,NA,NA,NA,Downstream
+HmFeces_10140,2019_YachidaS,adenoma,JAP,Asian,64,F,22.47658689,Right colon,RC,NA,0,NA,Downstream
+HmFeces_10154,2019_YachidaS,adenoma,JAP,Asian,69,M,22.75830678,Left colon,LC,NA,0,NA,Downstream
+HmFeces_10161,2019_YachidaS,adenoma,JAP,Asian,51,M,21.79820239,NA,NA,NA,NA,NA,Downstream
+HmFeces_10165,2019_YachidaS,adenoma,JAP,Asian,71,M,26.21882086,Left colon and Right colon,Multiple,NA,0,NA,Downstream
+HmFeces_10177,2019_YachidaS,adenoma,JAP,Asian,67,M,23.59700421,Rectum,Rectum,NA,0,NA,Downstream
+HmFeces_10182,2019_YachidaS,adenoma,JAP,Asian,52,M,22.5710475,NA,NA,NA,NA,NA,Downstream
+HmFeces_10193,2019_YachidaS,adenoma,JAP,Asian,58,M,21.95247934,NA,NA,NA,NA,NA,Downstream
+HmFeces_10203,2019_YachidaS,adenoma,JAP,Asian,60,M,27.06405159,Right colon,RC,NA,0,NA,Downstream
+HmFeces_10209,2019_YachidaS,adenoma,JAP,Asian,64,F,31.11111111,NA,NA,NA,NA,NA,Downstream
+HmFeces_10210,2019_YachidaS,adenoma,JAP,Asian,50,M,23.67125363,NA,NA,NA,NA,NA,Downstream
+HmFeces_10242,2019_YachidaS,adenoma,JAP,Asian,58,F,34.80874965,NA,NA,NA,NA,NA,Downstream
+HmFeces_10251,2019_YachidaS,adenoma,JAP,Asian,64,M,21.79930796,NA,NA,NA,NA,NA,Downstream
+HmFeces_10261,2019_YachidaS,adenoma,JAP,Asian,70,F,25.5367036,NA,NA,NA,NA,NA,Downstream
+HmFeces_10288,2019_YachidaS,adenoma,JAP,Asian,59,F,20.06095444,NA,NA,NA,NA,NA,Downstream
+HmFeces_10294,2019_YachidaS,adenoma,JAP,Asian,74,F,19.14672216,NA,NA,NA,NA,NA,Downstream
+HmFeces_10296,2019_YachidaS,adenoma,JAP,Asian,78,M,23.03004535,NA,NA,NA,NA,NA,Downstream
+HmFeces_10299,2019_YachidaS,adenoma,JAP,Asian,78,M,27.34375,NA,NA,NA,NA,NA,Downstream
+HmFeces_10316,2019_YachidaS,adenoma,JAP,Asian,44,M,22.12973973,NA,NA,NA,NA,NA,Downstream
+HmFeces_10327,2019_YachidaS,adenoma,JAP,Asian,60,M,28.40909091,NA,NA,NA,NA,NA,Downstream
+HmFeces_10334,2019_YachidaS,adenoma,JAP,Asian,63,F,21.36752137,Rectum,Rectum,NA,0,NA,Downstream
+HmFeces_10336,2019_YachidaS,adenoma,JAP,Asian,67,M,23.14725512,NA,NA,NA,NA,NA,Downstream
+HmFeces_10338,2019_YachidaS,adenoma,JAP,Asian,57,M,25.43268596,Right colon,RC,NA,0,NA,Downstream
+HmFeces_10345,2019_YachidaS,adenoma,JAP,Asian,73,F,26.57312925,Right colon,RC,NA,0,NA,Downstream
+HmFeces_10366,2019_YachidaS,adenoma,JAP,Asian,72,M,20.90419501,Left colon,LC,NA,0,NA,Downstream
+HmFeces_10376,2019_YachidaS,adenoma,JAP,Asian,64,M,24.15881797,NA,NA,NA,NA,NA,Downstream
+HmFeces_10385,2019_YachidaS,adenoma,JAP,Asian,71,M,27.34375,Left colon,LC,NA,0,NA,Downstream
+HmFeces_10466,2019_YachidaS,adenoma,JAP,Asian,64,M,18.77834467,NA,NA,NA,NA,NA,Downstream
+HmFeces_10471,2019_YachidaS,adenoma,JAP,Asian,75,M,21.45357371,NA,NA,NA,NA,NA,Downstream
+HmFeces_10484,2019_YachidaS,adenoma,JAP,Asian,73,M,21.0076678,NA,NA,NA,NA,NA,Downstream
+HmFeces_10485,2019_YachidaS,adenoma,JAP,Asian,74,M,28.68514468,NA,NA,NA,NA,NA,Downstream
+HmFeces_10502,2019_YachidaS,adenoma,JAP,Asian,71,M,18.359375,NA,NA,NA,NA,NA,Downstream
+HmFeces_10511,2019_YachidaS,adenoma,JAP,Asian,65,F,20.42941836,NA,NA,NA,NA,NA,Downstream
+HmFeces_10517,2019_YachidaS,adenoma,JAP,Asian,52,M,22.58270917,NA,NA,NA,NA,NA,Downstream
+HmFeces_10545,2019_YachidaS,adenoma,JAP,Asian,66,F,20.42941836,Rectum,Rectum,NA,0,NA,Downstream
+HmFeces_10548,2019_YachidaS,adenoma,JAP,Asian,71,M,21.1552942,NA,NA,NA,NA,NA,Downstream
+HmFeces_10555,2019_YachidaS,adenoma,JAP,Asian,53,M,23.38435374,NA,NA,NA,NA,NA,Downstream
+HmFeces_10565,2019_YachidaS,adenoma,JAP,Asian,61,M,22.39541342,Left colon,LC,NA,0,NA,Downstream
+HmFeces_10568,2019_YachidaS,adenoma,JAP,Asian,58,M,22.53061224,Right colon,RC,NA,0,NA,Downstream
+HmFeces_10572,2019_YachidaS,adenoma,JAP,Asian,58,M,23.87511478,NA,NA,NA,NA,NA,Downstream
+HmFeces_10576,2019_YachidaS,adenoma,JAP,Asian,72,M,22.03856749,"Rectum, Left colon and Right colon",Multiple,NA,0,NA,Downstream
+HmFeces_10579,2019_YachidaS,adenoma,JAP,Asian,69,M,24.6097337,Left colon,LC,NA,0,NA,Downstream
+HmFeces_10581,2019_YachidaS,adenoma,JAP,Asian,72,F,17.14677641,NA,NA,NA,NA,NA,Downstream
+HmFeces_10610,2019_YachidaS,adenoma,JAP,Asian,59,M,24.39105884,NA,NA,NA,NA,NA,Downstream
+HmFeces_10614,2019_YachidaS,adenoma,JAP,Asian,59,M,22.39541342,NA,NA,NA,NA,NA,Downstream
+HmFeces_10630,2019_YachidaS,adenoma,JAP,Asian,52,M,21.04804761,NA,NA,NA,NA,NA,Downstream
+HmFeces_10634,2019_YachidaS,adenoma,JAP,Asian,70,M,20.90419501,NA,NA,NA,NA,NA,Downstream
+HmFeces_10642,2019_YachidaS,adenoma,JAP,Asian,60,M,25.95155709,NA,NA,NA,NA,NA,Downstream
+HmFeces_10648,2019_YachidaS,adenoma,JAP,Asian,70,F,23.14049587,Left colon,LC,NA,0,NA,Downstream
+HmFeces_10681,2019_YachidaS,adenoma,JAP,Asian,72,M,49.53513184,NA,NA,NA,NA,NA,Downstream
+HmFeces_10697,2019_YachidaS,adenoma,JAP,Asian,47,F,18.06616734,Rectum,Rectum,NA,0,NA,Downstream
+HmFeces_10728,2019_YachidaS,adenoma,JAP,Asian,63,M,23.59700421,NA,NA,NA,NA,NA,Downstream
+HmFeces_10749,2019_YachidaS,adenoma,JAP,Asian,65,F,24.91990032,Right colon,RC,NA,0,NA,Downstream
+HmFeces_10756,2019_YachidaS,adenoma,JAP,Asian,50,M,22.05219018,Rectum,Rectum,NA,0,NA,Downstream
+HmFeces_10759,2019_YachidaS,adenoma,JAP,Asian,63,M,20.14797199,NA,NA,NA,NA,NA,Downstream
+HmFeces_10780,2019_YachidaS,adenoma,JAP,Asian,77,M,19.48696145,NA,NA,NA,NA,NA,Downstream
+HmFeces_10785,2019_YachidaS,adenoma,JAP,Asian,62,F,22.03172568,Right colon,RC,NA,0,NA,Downstream
+HmFeces_10793,2019_YachidaS,adenoma,JAP,Asian,55,M,25.2493372,NA,NA,NA,NA,NA,Downstream
+HmFeces_10809,2019_YachidaS,adenoma,JAP,Asian,66,F,20.23950076,NA,NA,NA,NA,NA,Downstream
+HmFeces_10811,2019_YachidaS,adenoma,JAP,Asian,48,M,19.10009183,NA,NA,NA,NA,NA,Downstream
+HmFeces_10825,2019_YachidaS,adenoma,JAP,Asian,74,M,23.05175491,NA,NA,NA,NA,NA,Downstream
+HmFeces_10831,2019_YachidaS,adenoma,JAP,Asian,58,M,22.85714286,NA,NA,NA,NA,NA,Downstream
+HmFeces_10853,2019_YachidaS,adenoma,JAP,Asian,65,M,27.18089991,Left colon,LC,NA,0,NA,Downstream
+HmFeces_10860,2019_YachidaS,adenoma,JAP,Asian,59,M,24.50894577,Right colon,RC,NA,0,NA,Downstream
+HmFeces_10866,2019_YachidaS,adenoma,JAP,Asian,48,M,28.30599506,Left colon,LC,NA,0,NA,Downstream
+HmFeces_10888,2019_YachidaS,adenoma,JAP,Asian,73,M,23.72528616,Left colon,LC,NA,0,NA,Downstream
+HmFeces_10911,2019_YachidaS,adenoma,JAP,Asian,61,M,27.47562949,Left colon,LC,NA,0,NA,Downstream
+HmFeces_10934,2019_YachidaS,adenoma,JAP,Asian,66,M,22.13673973,Right colon,RC,NA,0,NA,Downstream
+HmFeces_10935,2019_YachidaS,adenoma,JAP,Asian,74,M,22.54657648,Right colon,RC,NA,0,NA,Downstream
+HmFeces_10980,2019_YachidaS,adenoma,JAP,Asian,65,F,18.26150475,Right colon,RC,NA,0,NA,Downstream
+HmFeces_10989,2019_YachidaS,adenoma,JAP,Asian,65,M,20.01549587,Rectum,Rectum,NA,0,NA,Downstream
+HmFeces_10992,2019_YachidaS,adenoma,JAP,Asian,58,M,23.1206236,Left colon,LC,NA,0,NA,Downstream
+HmFeces_11011,2019_YachidaS,adenoma,JAP,Asian,72,M,23.66524436,Rectum,Rectum,NA,0,NA,Downstream
+HmFeces_11029,2019_YachidaS,adenoma,JAP,Asian,66,M,23.87511478,Right colon,RC,NA,0,NA,Downstream
+HmFeces_11110,2019_YachidaS,adenoma,JAP,Asian,61,M,22.58955144,Right colon,RC,NA,0,NA,Downstream
+HmFeces_11121,2019_YachidaS,adenoma,JAP,Asian,46,M,25.40281608,Right colon,RC,NA,0,NA,Downstream
+HmFeces_11151,2019_YachidaS,adenoma,JAP,Asian,76,M,19.00390835,Rectum,Rectum,NA,0,NA,Downstream
+HmFeces_11237,2019_YachidaS,adenoma,JAP,Asian,66,F,22.0603538,Right colon,RC,NA,0,NA,Downstream
+HmFeces_11241,2019_YachidaS,adenoma,JAP,Asian,54,M,25.46938776,Left colon,LC,NA,0,NA,Downstream
+HmFeces_11253,2019_YachidaS,adenoma,JAP,Asian,73,F,16.65249433,NA,NA,NA,NA,NA,Downstream
+HmFeces_11407,2019_YachidaS,adenoma,JAP,Asian,41,F,20.88888889,NA,NA,NA,NA,NA,Downstream
+HmFeces_11417,2019_YachidaS,adenoma,JAP,Asian,50,M,23.66143862,Left colon,LC,NA,0,NA,Downstream
+HmFeces_11423,2019_YachidaS,adenoma,JAP,Asian,66,M,28.9340689,Left colon,LC,NA,0,NA,Downstream
+HmFeces_11433,2019_YachidaS,adenoma,JAP,Asian,59,F,19.14672216,Left colon,LC,NA,0,NA,Downstream
+HmFeces_11438,2019_YachidaS,adenoma,JAP,Asian,61,F,17.84651993,Rectum,Rectum,NA,0,NA,Downstream
+HmFeces_11445,2019_YachidaS,adenoma,JAP,Asian,68,M,22.95908766,Right colon,RC,NA,0,NA,Downstream
+HmFeces_11453,2019_YachidaS,adenoma,JAP,Asian,71,F,18.49112426,Left colon,LC,NA,0,NA,Downstream
+HmFeces_11457,2019_YachidaS,adenoma,JAP,Asian,65,M,19.72318339,NA,NA,NA,NA,NA,Downstream
+HmFeces_11461,2019_YachidaS,adenoma,JAP,Asian,74,F,20.13477975,NA,NA,NA,NA,NA,Downstream
+HmFeces_11462,2019_YachidaS,adenoma,JAP,Asian,57,F,19.36849691,NA,NA,NA,NA,NA,Downstream
+HmFeces_11498,2019_YachidaS,adenoma,JAP,Asian,58,M,20.51508648,Rectum,Rectum,NA,0,NA,Downstream
+HmFeces_11502,2019_YachidaS,adenoma,JAP,Asian,63,F,21.22788762,NA,NA,NA,NA,NA,Downstream
+HmFeces_11508,2019_YachidaS,adenoma,JAP,Asian,64,F,19.81784449,NA,NA,NA,NA,NA,Downstream
+HmFeces_11510,2019_YachidaS,adenoma,JAP,Asian,64,M,22.58955144,Right colon,RC,NA,0,NA,Downstream
+HmFeces_11512,2019_YachidaS,adenoma,JAP,Asian,69,F,18.17867036,Right colon,RC,NA,0,NA,Downstream
+HmFeces_11518,2019_YachidaS,adenoma,JAP,Asian,47,F,30.757401,NA,NA,NA,NA,NA,Downstream
+HmFeces_11667,2019_YachidaS,adenoma,JAP,Asian,67,M,25.39343112,NA,NA,NA,NA,NA,Downstream
+HmFeces_11836,2019_YachidaS,adenoma,JAP,Asian,69,M,22.75830678,Right colon,RC,NA,0,NA,Downstream
+HmFeces_11891,2019_YachidaS,adenoma,JAP,Asian,72,F,20.32443826,Left colon,LC,NA,0,NA,Downstream
+HmFeces_11893,2019_YachidaS,adenoma,JAP,Asian,53,M,31.23140988,Left colon and Right colon,Multiple,NA,0,NA,Downstream
+HmFeces_10021,2019_YachidaS,CRC,JAP,Asian,57,M,26.8809517,Left colon,LC,NA,I,I,Downstream
+HmFeces_10030,2019_YachidaS,CRC,JAP,Asian,58,M,24.02380867,Right colon,RC,NA,I,I,Downstream
+HmFeces_10059,2019_YachidaS,CRC,JAP,Asian,69,F,25.63691716,Rectum,Rectum,NA,IVB,IV,Downstream
+HmFeces_10067,2019_YachidaS,CRC,JAP,Asian,64,F,24.21875,Right colon,RC,NA,I,I,Downstream
+HmFeces_10073,2019_YachidaS,CRC,JAP,Asian,71,F,29.96432818,Left colon,LC,NA,I,I,Downstream
+HmFeces_10074,2019_YachidaS,CRC,JAP,Asian,61,M,22.22906193,Left colon,LC,NA,I,I,Downstream
+HmFeces_10091,2019_YachidaS,CRC,JAP,Asian,70,F,24.73246136,Left colon,LC,NA,IIA,II,Downstream
+HmFeces_10097,2019_YachidaS,CRC,JAP,Asian,62,F,21.875,Left colon,LC,NA,I,I,Downstream
+HmFeces_10099,2019_YachidaS,CRC,JAP,Asian,51,M,20.76124567,Rectum,Rectum,NA,IIIA,III,Downstream
+HmFeces_10103,2019_YachidaS,CRC,JAP,Asian,55,M,24.57786715,Rectum,Rectum,NA,IIIB,III,Downstream
+HmFeces_10118,2019_YachidaS,CRC,JAP,Asian,62,F,21.08281329,Left colon,LC,NA,IIIB,III,Downstream
+HmFeces_10119,2019_YachidaS,CRC,JAP,Asian,76,M,19.17,Left colon,LC,NA,I,I,Downstream
+HmFeces_10126,2019_YachidaS,CRC,JAP,Asian,52,M,31.02040816,Rectum,Rectum,NA,I,I,Downstream
+HmFeces_10147,2019_YachidaS,CRC,JAP,Asian,51,F,18.82711104,Left colon,LC,NA,I,I,Downstream
+HmFeces_10152,2019_YachidaS,CRC,JAP,Asian,67,F,24.32322868,Right colon,RC,NA,IIIA,III,Downstream
+HmFeces_10171,2019_YachidaS,CRC,JAP,Asian,30,M,25.68956193,Left colon,LC,NA,IVB,IV,Downstream
+HmFeces_10178,2019_YachidaS,CRC,JAP,Asian,69,F,23.55555556,Rectum,Rectum,NA,IIIB,III,Downstream
+HmFeces_10185,2019_YachidaS,CRC,JAP,Asian,65,M,21.71806609,Right colon,RC,NA,IIA,II,Downstream
+HmFeces_10191,2019_YachidaS,CRC,JAP,Asian,59,M,25.4580659,Rectum and Left colon,Multiple,NA,IIIB,III,Downstream
+HmFeces_10195,2019_YachidaS,CRC,JAP,Asian,57,F,18.36900337,Right colon,RC,NA,IIIB,III,Downstream
+HmFeces_10201,2019_YachidaS,CRC,JAP,Asian,38,M,24.39105884,Right colon,RC,NA,IVA,IV,Downstream
+HmFeces_10213,2019_YachidaS,CRC,JAP,Asian,49,M,26.12244898,Rectum,Rectum,NA,IVA,IV,Downstream
+HmFeces_10232,2019_YachidaS,CRC,JAP,Asian,64,M,22.46003435,Rectum,Rectum,NA,IIIA,III,Downstream
+HmFeces_10236,2019_YachidaS,CRC,JAP,Asian,47,M,23.56663223,Rectum,Rectum,NA,I,I,Downstream
+HmFeces_10237,2019_YachidaS,CRC,JAP,Asian,64,F,18.02595738,Rectum,Rectum,NA,I,I,Downstream
+HmFeces_10238,2019_YachidaS,CRC,JAP,Asian,66,F,22.60026298,Right colon,RC,NA,IVB,IV,Downstream
+HmFeces_10248,2019_YachidaS,CRC,JAP,Asian,62,M,23.95122659,Rectum,Rectum,NA,IIA,II,Downstream
+HmFeces_10249,2019_YachidaS,CRC,JAP,Asian,47,M,21.4532872,Rectum,Rectum,NA,IIC,II,Downstream
+HmFeces_10260,2019_YachidaS,CRC,JAP,Asian,63,F,20.13477975,Right colon,RC,NA,IIIB,III,Downstream
+HmFeces_10265,2019_YachidaS,CRC,JAP,Asian,73,M,24.6097337,Rectum,Rectum,NA,I,I,Downstream
+HmFeces_10267,2019_YachidaS,CRC,JAP,Asian,60,F,20.82999519,Right colon,RC,NA,IIA,II,Downstream
+HmFeces_10277,2019_YachidaS,CRC,JAP,Asian,73,F,16.88019391,Rectum,Rectum,NA,I,I,Downstream
+HmFeces_10284,2019_YachidaS,CRC,JAP,Asian,73,M,23.33546614,Rectum,Rectum,NA,IVA,IV,Downstream
+HmFeces_10303,2019_YachidaS,CRC,JAP,Asian,44,F,26.6727633,Right colon,RC,NA,IIIB,III,Downstream
+HmFeces_10306,2019_YachidaS,CRC,JAP,Asian,69,M,19.43301326,Right colon,RC,NA,I,I,Downstream
+HmFeces_10307,2019_YachidaS,CRC,JAP,Asian,49,F,22.64086462,Left colon,LC,NA,IIIB,III,Downstream
+HmFeces_10308,2019_YachidaS,CRC,JAP,Asian,69,F,20.613131,Left colon,LC,NA,IIA,II,Downstream
+HmFeces_10309,2019_YachidaS,CRC,JAP,Asian,70,M,26.76977989,Right colon,RC,NA,I,I,Downstream
+HmFeces_10322,2019_YachidaS,CRC,JAP,Asian,70,F,21.90758246,Left colon and Right colon,Multiple,NA,IIIB,III,Downstream
+HmFeces_10323,2019_YachidaS,CRC,JAP,Asian,68,F,21.78649237,Rectum,Rectum,NA,IIA,II,Downstream
+HmFeces_10332,2019_YachidaS,CRC,JAP,Asian,61,M,28.29334541,Left colon and Right colon,Multiple,NA,IVA,IV,Downstream
+HmFeces_10333,2019_YachidaS,CRC,JAP,Asian,45,M,20.61925365,Rectum,Rectum,NA,IIA,II,Downstream
+HmFeces_10367,2019_YachidaS,CRC,JAP,Asian,58,M,28.05570579,Rectum,Rectum,NA,IIIB,III,Downstream
+HmFeces_10371,2019_YachidaS,CRC,JAP,Asian,57,F,24.45606342,Left colon,LC,NA,I,I,Downstream
+HmFeces_10377,2019_YachidaS,CRC,JAP,Asian,73,F,22.15102251,Right colon,RC,NA,IIA,II,Downstream
+HmFeces_10380,2019_YachidaS,CRC,JAP,Asian,28,M,26.29757785,Rectum,Rectum,NA,IIIC,III,Downstream
+HmFeces_10389,2019_YachidaS,CRC,JAP,Asian,70,M,21.04804761,Rectum,Rectum,NA,I,I,Downstream
+HmFeces_10459,2019_YachidaS,CRC,JAP,Asian,73,F,19.56295525,Rectum,Rectum,NA,IIA,II,Downstream
+HmFeces_10461,2019_YachidaS,CRC,JAP,Asian,46,M,19.15119182,Rectum,Rectum,NA,IIIC,III,Downstream
+HmFeces_10468,2019_YachidaS,CRC,JAP,Asian,52,M,23.25501864,Rectum,Rectum,NA,IVA,IV,Downstream
+HmFeces_10469,2019_YachidaS,CRC,JAP,Asian,69,M,16.14152893,Left colon,LC,NA,I,I,Downstream
+HmFeces_10480,2019_YachidaS,CRC,JAP,Asian,53,M,20.76124567,Rectum,Rectum,NA,I,I,Downstream
+HmFeces_10483,2019_YachidaS,CRC,JAP,Asian,63,F,17.4817898,Rectum,Rectum,NA,IVA,IV,Downstream
+HmFeces_10503,2019_YachidaS,CRC,JAP,Asian,69,M,25.72755521,Right colon,RC,NA,IIA,II,Downstream
+HmFeces_10505,2019_YachidaS,CRC,JAP,Asian,65,F,17.99307958,Rectum,Rectum,NA,IIA,II,Downstream
+HmFeces_10525,2019_YachidaS,CRC,JAP,Asian,68,M,23.87511478,Rectum,Rectum,NA,I,I,Downstream
+HmFeces_10527,2019_YachidaS,CRC,JAP,Asian,62,M,24.61810377,Right colon,RC,NA,IVA,IV,Downstream
+HmFeces_10532,2019_YachidaS,CRC,JAP,Asian,60,M,23.22543185,Left colon,LC,NA,IIIC,III,Downstream
+HmFeces_10542,2019_YachidaS,CRC,JAP,Asian,71,F,31.11111111,Rectum,Rectum,NA,IIA,II,Downstream
+HmFeces_10556,2019_YachidaS,CRC,JAP,Asian,45,F,23.42236836,Rectum,Rectum,NA,IIIB,III,Downstream
+HmFeces_10566,2019_YachidaS,CRC,JAP,Asian,59,F,22.65625,Left colon,LC,NA,IVA,IV,Downstream
+HmFeces_10578,2019_YachidaS,CRC,JAP,Asian,65,M,21.383942,Right colon,RC,NA,IIIA,III,Downstream
+HmFeces_10584,2019_YachidaS,CRC,JAP,Asian,51,M,22.72440348,Right colon,RC,NA,IIA,II,Downstream
+HmFeces_10595,2019_YachidaS,CRC,JAP,Asian,66,M,20.54569362,Rectum,Rectum,NA,IIA,II,Downstream
+HmFeces_10598,2019_YachidaS,CRC,JAP,Asian,65,M,25.05930703,Rectum,Rectum,NA,I,I,Downstream
+HmFeces_10604,2019_YachidaS,CRC,JAP,Asian,69,M,21.51385851,Left colon,LC,NA,Iva,IV,Downstream
+HmFeces_10609,2019_YachidaS,CRC,JAP,Asian,51,M,18.16620425,Right colon,RC,NA,IIA,II,Downstream
+HmFeces_10615,2019_YachidaS,CRC,JAP,Asian,75,F,18.97453196,Right colon,RC,NA,IIA,II,Downstream
+HmFeces_10616,2019_YachidaS,CRC,JAP,Asian,64,M,23.10843458,Rectum,Rectum,NA,IIIB,III,Downstream
+HmFeces_10628,2019_YachidaS,CRC,JAP,Asian,73,F,18.31425598,Right colon,RC,NA,I,I,Downstream
+HmFeces_10635,2019_YachidaS,CRC,JAP,Asian,77,M,23.33768443,Right colon,RC,NA,IIIB,III,Downstream
+HmFeces_10644,2019_YachidaS,CRC,JAP,Asian,64,M,22.67995241,Rectum,Rectum,NA,I,I,Downstream
+HmFeces_10645,2019_YachidaS,CRC,JAP,Asian,49,F,19.38214469,Rectum,Rectum,NA,IIIA,III,Downstream
+HmFeces_10660,2019_YachidaS,CRC,JAP,Asian,67,F,25.43748081,Rectum,Rectum,NA,IIIB,III,Downstream
+HmFeces_10665,2019_YachidaS,CRC,JAP,Asian,64,M,20.44674202,Rectum,Rectum,NA,IIIB,III,Downstream
+HmFeces_10668,2019_YachidaS,CRC,JAP,Asian,74,M,25.95155709,Rectum,Rectum,NA,I,I,Downstream
+HmFeces_10670,2019_YachidaS,CRC,JAP,Asian,69,M,19.36247266,Rectum,Rectum,NA,I,I,Downstream
+HmFeces_10700,2019_YachidaS,CRC,JAP,Asian,77,M,24.6097337,Right colon,RC,NA,IIA,II,Downstream
+HmFeces_10709,2019_YachidaS,CRC,JAP,Asian,56,F,23.01117686,Rectum,Rectum,NA,I,I,Downstream
+HmFeces_10713,2019_YachidaS,CRC,JAP,Asian,63,M,19.75308642,Right colon,RC,NA,I,I,Downstream
+HmFeces_10714,2019_YachidaS,CRC,JAP,Asian,59,F,20.9566075,Left colon,LC,NA,IVA,IV,Downstream
+HmFeces_10723,2019_YachidaS,CRC,JAP,Asian,73,M,23.30668005,Rectum,Rectum,NA,I,I,Downstream
+HmFeces_10725,2019_YachidaS,CRC,JAP,Asian,78,M,25.90945695,Rectum,Rectum,NA,IIIA,III,Downstream
+HmFeces_10731,2019_YachidaS,CRC,JAP,Asian,60,M,21.29529475,Rectum,Rectum,NA,I,I,Downstream
+HmFeces_10745,2019_YachidaS,CRC,JAP,Asian,69,F,19.77769867,Right colon,RC,NA,I,I,Downstream
+HmFeces_10747,2019_YachidaS,CRC,JAP,Asian,62,M,25.59373706,Rectum,Rectum,NA,IVB,IV,Downstream
+HmFeces_10754,2019_YachidaS,CRC,JAP,Asian,46,F,17.44492677,Rectum,Rectum,NA,IIIB,III,Downstream
+HmFeces_10760,2019_YachidaS,CRC,JAP,Asian,59,F,20.504934,Left colon,LC,NA,IIIB,III,Downstream
+HmFeces_10762,2019_YachidaS,CRC,JAP,Asian,63,F,19.81784449,Right colon,RC,NA,I,I,Downstream
+HmFeces_10765,2019_YachidaS,CRC,JAP,Asian,49,M,37.55102041,Right colon,RC,NA,IIIB,III,Downstream
+HmFeces_10767,2019_YachidaS,CRC,JAP,Asian,72,M,24.69040546,Left colon,LC,NA,IIA,II,Downstream
+HmFeces_10772,2019_YachidaS,CRC,JAP,Asian,59,M,25.05930703,Rectum,Rectum,NA,IIIA,III,Downstream
+HmFeces_10774,2019_YachidaS,CRC,JAP,Asian,61,F,23.61275089,Rectum,Rectum,NA,I,I,Downstream
+HmFeces_10775,2019_YachidaS,CRC,JAP,Asian,66,M,18.71094925,Left colon,LC,NA,I,I,Downstream
+HmFeces_10812,2019_YachidaS,CRC,JAP,Asian,64,M,23.83673469,Rectum,Rectum,NA,I,I,Downstream
+HmFeces_10816,2019_YachidaS,CRC,JAP,Asian,70,F,23.06805075,Right colon,RC,NA,IIA,II,Downstream
+HmFeces_10819,2019_YachidaS,CRC,JAP,Asian,62,F,29.296875,Right colon,RC,NA,II,II,Downstream
+HmFeces_10827,2019_YachidaS,CRC,JAP,Asian,73,M,22.91303307,Right colon,RC,NA,IIA,II,Downstream
+HmFeces_10829,2019_YachidaS,CRC,JAP,Asian,52,M,26.42356982,Rectum,Rectum,NA,I,I,Downstream
+HmFeces_10839,2019_YachidaS,CRC,JAP,Asian,58,M,19.605192,Rectum,Rectum,NA,IVB,IV,Downstream
+HmFeces_10847,2019_YachidaS,CRC,JAP,Asian,73,F,20.54569362,Right colon,RC,NA,IIIB,III,Downstream
+HmFeces_10931,2019_YachidaS,CRC,JAP,Asian,67,M,24.67550027,Left colon and Rectum,Multiple,NA,III,III,Downstream
+HmFeces_10938,2019_YachidaS,CRC,JAP,Asian,55,M,25.35154137,Rectum,Rectum,NA,I,I,Downstream
+HmFeces_11010,2019_YachidaS,CRC,JAP,Asian,75,M,22.86253448,Rectum,Rectum,NA,I,I,Downstream
+HmFeces_11036,2019_YachidaS,CRC,JAP,Asian,48,M,25.64891762,Left colon,LC,NA,I,I,Downstream
+HmFeces_11045,2019_YachidaS,CRC,JAP,Asian,73,M,23.87511478,Left colon and Right colon,Multiple,NA,I,I,Downstream
+HmFeces_11054,2019_YachidaS,CRC,JAP,Asian,75,M,20.9566075,Left colon,LC,NA,I,I,Downstream
+HmFeces_11081,2019_YachidaS,CRC,JAP,Asian,72,M,19.94321255,Right colon,RC,NA,I,I,Downstream
+HmFeces_11085,2019_YachidaS,CRC,JAP,Asian,63,M,23.50780533,Left colon,LC,NA,I,I,Downstream
+HmFeces_11128,2019_YachidaS,CRC,JAP,Asian,67,M,21.33333333,Right colon,RC,NA,I,I,Downstream
+HmFeces_11132,2019_YachidaS,CRC,JAP,Asian,62,M,19.83471074,Left colon,LC,NA,I,I,Downstream
+HmFeces_11238,2019_YachidaS,CRC,JAP,Asian,73,M,21.20310523,Right colon,RC,NA,I,I,Downstream
+HmFeces_11428,2019_YachidaS,CRC,JAP,Asian,51,M,26.64359862,Rectum,Rectum,NA,I,I,Downstream
+HmFeces_11478,2019_YachidaS,CRC,JAP,Asian,68,F,25.68370987,Left colon,LC,NA,I,I,Downstream
+HmFeces_11490,2019_YachidaS,CRC,JAP,Asian,64,M,24.48979592,Left colon,LC,NA,I,I,Downstream
+HmFeces_11817,2019_YachidaS,CRC,JAP,Asian,75,M,21.30394858,Left colon,LC,NA,II,II,Downstream
+HmFeces_11820,2019_YachidaS,CRC,JAP,Asian,49,F,19.28937927,Right colon,RC,NA,III,III,Downstream
+HmFeces_11823,2019_YachidaS,CRC,JAP,Asian,71,F,21.92886277,Right colon,RC,NA,I,I,Downstream
+HmFeces_11829,2019_YachidaS,CRC,JAP,Asian,43,M,21.63331531,Rectum,Rectum,NA,III,III,Downstream
+HmFeces_11831,2019_YachidaS,CRC,JAP,Asian,60,M,19.1953028,Rectum,Rectum,NA,III,III,Downstream
+HmFeces_11835,2019_YachidaS,CRC,JAP,Asian,51,M,22.22906193,Right colon,RC,NA,I,I,Downstream
+HmFeces_11838,2019_YachidaS,CRC,JAP,Asian,69,M,25.68007405,Left colon and Right colon,Multiple,NA,II,II,Downstream
+HmFeces_11859,2019_YachidaS,CRC,JAP,Asian,64,F,25.33304989,Rectum,Rectum,NA,III,III,Downstream
+HmFeces_11881,2019_YachidaS,CRC,JAP,Asian,63,F,23.55555556,Left colon,LC,NA,II,II,Downstream
+HmFeces_11888,2019_YachidaS,CRC,JAP,Asian,71,M,21.0498179,Left colon,LC,NA,II,II,Downstream
+HmFeces_11918,2019_YachidaS,CRC,JAP,Asian,68,F,25.29937595,Left colon,LC,NA,II,II,Downstream
+HmFeces_11920,2019_YachidaS,CRC,JAP,Asian,68,M,23.4375,Left colon,LC,NA,III,III,Downstream
+HmFeces_11922,2019_YachidaS,CRC,JAP,Asian,58,F,22.50692521,Rectum,Rectum,NA,III,III,Downstream
+HmFeces_11940,2019_YachidaS,CRC,JAP,Asian,61,M,27.10204082,Rectum,Rectum,NA,III,III,Downstream
+HmFeces_11956,2019_YachidaS,CRC,JAP,Asian,45,M,22.27530992,Rectum,Rectum,NA,I,I,Downstream
+HmFeces_11957,2019_YachidaS,CRC,JAP,Asian,59,M,20.19946976,Rectum,Rectum,NA,III,III,Downstream
+HmFeces_11973,2019_YachidaS,CRC,JAP,Asian,67,M,23.62444749,Left colon,LC,NA,II,II,Downstream
+HmFeces_11974,2019_YachidaS,CRC,JAP,Asian,69,M,23.87511478,Right colon,RC,NA,I,I,Downstream
+HmFeces_11982,2019_YachidaS,CRC,JAP,Asian,68,F,22.43230252,Right colon,RC,NA,III,III,Downstream
+HmFeces_12002,2019_YachidaS,CRC,JAP,Asian,55,M,22.5981405,Right colon,RC,NA,I,I,Downstream
+HmFeces_12005,2019_YachidaS,CRC,JAP,Asian,48,F,23.19109462,Right colon,RC,NA,III,III,Downstream
+HmFeces_12014,2019_YachidaS,CRC,JAP,Asian,59,M,25.95155709,Left colon and Rectum,Multiple,NA,III,III,Downstream
+HmFeces_12020,2019_YachidaS,CRC,JAP,Asian,67,F,24.44444444,Left colon,LC,NA,I,I,Downstream
+HmFeces_12022,2019_YachidaS,CRC,JAP,Asian,74,F,23.55555556,Right colon,RC,NA,II,II,Downstream
+HmFeces_12024,2019_YachidaS,CRC,JAP,Asian,73,M,19.84126984,Right colon,RC,NA,I,I,Downstream
+HmFeces_12025,2019_YachidaS,CRC,JAP,Asian,46,F,20.54569362,Left colon,LC,NA,II,II,Downstream
+HmFeces_10023,2019_YachidaS,CTRL,JAP,Asian,65,M,26.5625,NA,NA,NA,NA,NA,Downstream
+HmFeces_10025,2019_YachidaS,CTRL,JAP,Asian,40,M,25,NA,NA,NA,NA,NA,Downstream
+HmFeces_10029,2019_YachidaS,CTRL,JAP,Asian,67,F,20.17325264,NA,NA,NA,NA,NA,Downstream
+HmFeces_10031,2019_YachidaS,CTRL,JAP,Asian,77,M,24.4646016,NA,NA,NA,NA,NA,Downstream
+HmFeces_10037,2019_YachidaS,CTRL,JAP,Asian,66,F,25.41089965,NA,NA,NA,NA,NA,Downstream
+HmFeces_10040,2019_YachidaS,CTRL,JAP,Asian,66,F,21.64127424,NA,NA,NA,NA,NA,Downstream
+HmFeces_10046,2019_YachidaS,CTRL,JAP,Asian,65,M,23.66524436,NA,NA,NA,NA,NA,Downstream
+HmFeces_10048,2019_YachidaS,CTRL,JAP,Asian,77,F,23.63403301,NA,NA,NA,NA,NA,Downstream
+HmFeces_10052,2019_YachidaS,CTRL,JAP,Asian,65,M,25.39343112,NA,NA,NA,NA,NA,Downstream
+HmFeces_10058,2019_YachidaS,CTRL,JAP,Asian,59,M,28.84153181,NA,NA,NA,NA,NA,Downstream
+HmFeces_10092,2019_YachidaS,CTRL,JAP,Asian,79,F,24.44444444,NA,NA,NA,NA,NA,Downstream
+HmFeces_10100,2019_YachidaS,CTRL,JAP,Asian,70,M,23.66143862,NA,NA,NA,NA,NA,Downstream
+HmFeces_10105,2019_YachidaS,CTRL,JAP,Asian,66,F,19.55555556,NA,NA,NA,NA,NA,Downstream
+HmFeces_10106,2019_YachidaS,CTRL,JAP,Asian,72,F,22.37034332,NA,NA,NA,NA,NA,Downstream
+HmFeces_10107,2019_YachidaS,CTRL,JAP,Asian,70,M,29.76083761,NA,NA,NA,NA,NA,Downstream
+HmFeces_10114,2019_YachidaS,CTRL,JAP,Asian,55,F,23.55555556,NA,NA,NA,NA,NA,Downstream
+HmFeces_10135,2019_YachidaS,CTRL,JAP,Asian,65,M,24.28097534,NA,NA,NA,NA,NA,Downstream
+HmFeces_10144,2019_YachidaS,CTRL,JAP,Asian,77,F,21.28742654,NA,NA,NA,NA,NA,Downstream
+HmFeces_10150,2019_YachidaS,CTRL,JAP,Asian,78,F,24.03440715,NA,NA,NA,NA,NA,Downstream
+HmFeces_10151,2019_YachidaS,CTRL,JAP,Asian,59,F,22.22222222,NA,NA,NA,NA,NA,Downstream
+HmFeces_10158,2019_YachidaS,CTRL,JAP,Asian,61,M,26.2335558,NA,NA,NA,NA,NA,Downstream
+HmFeces_10200,2019_YachidaS,CTRL,JAP,Asian,49,F,19.6311176,NA,NA,NA,NA,NA,Downstream
+HmFeces_10207,2019_YachidaS,CTRL,JAP,Asian,73,M,25.81663021,NA,NA,NA,NA,NA,Downstream
+HmFeces_10208,2019_YachidaS,CTRL,JAP,Asian,77,M,24.609375,NA,NA,NA,NA,NA,Downstream
+HmFeces_10215,2019_YachidaS,CTRL,JAP,Asian,78,F,20.42941836,NA,NA,NA,NA,NA,Downstream
+HmFeces_10219,2019_YachidaS,CTRL,JAP,Asian,68,M,21.383942,NA,NA,NA,NA,NA,Downstream
+HmFeces_10221,2019_YachidaS,CTRL,JAP,Asian,70,M,22.0603538,NA,NA,NA,NA,NA,Downstream
+HmFeces_10223,2019_YachidaS,CTRL,JAP,Asian,66,M,23.66524436,NA,NA,NA,NA,NA,Downstream
+HmFeces_10226,2019_YachidaS,CTRL,JAP,Asian,60,M,22.22906193,NA,NA,NA,NA,NA,Downstream
+HmFeces_10229,2019_YachidaS,CTRL,JAP,Asian,66,M,24.6097337,NA,NA,NA,NA,NA,Downstream
+HmFeces_10231,2019_YachidaS,CTRL,JAP,Asian,72,M,25.20920136,NA,NA,NA,NA,NA,Downstream
+HmFeces_10234,2019_YachidaS,CTRL,JAP,Asian,77,F,18.73048907,NA,NA,NA,NA,NA,Downstream
+HmFeces_10244,2019_YachidaS,CTRL,JAP,Asian,74,M,25.05930703,NA,NA,NA,NA,NA,Downstream
+HmFeces_10246,2019_YachidaS,CTRL,JAP,Asian,64,F,23.19109462,NA,NA,NA,NA,NA,Downstream
+HmFeces_10250,2019_YachidaS,CTRL,JAP,Asian,47,M,20.67901235,NA,NA,NA,NA,NA,Downstream
+HmFeces_10254,2019_YachidaS,CTRL,JAP,Asian,67,F,19.67516685,NA,NA,NA,NA,NA,Downstream
+HmFeces_10258,2019_YachidaS,CTRL,JAP,Asian,42,M,33.14,NA,NA,NA,NA,NA,Downstream
+HmFeces_10269,2019_YachidaS,CTRL,JAP,Asian,76,F,24.97398543,NA,NA,NA,NA,NA,Downstream
+HmFeces_10271,2019_YachidaS,CTRL,JAP,Asian,68,M,22.83737024,NA,NA,NA,NA,NA,Downstream
+HmFeces_10272,2019_YachidaS,CTRL,JAP,Asian,44,M,24.16326531,NA,NA,NA,NA,NA,Downstream
+HmFeces_10273,2019_YachidaS,CTRL,JAP,Asian,69,F,22.95908766,NA,NA,NA,NA,NA,Downstream
+HmFeces_10274,2019_YachidaS,CTRL,JAP,Asian,62,F,19.05197378,NA,NA,NA,NA,NA,Downstream
+HmFeces_10298,2019_YachidaS,CTRL,JAP,Asian,76,M,22.86253448,NA,NA,NA,NA,NA,Downstream
+HmFeces_10302,2019_YachidaS,CTRL,JAP,Asian,64,M,20.51913409,NA,NA,NA,NA,NA,Downstream
+HmFeces_10304,2019_YachidaS,CTRL,JAP,Asian,44,M,22.05219018,NA,NA,NA,NA,NA,Downstream
+HmFeces_10315,2019_YachidaS,CTRL,JAP,Asian,59,F,20.02884153,NA,NA,NA,NA,NA,Downstream
+HmFeces_10317,2019_YachidaS,CTRL,JAP,Asian,68,M,23.1206236,NA,NA,NA,NA,NA,Downstream
+HmFeces_10318,2019_YachidaS,CTRL,JAP,Asian,75,F,18.36547291,NA,NA,NA,NA,NA,Downstream
+HmFeces_10320,2019_YachidaS,CTRL,JAP,Asian,70,M,25.71166208,NA,NA,NA,NA,NA,Downstream
+HmFeces_10325,2019_YachidaS,CTRL,JAP,Asian,72,M,22.13673973,NA,NA,NA,NA,NA,Downstream
+HmFeces_10335,2019_YachidaS,CTRL,JAP,Asian,75,M,22.30814991,NA,NA,NA,NA,NA,Downstream
+HmFeces_10339,2019_YachidaS,CTRL,JAP,Asian,76,M,23.828125,NA,NA,NA,NA,NA,Downstream
+HmFeces_10340,2019_YachidaS,CTRL,JAP,Asian,45,F,19.22768787,NA,NA,NA,NA,NA,Downstream
+HmFeces_10341,2019_YachidaS,CTRL,JAP,Asian,58,F,22.54657648,NA,NA,NA,NA,NA,Downstream
+HmFeces_10349,2019_YachidaS,CTRL,JAP,Asian,62,F,19.921875,NA,NA,NA,NA,NA,Downstream
+HmFeces_10350,2019_YachidaS,CTRL,JAP,Asian,67,F,26.04166667,NA,NA,NA,NA,NA,Downstream
+HmFeces_10356,2019_YachidaS,CTRL,JAP,Asian,76,M,23.7953599,NA,NA,NA,NA,NA,Downstream
+HmFeces_10357,2019_YachidaS,CTRL,JAP,Asian,71,F,24.609375,NA,NA,NA,NA,NA,Downstream
+HmFeces_10362,2019_YachidaS,CTRL,JAP,Asian,76,M,25.88057064,NA,NA,NA,NA,NA,Downstream
+HmFeces_10364,2019_YachidaS,CTRL,JAP,Asian,66,M,23.4375,NA,NA,NA,NA,NA,Downstream
+HmFeces_10378,2019_YachidaS,CTRL,JAP,Asian,74,M,19.33372992,NA,NA,NA,NA,NA,Downstream
+HmFeces_10463,2019_YachidaS,CTRL,JAP,Asian,76,F,19.11111111,NA,NA,NA,NA,NA,Downstream
+HmFeces_10465,2019_YachidaS,CTRL,JAP,Asian,47,F,22.37567995,NA,NA,NA,NA,NA,Downstream
+HmFeces_10473,2019_YachidaS,CTRL,JAP,Asian,71,M,22.64737696,NA,NA,NA,NA,NA,Downstream
+HmFeces_10486,2019_YachidaS,CTRL,JAP,Asian,65,F,19.81892708,NA,NA,NA,NA,NA,Downstream
+HmFeces_10487,2019_YachidaS,CTRL,JAP,Asian,78,M,21.09375,NA,NA,NA,NA,NA,Downstream
+HmFeces_10489,2019_YachidaS,CTRL,JAP,Asian,78,M,22.86236854,NA,NA,NA,NA,NA,Downstream
+HmFeces_10519,2019_YachidaS,CTRL,JAP,Asian,71,M,22.94213045,NA,NA,NA,NA,NA,Downstream
+HmFeces_10541,2019_YachidaS,CTRL,JAP,Asian,53,F,18.66201469,NA,NA,NA,NA,NA,Downstream
+HmFeces_10543,2019_YachidaS,CTRL,JAP,Asian,55,M,26.81221871,NA,NA,NA,NA,NA,Downstream
+HmFeces_10559,2019_YachidaS,CTRL,JAP,Asian,41,F,20.32443826,NA,NA,NA,NA,NA,Downstream
+HmFeces_10583,2019_YachidaS,CTRL,JAP,Asian,67,M,25.0995016,NA,NA,NA,NA,NA,Downstream
+HmFeces_10589,2019_YachidaS,CTRL,JAP,Asian,75,F,22.66666667,NA,NA,NA,NA,NA,Downstream
+HmFeces_10593,2019_YachidaS,CTRL,JAP,Asian,61,M,25.95155709,NA,NA,NA,NA,NA,Downstream
+HmFeces_10620,2019_YachidaS,CTRL,JAP,Asian,63,M,20.89795918,NA,NA,NA,NA,NA,Downstream
+HmFeces_10627,2019_YachidaS,CTRL,JAP,Asian,57,M,23.24380165,NA,NA,NA,NA,NA,Downstream
+HmFeces_10632,2019_YachidaS,CTRL,JAP,Asian,76,M,25.96952909,NA,NA,NA,NA,NA,Downstream
+HmFeces_10661,2019_YachidaS,CTRL,JAP,Asian,49,F,22.30814991,NA,NA,NA,NA,NA,Downstream
+HmFeces_10663,2019_YachidaS,CTRL,JAP,Asian,73,M,24.30248706,NA,NA,NA,NA,NA,Downstream
+HmFeces_10684,2019_YachidaS,CTRL,JAP,Asian,61,F,18.59103675,NA,NA,NA,NA,NA,Downstream
+HmFeces_10698,2019_YachidaS,CTRL,JAP,Asian,71,M,23.38435374,NA,NA,NA,NA,NA,Downstream
+HmFeces_10726,2019_YachidaS,CTRL,JAP,Asian,69,M,22.14532872,NA,NA,NA,NA,NA,Downstream
+HmFeces_10741,2019_YachidaS,CTRL,JAP,Asian,70,M,24.22145329,NA,NA,NA,NA,NA,Downstream
+HmFeces_10776,2019_YachidaS,CTRL,JAP,Asian,42,F,25.59373706,NA,NA,NA,NA,NA,Downstream
+HmFeces_10788,2019_YachidaS,CTRL,JAP,Asian,74,M,22.58955144,NA,NA,NA,NA,NA,Downstream
+HmFeces_10797,2019_YachidaS,CTRL,JAP,Asian,70,F,25.33333333,NA,NA,NA,NA,NA,Downstream
+HmFeces_10801,2019_YachidaS,CTRL,JAP,Asian,68,F,19.50059453,NA,NA,NA,NA,NA,Downstream
+HmFeces_10802,2019_YachidaS,CTRL,JAP,Asian,77,M,20.43816558,NA,NA,NA,NA,NA,Downstream
+HmFeces_10805,2019_YachidaS,CTRL,JAP,Asian,54,F,19.6282647,NA,NA,NA,NA,NA,Downstream
+HmFeces_10808,2019_YachidaS,CTRL,JAP,Asian,60,M,19.48696145,NA,NA,NA,NA,NA,Downstream
+HmFeces_10817,2019_YachidaS,CTRL,JAP,Asian,65,F,24.32322868,NA,NA,NA,NA,NA,Downstream
+HmFeces_10832,2019_YachidaS,CTRL,JAP,Asian,55,M,24.09297052,NA,NA,NA,NA,NA,Downstream
+HmFeces_10869,2019_YachidaS,CTRL,JAP,Asian,69,M,22.40817899,NA,NA,NA,NA,NA,Downstream
+HmFeces_10889,2019_YachidaS,CTRL,JAP,Asian,54,F,20.77562327,NA,NA,NA,NA,NA,Downstream
+HmFeces_10890,2019_YachidaS,CTRL,JAP,Asian,68,F,18.66201469,NA,NA,NA,NA,NA,Downstream
+HmFeces_10907,2019_YachidaS,CTRL,JAP,Asian,37,M,25.01352082,NA,NA,NA,NA,NA,Downstream
+HmFeces_10913,2019_YachidaS,CTRL,JAP,Asian,46,M,22.47120876,NA,NA,NA,NA,NA,Downstream
+HmFeces_10976,2019_YachidaS,CTRL,JAP,Asian,52,M,25.01352082,NA,NA,NA,NA,NA,Downstream
+HmFeces_11031,2019_YachidaS,CTRL,JAP,Asian,66,M,24.8015873,NA,NA,NA,NA,NA,Downstream
+HmFeces_11035,2019_YachidaS,CTRL,JAP,Asian,73,F,21.60410478,NA,NA,NA,Normal,NA,Downstream
+HmFeces_11049,2019_YachidaS,CTRL,JAP,Asian,61,F,21.07719523,NA,NA,NA,NA,NA,Downstream
+HmFeces_11057,2019_YachidaS,CTRL,JAP,Asian,71,F,17.34842951,NA,NA,NA,NA,NA,Downstream
+HmFeces_11062,2019_YachidaS,CTRL,JAP,Asian,48,M,21.67211013,NA,NA,NA,NA,NA,Downstream
+HmFeces_11106,2019_YachidaS,CTRL,JAP,Asian,44,M,23.83673469,NA,NA,NA,Normal,NA,Downstream
+HmFeces_11124,2019_YachidaS,CTRL,JAP,Asian,77,M,20.57142857,NA,NA,NA,NA,NA,Downstream
+HmFeces_11203,2019_YachidaS,CTRL,JAP,Asian,34,M,21.85727788,NA,NA,NA,Few_polyps,NA,Downstream
+HmFeces_11209,2019_YachidaS,CTRL,JAP,Asian,37,M,25.34435262,NA,NA,NA,Few_polyps,NA,Downstream
+HmFeces_11210,2019_YachidaS,CTRL,JAP,Asian,68,F,19.22337562,NA,NA,NA,NA,NA,Downstream
+HmFeces_11213,2019_YachidaS,CTRL,JAP,Asian,51,M,19.15708812,NA,NA,NA,Normal,NA,Downstream
+HmFeces_11223,2019_YachidaS,CTRL,JAP,Asian,63,M,21.10726644,NA,NA,NA,Normal,NA,Downstream
+HmFeces_11227,2019_YachidaS,CTRL,JAP,Asian,72,M,23.05456246,NA,NA,NA,NA,NA,Downstream
+HmFeces_11255,2019_YachidaS,CTRL,JAP,Asian,47,M,26.17519452,NA,NA,NA,NA,NA,Downstream
+HmFeces_11294,2019_YachidaS,CTRL,JAP,Asian,57,M,26.25958475,NA,NA,NA,NA,NA,Downstream
+HmFeces_11299,2019_YachidaS,CTRL,JAP,Asian,54,M,23.52941176,NA,NA,NA,NA,NA,Downstream
+HmFeces_11311,2019_YachidaS,CTRL,JAP,Asian,63,M,24.44180209,NA,NA,NA,Few_polyps,NA,Downstream
+HmFeces_11343,2019_YachidaS,CTRL,JAP,Asian,44,F,21.63114885,NA,NA,NA,Normal,NA,Downstream
+HmFeces_11354,2019_YachidaS,CTRL,JAP,Asian,55,M,24.50894577,NA,NA,NA,Normal,NA,Downstream
+HmFeces_11379,2019_YachidaS,CTRL,JAP,Asian,79,F,24.609375,NA,NA,NA,NA,NA,Downstream
+HmFeces_11409,2019_YachidaS,CTRL,JAP,Asian,54,F,20.23950076,NA,NA,NA,NA,NA,Downstream
+HmFeces_11413,2019_YachidaS,CTRL,JAP,Asian,61,M,26.42356982,NA,NA,NA,NA,NA,Downstream
+HmFeces_11419,2019_YachidaS,CTRL,JAP,Asian,55,M,22.91303307,NA,NA,NA,NA,NA,Downstream
+HmFeces_11431,2019_YachidaS,CTRL,JAP,Asian,58,F,17.90885536,NA,NA,NA,NA,NA,Downstream
+HmFeces_11432,2019_YachidaS,CTRL,JAP,Asian,74,M,24.609375,NA,NA,NA,NA,NA,Downstream
+HmFeces_11434,2019_YachidaS,CTRL,JAP,Asian,64,F,16.42365006,NA,NA,NA,NA,NA,Downstream
+HmFeces_11448,2019_YachidaS,CTRL,JAP,Asian,40,F,17.63085399,NA,NA,NA,NA,NA,Downstream
+HmFeces_11449,2019_YachidaS,CTRL,JAP,Asian,46,F,20.3125,NA,NA,NA,NA,NA,Downstream
+HmFeces_11450,2019_YachidaS,CTRL,JAP,Asian,72,M,22.94811574,NA,NA,NA,NA,NA,Downstream
+HmFeces_11452,2019_YachidaS,CTRL,JAP,Asian,47,M,21.4532872,NA,NA,NA,NA,NA,Downstream
+HmFeces_11454,2019_YachidaS,CTRL,JAP,Asian,47,F,18.44254582,NA,NA,NA,NA,NA,Downstream
+HmFeces_11459,2019_YachidaS,CTRL,JAP,Asian,67,F,23.93606231,NA,NA,NA,NA,NA,Downstream
+HmFeces_11464,2019_YachidaS,CTRL,JAP,Asian,56,M,23.83673469,NA,NA,NA,NA,NA,Downstream
+HmFeces_11467,2019_YachidaS,CTRL,JAP,Asian,72,M,21.71925011,NA,NA,NA,NA,NA,Downstream
+HmFeces_11473,2019_YachidaS,CTRL,JAP,Asian,54,M,27.33564014,NA,NA,NA,NA,NA,Downstream
+HmFeces_11475,2019_YachidaS,CTRL,JAP,Asian,63,F,19.14672216,NA,NA,NA,NA,NA,Downstream
+HmFeces_11477,2019_YachidaS,CTRL,JAP,Asian,75,M,20.13477975,NA,NA,NA,NA,NA,Downstream
+HmFeces_11480,2019_YachidaS,CTRL,JAP,Asian,66,F,23.03004535,NA,NA,NA,NA,NA,Downstream
+HmFeces_11487,2019_YachidaS,CTRL,JAP,Asian,66,F,23.72528616,NA,NA,NA,NA,NA,Downstream
+HmFeces_11489,2019_YachidaS,CTRL,JAP,Asian,55,M,23.56663223,NA,NA,NA,NA,NA,Downstream
+HmFeces_11492,2019_YachidaS,CTRL,JAP,Asian,69,F,23.53036634,NA,NA,NA,NA,NA,Downstream
+HmFeces_11495,2019_YachidaS,CTRL,JAP,Asian,71,F,26.63495838,NA,NA,NA,NA,NA,Downstream
+HmFeces_11513,2019_YachidaS,CTRL,JAP,Asian,37,M,19.26717144,NA,NA,NA,NA,NA,Downstream
+HmFeces_11521,2019_YachidaS,CTRL,JAP,Asian,49,F,19.72386588,NA,NA,NA,NA,NA,Downstream
+HmFeces_11524,2019_YachidaS,CTRL,JAP,Asian,31,M,39.32834034,NA,NA,NA,NA,NA,Downstream
+HmFeces_11526,2019_YachidaS,CTRL,JAP,Asian,52,F,22.58270917,NA,NA,NA,NA,NA,Downstream
+HmFeces_11527,2019_YachidaS,CTRL,JAP,Asian,35,F,22.18934911,NA,NA,NA,NA,NA,Downstream
+HmFeces_11528,2019_YachidaS,CTRL,JAP,Asian,57,M,30.11621315,NA,NA,NA,NA,NA,Downstream
+HmFeces_11607,2019_YachidaS,CTRL,JAP,Asian,70,F,29.96432818,NA,NA,NA,NA,NA,Downstream
+HmFeces_11626,2019_YachidaS,CTRL,JAP,Asian,50,M,21.46193662,NA,NA,NA,NA,NA,Downstream
+HmFeces_11638,2019_YachidaS,CTRL,JAP,Asian,57,F,21.484375,NA,NA,NA,NA,NA,Downstream
+HmFeces_11641,2019_YachidaS,CTRL,JAP,Asian,52,M,27.63605442,NA,NA,NA,NA,NA,Downstream
+HmFeces_11675,2019_YachidaS,CTRL,JAP,Asian,51,F,21.90758246,NA,NA,NA,NA,NA,Downstream
+HmFeces_11682,2019_YachidaS,CTRL,JAP,Asian,61,F,17.087445,NA,NA,NA,NA,NA,Downstream
+HmFeces_11694,2019_YachidaS,CTRL,JAP,Asian,63,F,17.89802289,NA,NA,NA,NA,NA,Downstream
+HmFeces_11710,2019_YachidaS,CTRL,JAP,Asian,40,M,22.77318641,NA,NA,NA,NA,NA,Downstream
+HmFeces_11754,2019_YachidaS,CTRL,JAP,Asian,27,M,24.96800974,NA,NA,NA,NA,NA,Downstream
+HmFeces_11796,2019_YachidaS,CTRL,JAP,Asian,75,F,30.21121884,NA,NA,NA,NA,NA,Downstream
+HmFeces_11818,2019_YachidaS,CTRL,JAP,Asian,37,M,22.12973973,NA,NA,NA,NA,NA,Downstream
+HmFeces_11821,2019_YachidaS,CTRL,JAP,Asian,52,F,17.90885536,NA,NA,NA,NA,NA,Downstream
+HmFeces_11873,2019_YachidaS,CTRL,JAP,Asian,78,M,23.30905307,NA,NA,NA,NA,NA,Downstream
+HmFeces_11885,2019_YachidaS,CTRL,JAP,Asian,73,M,22.89281998,NA,NA,NA,NA,NA,Downstream
+HmFeces_11927,2019_YachidaS,CTRL,JAP,Asian,58,M,22.22906193,NA,NA,NA,NA,NA,Downstream
+HmFeces_11942,2019_YachidaS,CTRL,JAP,Asian,76,F,21.50188649,NA,NA,NA,NA,NA,Downstream
+HmFeces_11955,2019_YachidaS,CTRL,JAP,Asian,70,M,22.67995241,NA,NA,NA,NA,NA,Downstream
+HmFeces_11984,2019_YachidaS,CTRL,JAP,Asian,62,M,21.70792339,NA,NA,NA,NA,NA,Downstream
+HmFeces_12070,2019_YachidaS,CTRL,JAP,Asian,49,F,20.82999519,NA,NA,NA,NA,NA,Downstream
+HmFeces_12082,2019_YachidaS,CTRL,JAP,Asian,30,M,unknown,NA,NA,NA,NA,NA,Downstream
+HmFeces_12101,2019_YachidaS,CTRL,JAP,Asian,56,M,24.09297052,NA,NA,NA,NA,NA,Downstream
+HmFeces_12106,2019_YachidaS,CTRL,JAP,Asian,77,F,21.92612582,NA,NA,NA,NA,NA,Downstream
+HmFeces_12197,2019_YachidaS,CTRL,JAP,Asian,43,M,24.74093729,NA,NA,NA,NA,NA,Downstream
+HmFeces_12204,2019_YachidaS,CTRL,JAP,Asian,55,F,19.77769867,NA,NA,NA,NA,NA,Downstream
+HmFeces_12243,2019_YachidaS,CTRL,JAP,Asian,74,F,19.9099723,NA,NA,NA,NA,NA,Downstream
+HmFeces_12276,2019_YachidaS,CTRL,JAP,Asian,46,M,21.79944511,NA,NA,NA,NA,NA,Downstream
+HmFeces_12340,2019_YachidaS,CTRL,JAP,Asian,59,M,26.53375883,NA,NA,NA,NA,NA,Downstream
+HmFeces_12389,2019_YachidaS,CTRL,JAP,Asian,35,M,24.22145329,NA,NA,NA,NA,NA,Downstream
+A10A,2017_YuJ,CRC,CHN,Asian,79,M,NA,NA,NA,NA,III,III,Downstream
+M113A,2017_YuJ,CRC,CHN,Asian,88,M,NA,NA,NA,NA,I,I,Downstream
+M115A,2017_YuJ,CRC,CHN,Asian,59,M,NA,NA,NA,NA,IV,IV,Downstream
+M116A,2017_YuJ,CRC,CHN,Asian,58,M,NA,NA,NA,NA,I,I,Downstream
+M118A,2017_YuJ,CRC,CHN,Asian,84,F,NA,NA,NA,NA,II,II,Downstream
+M122A,2017_YuJ,CRC,CHN,Asian,81,M,NA,NA,NA,NA,I,I,Downstream
+M123A,2017_YuJ,CRC,CHN,Asian,81,F,NA,NA,NA,NA,I,I,Downstream
+M2-PK002A,2017_YuJ,CRC,CHN,Asian,76,M,NA,NA,NA,NA,I,I,Downstream
+M2-PK005A,2017_YuJ,CRC,CHN,Asian,52,F,NA,NA,NA,NA,I,I,Downstream
+M2-PK007A,2017_YuJ,CRC,CHN,Asian,96,F,NA,NA,NA,NA,II,II,Downstream
+M2-PK008A,2017_YuJ,CRC,CHN,Asian,71,M,NA,NA,NA,NA,III,III,Downstream
+M2-PK009A,2017_YuJ,CRC,CHN,Asian,68,F,NA,NA,NA,NA,I,I,Downstream
+M2-PK010A,2017_YuJ,CRC,CHN,Asian,74,F,NA,NA,NA,NA,III,III,Downstream
+M2-PK011A,2017_YuJ,CRC,CHN,Asian,78,M,NA,NA,NA,NA,I,I,Downstream
+M2-PK012A,2017_YuJ,CRC,CHN,Asian,67,M,NA,NA,NA,NA,I,I,Downstream
+M2-PK013A,2017_YuJ,CRC,CHN,Asian,68,M,NA,NA,NA,NA,III,III,Downstream
+M2-PK014A,2017_YuJ,CRC,CHN,Asian,60,M,NA,NA,NA,NA,III,III,Downstream
+M2-PK015A,2017_YuJ,CRC,CHN,Asian,62,M,NA,NA,NA,NA,III,III,Downstream
+M2-PK016A,2017_YuJ,CRC,CHN,Asian,74,M,NA,NA,NA,NA,II,II,Downstream
+M2-PK017A,2017_YuJ,CRC,CHN,Asian,79,F,NA,NA,NA,NA,II,II,Downstream
+M2-PK018A,2017_YuJ,CRC,CHN,Asian,58,F,NA,NA,NA,NA,I,I,Downstream
+M2-PK021A,2017_YuJ,CRC,CHN,Asian,80,M,NA,NA,NA,NA,III,III,Downstream
+M2-PK022A,2017_YuJ,CRC,CHN,Asian,56,F,NA,NA,NA,NA,IV,IV,Downstream
+M2-PK023A,2017_YuJ,CRC,CHN,Asian,71,M,NA,NA,NA,NA,II,II,Downstream
+M2-PK024A,2017_YuJ,CRC,CHN,Asian,81,F,NA,NA,NA,NA,III,III,Downstream
+M2-PK026A,2017_YuJ,CRC,CHN,Asian,61,M,NA,NA,NA,NA,II,II,Downstream
+M2-PK027A,2017_YuJ,CRC,CHN,Asian,50,M,NA,NA,NA,NA,I,I,Downstream
+M2-PK041A,2017_YuJ,CRC,CHN,Asian,75,M,NA,NA,NA,NA,I,I,Downstream
+M2-PK051A,2017_YuJ,CRC,CHN,Asian,59,M,NA,NA,NA,NA,III,III,Downstream
+M2-PK056B,2017_YuJ,CRC,CHN,Asian,71,M,NA,NA,NA,NA,III,III,Downstream
+M2-PK059A,2017_YuJ,CRC,CHN,Asian,89,F,NA,NA,NA,NA,II,II,Downstream
+M2-PK069B,2017_YuJ,CRC,CHN,Asian,61,M,NA,NA,NA,NA,III,III,Downstream
+M2-PK084A,2017_YuJ,CRC,CHN,Asian,87,M,NA,NA,NA,NA,III,III,Downstream
+M2-PK085A,2017_YuJ,CRC,CHN,Asian,70,F,NA,NA,NA,NA,III,III,Downstream
+MSC103A,2017_YuJ,CRC,CHN,Asian,88,M,NA,NA,NA,NA,II,II,Downstream
+MSC45A,2017_YuJ,CRC,CHN,Asian,60,M,NA,NA,NA,NA,II,II,Downstream
+MSC54A,2017_YuJ,CRC,CHN,Asian,84,M,NA,NA,NA,NA,III,III,Downstream
+MSC63A,2017_YuJ,CRC,CHN,Asian,85,M,NA,NA,NA,NA,II,II,Downstream
+MSC6A,2017_YuJ,CRC,CHN,Asian,84,F,NA,NA,NA,NA,III,III,Downstream
+MSC76A,2017_YuJ,CRC,CHN,Asian,43,M,NA,NA,NA,NA,II,II,Downstream
+MSC78A,2017_YuJ,CRC,CHN,Asian,74,F,NA,NA,NA,NA,IV,IV,Downstream
+MSC79A,2017_YuJ,CRC,CHN,Asian,92,F,NA,NA,NA,NA,III,III,Downstream
+MSC81A,2017_YuJ,CRC,CHN,Asian,77,M,NA,NA,NA,NA,II,II,Downstream
+515A,2017_YuJ,CTRL,CHN,Asian,62,M,NA,NA,NA,NA,NA,NA,Downstream
+519A,2017_YuJ,CTRL,CHN,Asian,72,F,NA,NA,NA,NA,NA,NA,Downstream
+534A,2017_YuJ,CTRL,CHN,Asian,65,M,NA,NA,NA,NA,NA,NA,Downstream
+A51A,2017_YuJ,CTRL,CHN,Asian,81,M,NA,NA,NA,NA,NA,NA,Downstream
+A60A,2017_YuJ,CTRL,CHN,Asian,70,F,NA,NA,NA,NA,NA,NA,Downstream
+ANS1037,2017_YuJ,CTRL,CHN,Asian,61,F,NA,NA,NA,NA,NA,NA,Downstream
+ANS1038,2017_YuJ,CTRL,CHN,Asian,71,F,NA,NA,NA,NA,NA,NA,Downstream
+ANS1101,2017_YuJ,CTRL,CHN,Asian,58,M,NA,NA,NA,NA,NA,NA,Downstream
+ANS1112,2017_YuJ,CTRL,CHN,Asian,61,M,NA,NA,NA,NA,NA,NA,Downstream
+ANS1114,2017_YuJ,CTRL,CHN,Asian,50,F,NA,NA,NA,NA,NA,NA,Downstream
+ANS1115,2017_YuJ,CTRL,CHN,Asian,49,M,NA,NA,NA,NA,NA,NA,Downstream
+ANS1133,2017_YuJ,CTRL,CHN,Asian,53,M,NA,NA,NA,NA,NA,NA,Downstream
+ANS1135,2017_YuJ,CTRL,CHN,Asian,60,M,NA,NA,NA,NA,NA,NA,Downstream
+ANS1170,2017_YuJ,CTRL,CHN,Asian,54,M,NA,NA,NA,NA,NA,NA,Downstream
+ANS1186,2017_YuJ,CTRL,CHN,Asian,76,F,NA,NA,NA,NA,NA,NA,Downstream
+ANS1189,2017_YuJ,CTRL,CHN,Asian,56,F,NA,NA,NA,NA,NA,NA,Downstream
+ANS1217,2017_YuJ,CTRL,CHN,Asian,52,F,NA,NA,NA,NA,NA,NA,Downstream
+ANS1218,2017_YuJ,CTRL,CHN,Asian,62,F,NA,NA,NA,NA,NA,NA,Downstream
+ANS1454,2017_YuJ,CTRL,CHN,Asian,52,F,NA,NA,NA,NA,NA,NA,Downstream
+ANS1456,2017_YuJ,CTRL,CHN,Asian,64,M,NA,NA,NA,NA,NA,NA,Downstream
+ANS16,2017_YuJ,CTRL,CHN,Asian,67,F,NA,NA,NA,NA,NA,NA,Downstream
+ANS19,2017_YuJ,CTRL,CHN,Asian,52,M,NA,NA,NA,NA,NA,NA,Downstream
+ANS23,2017_YuJ,CTRL,CHN,Asian,58,M,NA,NA,NA,NA,NA,NA,Downstream
+ANS27,2017_YuJ,CTRL,CHN,Asian,65,F,NA,NA,NA,NA,NA,NA,Downstream
+ANS3,2017_YuJ,CTRL,CHN,Asian,61,M,NA,NA,NA,NA,NA,NA,Downstream
+ANS30,2017_YuJ,CTRL,CHN,Asian,63,F,NA,NA,NA,NA,NA,NA,Downstream
+ANS31,2017_YuJ,CTRL,CHN,Asian,62,F,NA,NA,NA,NA,NA,NA,Downstream
+ANS46,2017_YuJ,CTRL,CHN,Asian,49,M,NA,NA,NA,NA,NA,NA,Downstream
+ANS49,2017_YuJ,CTRL,CHN,Asian,57,F,NA,NA,NA,NA,NA,NA,Downstream
+ANS52,2017_YuJ,CTRL,CHN,Asian,72,F,NA,NA,NA,NA,NA,NA,Downstream
+ANS7,2017_YuJ,CTRL,CHN,Asian,62,F,NA,NA,NA,NA,NA,NA,Downstream
+ANS71,2017_YuJ,CTRL,CHN,Asian,62,F,NA,NA,NA,NA,NA,NA,Downstream
+ANS78,2017_YuJ,CTRL,CHN,Asian,60,M,NA,NA,NA,NA,NA,NA,Downstream
+ANS97,2017_YuJ,CTRL,CHN,Asian,52,F,NA,NA,NA,NA,NA,NA,Downstream
+M2-PK523A,2017_YuJ,CTRL,CHN,Asian,71,M,NA,NA,NA,NA,NA,NA,Downstream
+M2-PK524A,2017_YuJ,CTRL,CHN,Asian,58,M,NA,NA,NA,NA,NA,NA,Downstream
+M2-PK558A,2017_YuJ,CTRL,CHN,Asian,72,M,NA,NA,NA,NA,NA,NA,Downstream
+M2-PK602A,2017_YuJ,CTRL,CHN,Asian,61,M,NA,NA,NA,NA,NA,NA,Downstream
+M2-PK615A,2017_YuJ,CTRL,CHN,Asian,71,F,NA,NA,NA,NA,NA,NA,Downstream
+M2-PK617A,2017_YuJ,CTRL,CHN,Asian,75,F,NA,NA,NA,NA,NA,NA,Downstream
+M2-PK619A,2017_YuJ,CTRL,CHN,Asian,60,M,NA,NA,NA,NA,NA,NA,Downstream
+M2-PK644A,2017_YuJ,CTRL,CHN,Asian,69,M,NA,NA,NA,NA,NA,NA,Downstream
+M2-PK647A,2017_YuJ,CTRL,CHN,Asian,69,F,NA,NA,NA,NA,NA,NA,Downstream
+M2-PK656A,2017_YuJ,CTRL,CHN,Asian,71,F,NA,NA,NA,NA,NA,NA,Downstream
+M2-PK699A,2017_YuJ,CTRL,CHN,Asian,72,M,NA,NA,NA,NA,NA,NA,Downstream
+M2-PK701A,2017_YuJ,CTRL,CHN,Asian,79,F,NA,NA,NA,NA,NA,NA,Downstream
+M2-PK708A,2017_YuJ,CTRL,CHN,Asian,72,F,NA,NA,NA,NA,NA,NA,Downstream
+M2-PK710A,2017_YuJ,CTRL,CHN,Asian,67,M,NA,NA,NA,NA,NA,NA,Downstream
+M2-PK712A,2017_YuJ,CTRL,CHN,Asian,64,M,NA,NA,NA,NA,NA,NA,Downstream
+M2-PK730A,2017_YuJ,CTRL,CHN,Asian,66,M,NA,NA,NA,NA,NA,NA,Downstream
+M2-PK750A,2017_YuJ,CTRL,CHN,Asian,67,M,NA,NA,NA,NA,NA,NA,Downstream
+M2-PK751A,2017_YuJ,CTRL,CHN,Asian,59,M,NA,NA,NA,NA,NA,NA,Downstream
+M2-PK797A,2017_YuJ,CTRL,CHN,Asian,64,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_075,2021_YuJ,adenoma,CHN,Asian,63,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_097,2021_YuJ,adenoma,CHN,Asian,60,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_098,2021_YuJ,adenoma,CHN,Asian,64,M,NA,NA,NA,NA,NA,NA,Downstream
+S2_003,2021_YuJ,adenoma,CHN,Asian,63,F,NA,NA,NA,NA,NA,NA,Downstream
+S2_004,2021_YuJ,adenoma,CHN,Asian,65,F,NA,NA,NA,NA,NA,NA,Downstream
+S2_007,2021_YuJ,adenoma,CHN,Asian,57,M,NA,NA,NA,NA,NA,NA,Downstream
+S2_009,2021_YuJ,adenoma,CHN,Asian,65,F,NA,NA,NA,NA,NA,NA,Downstream
+S2_010,2021_YuJ,adenoma,CHN,Asian,57,F,NA,NA,NA,NA,NA,NA,Downstream
+S2_011_merged,2021_YuJ,adenoma,CHN,Asian,70,F,NA,NA,NA,NA,NA,NA,Downstream
+S2_012_merged,2021_YuJ,adenoma,CHN,Asian,67,M,NA,NA,NA,NA,NA,NA,Downstream
+S2_013,2021_YuJ,adenoma,CHN,Asian,70,M,NA,NA,NA,NA,NA,NA,Downstream
+S2_014,2021_YuJ,adenoma,CHN,Asian,66,F,NA,NA,NA,NA,NA,NA,Downstream
+S2_015,2021_YuJ,adenoma,CHN,Asian,69,M,NA,NA,NA,NA,NA,NA,Downstream
+S2_016_merged,2021_YuJ,adenoma,CHN,Asian,68,F,NA,NA,NA,NA,NA,NA,Downstream
+S2_017,2021_YuJ,adenoma,CHN,Asian,67,F,NA,NA,NA,NA,NA,NA,Downstream
+S2_018,2021_YuJ,adenoma,CHN,Asian,60,M,NA,NA,NA,NA,NA,NA,Downstream
+S2_019,2021_YuJ,adenoma,CHN,Asian,65,F,NA,NA,NA,NA,NA,NA,Downstream
+S2_020_merged,2021_YuJ,adenoma,CHN,Asian,70,M,NA,NA,NA,NA,NA,NA,Downstream
+S2_021,2021_YuJ,adenoma,CHN,Asian,64,F,NA,NA,NA,NA,NA,NA,Downstream
+S2_022_merged,2021_YuJ,adenoma,CHN,Asian,61,M,NA,NA,NA,NA,NA,NA,Downstream
+S2_024,2021_YuJ,adenoma,CHN,Asian,64,F,NA,NA,NA,NA,NA,NA,Downstream
+S2_026,2021_YuJ,adenoma,CHN,Asian,71,M,NA,NA,NA,NA,NA,NA,Downstream
+S2_027-2,2021_YuJ,adenoma,CHN,Asian,68,M,NA,NA,NA,NA,NA,NA,Downstream
+S2_028,2021_YuJ,adenoma,CHN,Asian,66,F,NA,NA,NA,NA,NA,NA,Downstream
+S2_030,2021_YuJ,adenoma,CHN,Asian,65,M,NA,NA,NA,NA,NA,NA,Downstream
+S2_031,2021_YuJ,adenoma,CHN,Asian,71,F,NA,NA,NA,NA,NA,NA,Downstream
+S2_032,2021_YuJ,adenoma,CHN,Asian,59,M,NA,NA,NA,NA,NA,NA,Downstream
+S2_033,2021_YuJ,adenoma,CHN,Asian,71,M,NA,NA,NA,NA,NA,NA,Downstream
+S2_035,2021_YuJ,adenoma,CHN,Asian,65,F,NA,NA,NA,NA,NA,NA,Downstream
+S2_036,2021_YuJ,adenoma,CHN,Asian,63,F,NA,NA,NA,NA,NA,NA,Downstream
+S2_037,2021_YuJ,adenoma,CHN,Asian,65,F,NA,NA,NA,NA,NA,NA,Downstream
+S2_038,2021_YuJ,adenoma,CHN,Asian,58,M,NA,NA,NA,NA,NA,NA,Downstream
+S2_039_merged,2021_YuJ,adenoma,CHN,Asian,71,F,NA,NA,NA,NA,NA,NA,Downstream
+S2_040,2021_YuJ,adenoma,CHN,Asian,68,M,NA,NA,NA,NA,NA,NA,Downstream
+S2_043,2021_YuJ,adenoma,CHN,Asian,73,F,NA,NA,NA,NA,NA,NA,Downstream
+S2_044,2021_YuJ,adenoma,CHN,Asian,67,F,NA,NA,NA,NA,NA,NA,Downstream
+S2_045,2021_YuJ,adenoma,CHN,Asian,64,M,NA,NA,NA,NA,NA,NA,Downstream
+S2_047,2021_YuJ,adenoma,CHN,Asian,72,F,NA,NA,NA,NA,NA,NA,Downstream
+S2_048,2021_YuJ,adenoma,CHN,Asian,63,F,NA,NA,NA,NA,NA,NA,Downstream
+S2_050_merged,2021_YuJ,adenoma,CHN,Asian,71,M,NA,NA,NA,NA,NA,NA,Downstream
+S2_052,2021_YuJ,adenoma,CHN,Asian,57,M,NA,NA,NA,NA,NA,NA,Downstream
+S2_053,2021_YuJ,adenoma,CHN,Asian,72,F,NA,NA,NA,NA,NA,NA,Downstream
+S2_054,2021_YuJ,adenoma,CHN,Asian,61,M,NA,NA,NA,NA,NA,NA,Downstream
+S2_058,2021_YuJ,adenoma,CHN,Asian,62,M,NA,NA,NA,NA,NA,NA,Downstream
+S2_059,2021_YuJ,adenoma,CHN,Asian,70,F,NA,NA,NA,NA,NA,NA,Downstream
+S2_060,2021_YuJ,adenoma,CHN,Asian,58,M,NA,NA,NA,NA,NA,NA,Downstream
+S2_061,2021_YuJ,adenoma,CHN,Asian,71,F,NA,NA,NA,NA,NA,NA,Downstream
+S2_062_merged,2021_YuJ,adenoma,CHN,Asian,68,F,NA,NA,NA,NA,NA,NA,Downstream
+S2_063,2021_YuJ,adenoma,CHN,Asian,68,M,NA,NA,NA,NA,NA,NA,Downstream
+S2_064,2021_YuJ,adenoma,CHN,Asian,65,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_005,2021_YuJ,adenoma,CHN,Asian,72,F,NA,NA,NA,NA,NA,NA,Downstream
+S3_007,2021_YuJ,adenoma,CHN,Asian,65,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_008,2021_YuJ,adenoma,CHN,Asian,67,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_009,2021_YuJ,adenoma,CHN,Asian,66,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_010,2021_YuJ,adenoma,CHN,Asian,65,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_011,2021_YuJ,adenoma,CHN,Asian,68,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_013,2021_YuJ,adenoma,CHN,Asian,57,F,NA,NA,NA,NA,NA,NA,Downstream
+S3_014,2021_YuJ,adenoma,CHN,Asian,68,F,NA,NA,NA,NA,NA,NA,Downstream
+S3_016,2021_YuJ,adenoma,CHN,Asian,63,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_021,2021_YuJ,adenoma,CHN,Asian,63,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_022,2021_YuJ,adenoma,CHN,Asian,66,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_023,2021_YuJ,adenoma,CHN,Asian,73,F,NA,NA,NA,NA,NA,NA,Downstream
+S3_024,2021_YuJ,adenoma,CHN,Asian,64,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_026,2021_YuJ,adenoma,CHN,Asian,71,F,NA,NA,NA,NA,NA,NA,Downstream
+S3_027,2021_YuJ,adenoma,CHN,Asian,57,F,NA,NA,NA,NA,NA,NA,Downstream
+S3_028,2021_YuJ,adenoma,CHN,Asian,66,F,NA,NA,NA,NA,NA,NA,Downstream
+S3_029,2021_YuJ,adenoma,CHN,Asian,77,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_030,2021_YuJ,adenoma,CHN,Asian,64,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_031,2021_YuJ,adenoma,CHN,Asian,65,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_034,2021_YuJ,adenoma,CHN,Asian,65,F,NA,NA,NA,NA,NA,NA,Downstream
+S3_035,2021_YuJ,adenoma,CHN,Asian,73,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_036,2021_YuJ,adenoma,CHN,Asian,72,F,NA,NA,NA,NA,NA,NA,Downstream
+S3_037,2021_YuJ,adenoma,CHN,Asian,72,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_039,2021_YuJ,adenoma,CHN,Asian,59,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_040,2021_YuJ,adenoma,CHN,Asian,62,F,NA,NA,NA,NA,NA,NA,Downstream
+S3_041,2021_YuJ,adenoma,CHN,Asian,69,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_044,2021_YuJ,adenoma,CHN,Asian,80,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_046,2021_YuJ,adenoma,CHN,Asian,68,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_048,2021_YuJ,adenoma,CHN,Asian,59,F,NA,NA,NA,NA,NA,NA,Downstream
+S3_049,2021_YuJ,adenoma,CHN,Asian,72,F,NA,NA,NA,NA,NA,NA,Downstream
+S3_050,2021_YuJ,adenoma,CHN,Asian,71,F,NA,NA,NA,NA,NA,NA,Downstream
+S3_051,2021_YuJ,adenoma,CHN,Asian,68,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_055,2021_YuJ,adenoma,CHN,Asian,72,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_057,2021_YuJ,adenoma,CHN,Asian,62,F,NA,NA,NA,NA,NA,NA,Downstream
+S3_059,2021_YuJ,adenoma,CHN,Asian,58,F,NA,NA,NA,NA,NA,NA,Downstream
+S3_061_merged,2021_YuJ,adenoma,CHN,Asian,76,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_062,2021_YuJ,adenoma,CHN,Asian,65,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_063,2021_YuJ,adenoma,CHN,Asian,68,F,NA,NA,NA,NA,NA,NA,Downstream
+S3_064,2021_YuJ,adenoma,CHN,Asian,74,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_065,2021_YuJ,adenoma,CHN,Asian,56,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_066,2021_YuJ,adenoma,CHN,Asian,56,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_067,2021_YuJ,adenoma,CHN,Asian,69,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_068,2021_YuJ,adenoma,CHN,Asian,71,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_069,2021_YuJ,adenoma,CHN,Asian,73,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_070,2021_YuJ,adenoma,CHN,Asian,58,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_071,2021_YuJ,adenoma,CHN,Asian,54,F,NA,NA,NA,NA,NA,NA,Downstream
+S3_072,2021_YuJ,adenoma,CHN,Asian,67,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_073,2021_YuJ,adenoma,CHN,Asian,61,F,NA,NA,NA,NA,NA,NA,Downstream
+S3_075,2021_YuJ,adenoma,CHN,Asian,68,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_076,2021_YuJ,adenoma,CHN,Asian,66,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_077,2021_YuJ,adenoma,CHN,Asian,60,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_078,2021_YuJ,adenoma,CHN,Asian,69,F,NA,NA,NA,NA,NA,NA,Downstream
+S3_080,2021_YuJ,adenoma,CHN,Asian,56,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_085,2021_YuJ,adenoma,CHN,Asian,60,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_086,2021_YuJ,adenoma,CHN,Asian,64,F,NA,NA,NA,NA,NA,NA,Downstream
+S3_087,2021_YuJ,adenoma,CHN,Asian,75,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_088,2021_YuJ,adenoma,CHN,Asian,61,F,NA,NA,NA,NA,NA,NA,Downstream
+S3_089,2021_YuJ,adenoma,CHN,Asian,63,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_090,2021_YuJ,adenoma,CHN,Asian,56,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_091,2021_YuJ,adenoma,CHN,Asian,73,F,NA,NA,NA,NA,NA,NA,Downstream
+S3_092,2021_YuJ,adenoma,CHN,Asian,65,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_094,2021_YuJ,adenoma,CHN,Asian,72,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_095,2021_YuJ,adenoma,CHN,Asian,61,F,NA,NA,NA,NA,NA,NA,Downstream
+S3_097,2021_YuJ,adenoma,CHN,Asian,55,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_098,2021_YuJ,adenoma,CHN,Asian,59,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_100,2021_YuJ,adenoma,CHN,Asian,68,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_101,2021_YuJ,adenoma,CHN,Asian,70,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_102,2021_YuJ,adenoma,CHN,Asian,61,F,NA,NA,NA,NA,NA,NA,Downstream
+S3_103,2021_YuJ,adenoma,CHN,Asian,59,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_104,2021_YuJ,adenoma,CHN,Asian,54,F,NA,NA,NA,NA,NA,NA,Downstream
+S3_105,2021_YuJ,adenoma,CHN,Asian,60,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_106,2021_YuJ,adenoma,CHN,Asian,64,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_107,2021_YuJ,adenoma,CHN,Asian,64,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_109,2021_YuJ,adenoma,CHN,Asian,62,F,NA,NA,NA,NA,NA,NA,Downstream
+S3_110,2021_YuJ,adenoma,CHN,Asian,72,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_111,2021_YuJ,adenoma,CHN,Asian,59,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_112,2021_YuJ,adenoma,CHN,Asian,69,F,NA,NA,NA,NA,NA,NA,Downstream
+S3_113,2021_YuJ,adenoma,CHN,Asian,66,M,NA,NA,NA,NA,NA,NA,Downstream
+S4_003,2021_YuJ,adenoma,CHN,Asian,66,M,NA,NA,NA,NA,NA,NA,Downstream
+S4_004,2021_YuJ,adenoma,CHN,Asian,57,M,NA,NA,NA,NA,NA,NA,Downstream
+S4_006,2021_YuJ,adenoma,CHN,Asian,73,F,NA,NA,NA,NA,NA,NA,Downstream
+S4_008,2021_YuJ,adenoma,CHN,Asian,62,M,NA,NA,NA,NA,NA,NA,Downstream
+S4_010,2021_YuJ,adenoma,CHN,Asian,66,F,NA,NA,NA,NA,NA,NA,Downstream
+S4_011,2021_YuJ,adenoma,CHN,Asian,77,M,NA,NA,NA,NA,NA,NA,Downstream
+S4_012,2021_YuJ,adenoma,CHN,Asian,64,M,NA,NA,NA,NA,NA,NA,Downstream
+S4_013,2021_YuJ,adenoma,CHN,Asian,60,M,NA,NA,NA,NA,NA,NA,Downstream
+S4_014,2021_YuJ,adenoma,CHN,Asian,70,M,NA,NA,NA,NA,NA,NA,Downstream
+S4_015,2021_YuJ,adenoma,CHN,Asian,70,M,NA,NA,NA,NA,NA,NA,Downstream
+S4_017,2021_YuJ,adenoma,CHN,Asian,65,F,NA,NA,NA,NA,NA,NA,Downstream
+S4_018_merged,2021_YuJ,adenoma,CHN,Asian,72,F,NA,NA,NA,NA,NA,NA,Downstream
+S4_019,2021_YuJ,adenoma,CHN,Asian,72,F,NA,NA,NA,NA,NA,NA,Downstream
+S4_020,2021_YuJ,adenoma,CHN,Asian,71,F,NA,NA,NA,NA,NA,NA,Downstream
+S4_022,2021_YuJ,adenoma,CHN,Asian,88,M,NA,NA,NA,NA,NA,NA,Downstream
+S4_023,2021_YuJ,adenoma,CHN,Asian,76,M,NA,NA,NA,NA,NA,NA,Downstream
+S4_025,2021_YuJ,adenoma,CHN,Asian,59,M,NA,NA,NA,NA,NA,NA,Downstream
+S4_026,2021_YuJ,adenoma,CHN,Asian,62,F,NA,NA,NA,NA,NA,NA,Downstream
+S4_027,2021_YuJ,adenoma,CHN,Asian,65,M,NA,NA,NA,NA,NA,NA,Downstream
+S4_028,2021_YuJ,adenoma,CHN,Asian,65,M,NA,NA,NA,NA,NA,NA,Downstream
+S4_029,2021_YuJ,adenoma,CHN,Asian,67,M,NA,NA,NA,NA,NA,NA,Downstream
+S4_032,2021_YuJ,adenoma,CHN,Asian,71,M,NA,NA,NA,NA,NA,NA,Downstream
+S4_033,2021_YuJ,adenoma,CHN,Asian,65,M,NA,NA,NA,NA,NA,NA,Downstream
+S4_034_merged,2021_YuJ,adenoma,CHN,Asian,76,M,NA,NA,NA,NA,NA,NA,Downstream
+S4_038,2021_YuJ,adenoma,CHN,Asian,68,M,NA,NA,NA,NA,NA,NA,Downstream
+S4_040,2021_YuJ,adenoma,CHN,Asian,66,F,NA,NA,NA,NA,NA,NA,Downstream
+S4_042,2021_YuJ,adenoma,CHN,Asian,57,F,NA,NA,NA,NA,NA,NA,Downstream
+S4_044,2021_YuJ,adenoma,CHN,Asian,72,F,NA,NA,NA,NA,NA,NA,Downstream
+S4_045,2021_YuJ,adenoma,CHN,Asian,67,M,NA,NA,NA,NA,NA,NA,Downstream
+S4_046,2021_YuJ,adenoma,CHN,Asian,62,M,NA,NA,NA,NA,NA,NA,Downstream
+S4_047,2021_YuJ,adenoma,CHN,Asian,61,F,NA,NA,NA,NA,NA,NA,Downstream
+S4_048,2021_YuJ,adenoma,CHN,Asian,63,M,NA,NA,NA,NA,NA,NA,Downstream
+S4_049,2021_YuJ,adenoma,CHN,Asian,64,F,NA,NA,NA,NA,NA,NA,Downstream
+S4_050,2021_YuJ,adenoma,CHN,Asian,72,M,NA,NA,NA,NA,NA,NA,Downstream
+S4_051,2021_YuJ,adenoma,CHN,Asian,73,F,NA,NA,NA,NA,NA,NA,Downstream
+S4_052,2021_YuJ,adenoma,CHN,Asian,63,M,NA,NA,NA,NA,NA,NA,Downstream
+S4_053,2021_YuJ,adenoma,CHN,Asian,62,F,NA,NA,NA,NA,NA,NA,Downstream
+S4_054,2021_YuJ,adenoma,CHN,Asian,59,M,NA,NA,NA,NA,NA,NA,Downstream
+S5_054,2021_YuJ,adenoma,CHN,Asian,81,M,NA,NA,NA,NA,NA,NA,Downstream
+S3_043,2021_YuJ,CRC,CHN,Asian,72,F,NA,NA,NA,NA,I,I,Downstream
+S5_002,2021_YuJ,CRC,CHN,Asian,50,M,NA,NA,NA,NA,I,I,Downstream
+S5_003,2021_YuJ,CRC,CHN,Asian,83,M,NA,NA,NA,NA,II,II,Downstream
+S5_006,2021_YuJ,CRC,CHN,Asian,75,M,NA,NA,NA,NA,I,I,Downstream
+S5_007,2021_YuJ,CRC,CHN,Asian,58,F,NA,NA,NA,NA,III,III,Downstream
+S5_008,2021_YuJ,CRC,CHN,Asian,67,M,NA,NA,NA,NA,IV,IV,Downstream
+S5_009,2021_YuJ,CRC,CHN,Asian,89,F,NA,NA,NA,NA,II,II,Downstream
+S5_011,2021_YuJ,CRC,CHN,Asian,71,M,NA,NA,NA,NA,II,II,Downstream
+S5_012_merged,2021_YuJ,CRC,CHN,Asian,84,M,NA,NA,NA,NA,III,III,Downstream
+S5_013,2021_YuJ,CRC,CHN,Asian,72,F,NA,NA,NA,NA,II,II,Downstream
+S5_015,2021_YuJ,CRC,CHN,Asian,65,M,NA,NA,NA,NA,IV,IV,Downstream
+S5_016,2021_YuJ,CRC,CHN,Asian,83,M,NA,NA,NA,NA,II,II,Downstream
+S5_017,2021_YuJ,CRC,CHN,Asian,81,M,NA,NA,NA,NA,III,III,Downstream
+S5_018,2021_YuJ,CRC,CHN,Asian,74,M,NA,NA,NA,NA,III,III,Downstream
+S5_019,2021_YuJ,CRC,CHN,Asian,65,F,NA,NA,NA,NA,IV,IV,Downstream
+S5_020,2021_YuJ,CRC,CHN,Asian,72,F,NA,NA,NA,NA,I,I,Downstream
+S5_021,2021_YuJ,CRC,CHN,Asian,64,F,NA,NA,NA,NA,I,I,Downstream
+S5_022,2021_YuJ,CRC,CHN,Asian,73,M,NA,NA,NA,NA,I,I,Downstream
+S5_023,2021_YuJ,CRC,CHN,Asian,68,F,NA,NA,NA,NA,III,III,Downstream
+S5_025,2021_YuJ,CRC,CHN,Asian,60,F,NA,NA,NA,NA,III,III,Downstream
+S5_026,2021_YuJ,CRC,CHN,Asian,80,F,NA,NA,NA,NA,I,I,Downstream
+S5_028,2021_YuJ,CRC,CHN,Asian,67,M,NA,NA,NA,NA,I,I,Downstream
+S5_029,2021_YuJ,CRC,CHN,Asian,79,M,NA,NA,NA,NA,III,III,Downstream
+S5_030,2021_YuJ,CRC,CHN,Asian,82,M,NA,NA,NA,NA,IV,IV,Downstream
+S5_031,2021_YuJ,CRC,CHN,Asian,84,M,NA,NA,NA,NA,III,III,Downstream
+S5_032,2021_YuJ,CRC,CHN,Asian,85,M,NA,NA,NA,NA,II,II,Downstream
+S5_034,2021_YuJ,CRC,CHN,Asian,74,F,NA,NA,NA,NA,IV,IV,Downstream
+S5_035,2021_YuJ,CRC,CHN,Asian,77,M,NA,NA,NA,NA,II,II,Downstream
+S5_037,2021_YuJ,CRC,CHN,Asian,73,F,NA,NA,NA,NA,III,III,Downstream
+S5_038,2021_YuJ,CRC,CHN,Asian,67,M,NA,NA,NA,NA,II,II,Downstream
+S5_039,2021_YuJ,CRC,CHN,Asian,70,F,NA,NA,NA,NA,II,II,Downstream
+S5_040,2021_YuJ,CRC,CHN,Asian,91,M,NA,NA,NA,NA,II,II,Downstream
+S5_042,2021_YuJ,CRC,CHN,Asian,77,M,NA,NA,NA,NA,II,II,Downstream
+S5_045,2021_YuJ,CRC,CHN,Asian,80,M,NA,NA,NA,NA,III,III,Downstream
+S5_047,2021_YuJ,CRC,CHN,Asian,43,F,NA,NA,NA,NA,IV,IV,Downstream
+S5_052,2021_YuJ,CRC,CHN,Asian,84,F,NA,NA,NA,NA,II,II,Downstream
+S5_055,2021_YuJ,CRC,CHN,Asian,81,F,NA,NA,NA,NA,I,I,Downstream
+S5_056,2021_YuJ,CRC,CHN,Asian,79,M,NA,NA,NA,NA,IV,IV,Downstream
+S5_057,2021_YuJ,CRC,CHN,Asian,92,M,NA,NA,NA,NA,III,III,Downstream
+S5_060,2021_YuJ,CRC,CHN,Asian,52,F,NA,NA,NA,NA,I,I,Downstream
+S5_061,2021_YuJ,CRC,CHN,Asian,84,M,NA,NA,NA,NA,III,III,Downstream
+S5_062,2021_YuJ,CRC,CHN,Asian,96,F,NA,NA,NA,NA,II,II,Downstream
+S5_064,2021_YuJ,CRC,CHN,Asian,78,M,NA,NA,NA,NA,I,I,Downstream
+S5_068,2021_YuJ,CRC,CHN,Asian,87,F,NA,NA,NA,NA,III,III,Downstream
+S5_070,2021_YuJ,CRC,CHN,Asian,59,M,NA,NA,NA,NA,III,III,Downstream
+S5_071,2021_YuJ,CRC,CHN,Asian,83,M,NA,NA,NA,NA,II,II,Downstream
+S5_072,2021_YuJ,CRC,CHN,Asian,71,M,NA,NA,NA,NA,III,III,Downstream
+S5_073,2021_YuJ,CRC,CHN,Asian,85,M,NA,NA,NA,NA,II,II,Downstream
+S5_077,2021_YuJ,CRC,CHN,Asian,54,F,NA,NA,NA,NA,IV,IV,Downstream
+S5_078,2021_YuJ,CRC,CHN,Asian,74,F,NA,NA,NA,NA,II,II,Downstream
+S5_082,2021_YuJ,CRC,CHN,Asian,86,F,NA,NA,NA,NA,III,III,Downstream
+S5_083,2021_YuJ,CRC,CHN,Asian,69,F,NA,NA,NA,NA,II,II,Downstream
+S5_084_merged,2021_YuJ,CRC,CHN,Asian,68,F,NA,NA,NA,NA,III,III,Downstream
+S5_085,2021_YuJ,CRC,CHN,Asian,74,M,NA,NA,NA,NA,I,I,Downstream
+S5_086,2021_YuJ,CRC,CHN,Asian,67,M,NA,NA,NA,NA,I,I,Downstream
+S5_088,2021_YuJ,CRC,CHN,Asian,56,M,NA,NA,NA,NA,I,I,Downstream
+S5_089,2021_YuJ,CRC,CHN,Asian,75,M,NA,NA,NA,NA,I,I,Downstream
+S5_091,2021_YuJ,CRC,CHN,Asian,74,M,NA,NA,NA,NA,III,III,Downstream
+S5_092,2021_YuJ,CRC,CHN,Asian,61,F,NA,NA,NA,NA,III,III,Downstream
+S5_093,2021_YuJ,CRC,CHN,Asian,60,M,NA,NA,NA,NA,III,III,Downstream
+S5_094_merged,2021_YuJ,CRC,CHN,Asian,77,M,NA,NA,NA,NA,II,II,Downstream
+S5_096,2021_YuJ,CRC,CHN,Asian,70,M,NA,NA,NA,NA,II,II,Downstream
+S5_098,2021_YuJ,CRC,CHN,Asian,64,F,NA,NA,NA,NA,III,III,Downstream
+S5_099,2021_YuJ,CRC,CHN,Asian,55,M,NA,NA,NA,NA,II,II,Downstream
+S5_101,2021_YuJ,CRC,CHN,Asian,89,M,NA,NA,NA,NA,II,II,Downstream
+S5_104,2021_YuJ,CRC,CHN,Asian,78,M,NA,NA,NA,NA,IV,IV,Downstream
+S6_001,2021_YuJ,CRC,CHN,Asian,65,F,NA,NA,NA,NA,I,I,Downstream
+S6_002,2021_YuJ,CRC,CHN,Asian,83,M,NA,NA,NA,NA,II,II,Downstream
+S6_003_merged,2021_YuJ,CRC,CHN,Asian,87,F,NA,NA,NA,NA,III,III,Downstream
+S6_004,2021_YuJ,CRC,CHN,Asian,75,M,NA,NA,NA,NA,I,I,Downstream
+S6_005,2021_YuJ,CRC,CHN,Asian,67,M,NA,NA,NA,NA,IV,IV,Downstream
+S6_006,2021_YuJ,CRC,CHN,Asian,89,F,NA,NA,NA,NA,II,II,Downstream
+S6_007,2021_YuJ,CRC,CHN,Asian,82,F,NA,NA,NA,NA,II,II,Downstream
+S6_008,2021_YuJ,CRC,CHN,Asian,71,M,NA,NA,NA,NA,II,II,Downstream
+S6_009,2021_YuJ,CRC,CHN,Asian,84,M,NA,NA,NA,NA,III,III,Downstream
+S6_010,2021_YuJ,CRC,CHN,Asian,72,F,NA,NA,NA,NA,II,II,Downstream
+S6_012,2021_YuJ,CRC,CHN,Asian,60,F,NA,NA,NA,NA,III,III,Downstream
+S6_014,2021_YuJ,CRC,CHN,Asian,78,M,NA,NA,NA,NA,IV,IV,Downstream
+S6_015,2021_YuJ,CRC,CHN,Asian,74,M,NA,NA,NA,NA,III,III,Downstream
+S6_016,2021_YuJ,CRC,CHN,Asian,83,M,NA,NA,NA,NA,II,II,Downstream
+S6_017,2021_YuJ,CRC,CHN,Asian,62,M,NA,NA,NA,NA,II,II,Downstream
+S6_018,2021_YuJ,CRC,CHN,Asian,81,M,NA,NA,NA,NA,III,III,Downstream
+S6_019,2021_YuJ,CRC,CHN,Asian,80,M,NA,NA,NA,NA,III,III,Downstream
+S6_020,2021_YuJ,CRC,CHN,Asian,86,F,NA,NA,NA,NA,II,II,Downstream
+S6_021,2021_YuJ,CRC,CHN,Asian,83,F,NA,NA,NA,NA,IV,IV,Downstream
+S6_022,2021_YuJ,CRC,CHN,Asian,64,F,NA,NA,NA,NA,III,III,Downstream
+S6_023,2021_YuJ,CRC,CHN,Asian,73,M,NA,NA,NA,NA,I,I,Downstream
+S6_024,2021_YuJ,CRC,CHN,Asian,89,M,NA,NA,NA,NA,II,II,Downstream
+S6_025,2021_YuJ,CRC,CHN,Asian,81,F,NA,NA,NA,NA,I,I,Downstream
+S6_027,2021_YuJ,CRC,CHN,Asian,62,M,NA,NA,NA,NA,II,II,Downstream
+S6_028,2021_YuJ,CRC,CHN,Asian,69,F,NA,NA,NA,NA,II,II,Downstream
+S6_029,2021_YuJ,CRC,CHN,Asian,68,F,NA,NA,NA,NA,III,III,Downstream
+S6_030,2021_YuJ,CRC,CHN,Asian,57,F,NA,NA,NA,NA,IV,IV,Downstream
+S6_031,2021_YuJ,CRC,CHN,Asian,72,F,NA,NA,NA,NA,I,I,Downstream
+S6_032,2021_YuJ,CRC,CHN,Asian,68,F,NA,NA,NA,NA,III,III,Downstream
+S6_035,2021_YuJ,CRC,CHN,Asian,64,F,NA,NA,NA,NA,III,III,Downstream
+S1_001,2021_YuJ,CTRL,CHN,Asian,54,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_002,2021_YuJ,CTRL,CHN,Asian,57,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_003,2021_YuJ,CTRL,CHN,Asian,63,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_004,2021_YuJ,CTRL,CHN,Asian,59,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_006,2021_YuJ,CTRL,CHN,Asian,68,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_007,2021_YuJ,CTRL,CHN,Asian,63,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_008,2021_YuJ,CTRL,CHN,Asian,73,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_009,2021_YuJ,CTRL,CHN,Asian,71,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_011,2021_YuJ,CTRL,CHN,Asian,61,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_012_merged,2021_YuJ,CTRL,CHN,Asian,59,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_013,2021_YuJ,CTRL,CHN,Asian,65,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_015,2021_YuJ,CTRL,CHN,Asian,71,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_016,2021_YuJ,CTRL,CHN,Asian,65,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_017,2021_YuJ,CTRL,CHN,Asian,71,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_019,2021_YuJ,CTRL,CHN,Asian,66,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_020,2021_YuJ,CTRL,CHN,Asian,79,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_021,2021_YuJ,CTRL,CHN,Asian,71,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_022,2021_YuJ,CTRL,CHN,Asian,57,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_023,2021_YuJ,CTRL,CHN,Asian,64,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_024_merged,2021_YuJ,CTRL,CHN,Asian,65,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_025,2021_YuJ,CTRL,CHN,Asian,58,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_026,2021_YuJ,CTRL,CHN,Asian,59,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_027,2021_YuJ,CTRL,CHN,Asian,67,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_029,2021_YuJ,CTRL,CHN,Asian,61,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_030,2021_YuJ,CTRL,CHN,Asian,47,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_031,2021_YuJ,CTRL,CHN,Asian,52,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_032,2021_YuJ,CTRL,CHN,Asian,51,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_033,2021_YuJ,CTRL,CHN,Asian,63,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_034,2021_YuJ,CTRL,CHN,Asian,68,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_035,2021_YuJ,CTRL,CHN,Asian,55,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_036,2021_YuJ,CTRL,CHN,Asian,62,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_037,2021_YuJ,CTRL,CHN,Asian,64,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_038,2021_YuJ,CTRL,CHN,Asian,59,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_039,2021_YuJ,CTRL,CHN,Asian,54,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_041,2021_YuJ,CTRL,CHN,Asian,56,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_042,2021_YuJ,CTRL,CHN,Asian,62,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_047,2021_YuJ,CTRL,CHN,Asian,66,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_048,2021_YuJ,CTRL,CHN,Asian,57,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_049,2021_YuJ,CTRL,CHN,Asian,61,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_050,2021_YuJ,CTRL,CHN,Asian,70,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_051,2021_YuJ,CTRL,CHN,Asian,62,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_052,2021_YuJ,CTRL,CHN,Asian,61,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_053,2021_YuJ,CTRL,CHN,Asian,64,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_054,2021_YuJ,CTRL,CHN,Asian,62,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_057,2021_YuJ,CTRL,CHN,Asian,57,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_058,2021_YuJ,CTRL,CHN,Asian,60,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_060_merged,2021_YuJ,CTRL,CHN,Asian,57,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_061,2021_YuJ,CTRL,CHN,Asian,59,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_062_merged,2021_YuJ,CTRL,CHN,Asian,61,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_064,2021_YuJ,CTRL,CHN,Asian,72,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_065,2021_YuJ,CTRL,CHN,Asian,64,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_066,2021_YuJ,CTRL,CHN,Asian,64,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_068,2021_YuJ,CTRL,CHN,Asian,62,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_069,2021_YuJ,CTRL,CHN,Asian,65,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_070,2021_YuJ,CTRL,CHN,Asian,58,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_071,2021_YuJ,CTRL,CHN,Asian,65,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_072,2021_YuJ,CTRL,CHN,Asian,76,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_073,2021_YuJ,CTRL,CHN,Asian,65,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_074,2021_YuJ,CTRL,CHN,Asian,63,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_077,2021_YuJ,CTRL,CHN,Asian,67,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_079,2021_YuJ,CTRL,CHN,Asian,65,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_081,2021_YuJ,CTRL,CHN,Asian,67,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_083,2021_YuJ,CTRL,CHN,Asian,72,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_084,2021_YuJ,CTRL,CHN,Asian,59,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_086,2021_YuJ,CTRL,CHN,Asian,57,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_088,2021_YuJ,CTRL,CHN,Asian,65,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_089,2021_YuJ,CTRL,CHN,Asian,62,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_089-2,2021_YuJ,CTRL,CHN,Asian,62,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_091,2021_YuJ,CTRL,CHN,Asian,57,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_092,2021_YuJ,CTRL,CHN,Asian,62,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_093,2021_YuJ,CTRL,CHN,Asian,67,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_094,2021_YuJ,CTRL,CHN,Asian,60,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_095,2021_YuJ,CTRL,CHN,Asian,59,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_100_merged,2021_YuJ,CTRL,CHN,Asian,53,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_102,2021_YuJ,CTRL,CHN,Asian,52,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_105,2021_YuJ,CTRL,CHN,Asian,61,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_106,2021_YuJ,CTRL,CHN,Asian,59,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_107,2021_YuJ,CTRL,CHN,Asian,72,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_108,2021_YuJ,CTRL,CHN,Asian,63,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_109,2021_YuJ,CTRL,CHN,Asian,51,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_110,2021_YuJ,CTRL,CHN,Asian,53,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_111,2021_YuJ,CTRL,CHN,Asian,72,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_112,2021_YuJ,CTRL,CHN,Asian,57,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_113,2021_YuJ,CTRL,CHN,Asian,56,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_114,2021_YuJ,CTRL,CHN,Asian,59,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_115,2021_YuJ,CTRL,CHN,Asian,57,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_116,2021_YuJ,CTRL,CHN,Asian,54,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_118,2021_YuJ,CTRL,CHN,Asian,48,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_120,2021_YuJ,CTRL,CHN,Asian,58,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_121,2021_YuJ,CTRL,CHN,Asian,76,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_123,2021_YuJ,CTRL,CHN,Asian,72,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_124,2021_YuJ,CTRL,CHN,Asian,76,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_125,2021_YuJ,CTRL,CHN,Asian,58,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_126,2021_YuJ,CTRL,CHN,Asian,58,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_127,2021_YuJ,CTRL,CHN,Asian,63,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_128,2021_YuJ,CTRL,CHN,Asian,69,F,NA,NA,NA,NA,NA,NA,Downstream
+S1_130,2021_YuJ,CTRL,CHN,Asian,67,M,NA,NA,NA,NA,NA,NA,Downstream
+S1_132,2021_YuJ,CTRL,CHN,Asian,65,F,NA,NA,NA,NA,NA,NA,Downstream
+S2_005,2021_YuJ,CTRL,CHN,Asian,60,F,NA,NA,NA,NA,NA,NA,Downstream
+S3_096,2021_YuJ,CTRL,CHN,Asian,66,M,NA,NA,NA,NA,NA,NA,Downstream
